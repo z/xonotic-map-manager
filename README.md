@@ -55,7 +55,7 @@ Done.
 ```
 
 ```
-z@zap:~/dev/xonotic-map-manager % ./map_manager.py remove snowdance2.pk3)
+z@zap:~/dev/xonotic-map-manager % ./map_manager.py remove snowdance2.pk3
 Removing map: snowdance2.pk3
 map does not exist.
 ```
