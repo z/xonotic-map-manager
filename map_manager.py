@@ -47,6 +47,7 @@ def main():
 
 def search_maps(args):
 
+    # Get the api data
     if not os.path.isfile(config['api_data']):
         print(bcolors.FAIL + config['api_data'] + ' not found. Trying running update.' + bcolors.ENDC)
         raise SystemExit
@@ -57,19 +58,43 @@ def search_maps(args):
     f.close()
 
     filtered_maps_json = maps_json
+    criteria = []
 
+    # Filter based on args
     if args.gametype:
         filtered_maps_json = [x for x in filtered_maps_json if args.gametype in str(x['gametypes'])]
+        criteria.append(('gametype', args.gametype))
+
+    if args.pk3:
+        filtered_maps_json = [x for x in filtered_maps_json if args.pk3 in str(x['pk3'])]
+        criteria.append(('pk3', args.pk3))
 
     if args.author:
         filtered_maps_json = [x for x in filtered_maps_json if args.author in str(x['author'])]
+        criteria.append(('author', args.author))
 
+    if args.title:
+        filtered_maps_json = [x for x in filtered_maps_json if args.title in str(x['title'])]
+        criteria.append(('title', args.title))
+
+    if args.shasum:
+        filtered_maps_json = [x for x in filtered_maps_json if args.shasum in str(x['shasum'])]
+        criteria.append(('shasum', args.shasum))
+
+    # Handle search string
     if args.string:
         search_string = args.string
+        print(bcolors.HEADER + 'Searching for packages names matching: ' + bcolors.ENDC + bcolors.BOLD + search_string + bcolors.ENDC)
     else:
         search_string = ''
 
-    print('Searching for: ' + bcolors.BOLD + search_string + bcolors.ENDC)
+    if len(criteria) > 0:
+        print(bcolors.HEADER + 'Searching for packages with the following criteria:' + bcolors.ENDC)
+        for c in criteria:
+            print(bcolors.BOLD + c[0] + bcolors.ENDC + ': ' + c[1])
+
+    # Print out all matching packages
+    total = 0
 
     for m in filtered_maps_json:
         bsps = m['bsp']
@@ -78,8 +103,11 @@ def search_maps(args):
 
         for bsp in keys:
             if re.search('^.*' + search_string + '.*$', bsp):
-                print(bcolors.BOLD + bsp + bcolors.ENDC)
+                print('\n' + bcolors.BOLD + bsp + bcolors.ENDC)
                 print(config['repo_url'] + m['pk3'])
+                total = total + 1
+
+    print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
 
 def add_maps(url):
@@ -97,7 +125,7 @@ def add_maps(url):
             subprocess.call(['curl', '-o', pk3_with_path, url])
 
         print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
-        
+
     else:
         print(bcolors.FAIL + 'map already exists, please remove first.' + bcolors.ENDC)
 
@@ -111,7 +139,6 @@ def remove_maps(pk3):
     if os.path.exists(pk3_with_path):
         os.remove(pk3_with_path)
         print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
-
     else:
         print(bcolors.FAIL + 'map does not exist.' + bcolors.ENDC)
 
@@ -119,7 +146,9 @@ def remove_maps(pk3):
 def update_data():
 
     print('Updating sources json.')
+
     urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
+
     print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
 
@@ -157,7 +186,6 @@ def read_config(config_file):
         raise SystemExit
 
     conf = configparser.ConfigParser()
-
     conf.read(config_file)
 
     return conf['default']
@@ -174,9 +202,12 @@ def parse_args():
     subparsers.required = True
 
     parser_search = subparsers.add_parser('search', help='search for maps based on bsp names')
-    parser_search.add_argument('string', nargs='?', help='string', type=str)
-    parser_search.add_argument('--gametype', nargs='?', help='gametype', type=str)
-    parser_search.add_argument('--author', nargs='?', help='author', type=str)
+    parser_search.add_argument('string', nargs='?', help='bsp name found in a package', type=str)
+    parser_search.add_argument('--gametype', nargs='?', help='filter by gametype', type=str)
+    parser_search.add_argument('--pk3', nargs='?', help='filter by pk3 name', type=str)
+    parser_search.add_argument('--title', nargs='?', help='filter by title', type=str)
+    parser_search.add_argument('--author', nargs='?', help='filter by author', type=str)
+    parser_search.add_argument('--shasum', nargs='?', help='filter by shasum', type=str)
 
     parser_add = subparsers.add_parser('add', help='add a map based on url')
     parser_add.add_argument('url', nargs='?', help='url', type=str)
