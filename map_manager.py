@@ -23,7 +23,7 @@ def main():
     # print(args)
 
     if args.command == 'search':
-        search_maps(args.map)
+        search_maps(args)
 
     if args.command == 'add':
         add_maps(args.url)
@@ -35,7 +35,7 @@ def main():
         update_data()
 
 
-def search_maps(search_string):
+def search_maps(args):
     if not os.path.isfile(config['api_data']):
         print(bcolors.FAIL + config['api_data'] + ' not found. Trying running update.' + bcolors.ENDC)
         raise SystemExit
@@ -45,9 +45,22 @@ def search_maps(search_string):
     maps_json = json.loads(data)['data']
     f.close()
 
+    filtered_maps_json = maps_json
+
+    if args.gametype:
+        filtered_maps_json = [x for x in filtered_maps_json if args.gametype in str(x['gametypes'])]
+
+    if args.author:
+        filtered_maps_json = [x for x in filtered_maps_json if args.author in str(x['author'])]
+
+    if args.string:
+        search_string = args.string
+    else:
+        search_string = ''
+
     print('Searching for: ' + bcolors.BOLD + search_string + bcolors.ENDC)
 
-    for m in maps_json:
+    for m in filtered_maps_json:
         bsps = m['bsp']
         keys = list(bsps)
         keys.sort()
@@ -91,8 +104,9 @@ def remove_maps(pk3):
 
 
 def update_data():
+    print('Updating sources json.')
     urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
-
+    print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
 def reporthook(count, block_size, total_size):
     global start_time
@@ -141,7 +155,9 @@ def parse_args():
     subparsers.required = True
 
     parser_search = subparsers.add_parser('search', help='search for maps based on bsp names')
-    parser_search.add_argument('map', nargs='?', help='map', type=str)
+    parser_search.add_argument('string', nargs='?', help='string', type=str)
+    parser_search.add_argument('--gametype', nargs='?', help='gametype', type=str)
+    parser_search.add_argument('--author', nargs='?', help='author', type=str)
 
     parser_add = subparsers.add_parser('add', help='add a map based on url')
     parser_add.add_argument('url', nargs='?', help='url', type=str)
