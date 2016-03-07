@@ -1,6 +1,6 @@
 # xonotic-map-manager
 
-```bash
+```
 ./map_manager.py -h                                
 usage: map_manager.py [-h] {search,add,remove,update} ...
 
@@ -21,7 +21,7 @@ Very early alpha. Please be patient.
 
 ```
 
-```bash
+```
 ./map_manager.py search -h
 usage: map_manager.py search [-h] [--gametype [GAMETYPE]] [--author [AUTHOR]]
                              [string]
@@ -38,7 +38,7 @@ optional arguments:
 
 ### Searching
 
-```bash
+```
 ./map_manager.py search snowdance
 Searching for: snowdance
 snowdance2
@@ -49,7 +49,7 @@ http://dl.xonotic.co/snowdance_xon.pk3
 
 ### Adding
 
-```bash
+```
 ./map_manager.py add http://dl.xonotic.co/snowdance2.pk3
 Adding map: http://dl.xonotic.co/snowdance2.pk3
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -58,7 +58,7 @@ Adding map: http://dl.xonotic.co/snowdance2.pk3
 Done.
 ```
 
-```bash
+```
 ./map_manager.py add http://dl.xonotic.co/snowdance2.pk3
 Adding map: http://dl.xonotic.co/snowdance2.pk3
 map already exists, please remove first.
@@ -66,13 +66,13 @@ map already exists, please remove first.
 
 ### Removing
 
-```bash
+```
 ./map_manager.py remove snowdance2.pk3
 Removing map: snowdance2.pk3
 Done.
 ```
 
-```bash
+```
 ./map_manager.py remove snowdance2.pk3
 Removing map: snowdance2.pk3
 map does not exist.
@@ -80,7 +80,7 @@ map does not exist.
 
 ### Update
 
-```bash
+```
 ./map_manager.py update
 100.1% 8167424 / 8159512
 ```
