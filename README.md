@@ -2,18 +2,20 @@
 
 ```
 z@zap:~/dev/xonotic-map-manager % ./map_manager.py -h
-usage: map_manager.py [-h] {search,add,remove} ...
+usage: map_manager.py [-h] {search,add,remove,update} ...
 
 A tool to help manage xonotic maps
 
 positional arguments:
-  {search,add,remove}  sub-command help
-    search             search for maps based on bsp names
-    add                add a map based on url
-    remove             remove based on pk3 name
+  {search,add,remove,update}
+                        sub-command help
+    search              search for maps based on bsp names
+    add                 add a map based on url
+    remove              remove based on pk3 name
+    update              update sources json
 
 optional arguments:
-  -h, --help           show this help message and exit
+  -h, --help            show this help message and exit
 
 Very early alpha. Please be patient.
 ```
@@ -58,4 +60,11 @@ Done.
 z@zap:~/dev/xonotic-map-manager % ./map_manager.py remove snowdance2.pk3
 Removing map: snowdance2.pk3
 map does not exist.
+```
+
+### Update
+
+```
+z@zap:~/dev/xonotic-map-manager % ./map_manager.py update
+100.1% 8167424 / 8159512
 ```
