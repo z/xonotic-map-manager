@@ -21,7 +21,7 @@ Very early alpha. Please be patient.
 ### Searching
 
 ```
-z@zap:~/dev/xonotic-map-manager % ./map_manager.py search snowdance                                                                                                                                                        (master%)
+z@zap:~/dev/xonotic-map-manager % ./map_manager.py search snowdance
 Searching for: snowdance
 snowdance2
 http://dl.xonotic.co/snowdance2.pk3
@@ -32,7 +32,7 @@ http://dl.xonotic.co/snowdance_xon.pk3
 ### Adding
 
 ```
-z@zap:~/dev/xonotic-map-manager % ./map_manager.py add http://dl.xonotic.co/snowdance2.pk3                                                                                                                                 (master%)
+z@zap:~/dev/xonotic-map-manager % ./map_manager.py add http://dl.xonotic.co/snowdance2.pk3
 Adding map: http://dl.xonotic.co/snowdance2.pk3
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -41,7 +41,7 @@ Done.
 ```
 
 ```
-z@zap:~/dev/xonotic-map-manager % ./map_manager.py add http://dl.xonotic.co/snowdance2.pk3                                                                                                                                 (master%)
+z@zap:~/dev/xonotic-map-manager % ./map_manager.py add http://dl.xonotic.co/snowdance2.pk3
 Adding map: http://dl.xonotic.co/snowdance2.pk3
 map already exists, please remove first.
 ```
@@ -49,13 +49,13 @@ map already exists, please remove first.
 ### Removing
 
 ```
-z@zap:~/dev/xonotic-map-manager % ./map_manager.py remove snowdance2.pk3                                                                                                                                                   (master%)
+z@zap:~/dev/xonotic-map-manager % ./map_manager.py remove snowdance2.pk3
 Removing map: snowdance2.pk3
 Done.
 ```
 
 ```
-z@zap:~/dev/xonotic-map-manager % ./map_manager.py remove snowdance2.pk3                                                                                                                                                   (master%)
+z@zap:~/dev/xonotic-map-manager % ./map_manager.py remove snowdance2.pk3)
 Removing map: snowdance2.pk3
 map does not exist.
 ```
