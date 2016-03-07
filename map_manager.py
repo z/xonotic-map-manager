@@ -9,15 +9,19 @@ import time
 import urllib.request
 import subprocess
 import sys
+import copy
+import pluginloader
 
 config_file = 'config.ini'
 config = {}
+plugins = {}
 
 
 def main():
+
     global config
 
-    config = read_config()
+    config = read_config(config_file)
     args = parse_args()
 
     # print(args)
@@ -34,8 +38,15 @@ def main():
     if args.command == 'update':
         update_data()
 
+    # Plugins
+    for cmd, value in plugins.items():
+        if args.command == cmd:
+            plugins[cmd].run()
+            break
+
 
 def search_maps(args):
+
     if not os.path.isfile(config['api_data']):
         print(bcolors.FAIL + config['api_data'] + ' not found. Trying running update.' + bcolors.ENDC)
         raise SystemExit
@@ -72,6 +83,7 @@ def search_maps(args):
 
 
 def add_maps(url):
+
     print('Adding map: ' + bcolors.BOLD + url + bcolors.ENDC)
 
     pk3 = os.path.basename(url)
@@ -91,6 +103,7 @@ def add_maps(url):
 
 
 def remove_maps(pk3):
+
     print('Removing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
 
     pk3_with_path = os.path.join(os.path.dirname(config['map_dir']), pk3)
@@ -104,12 +117,16 @@ def remove_maps(pk3):
 
 
 def update_data():
+
     print('Updating sources json.')
     urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
     print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
+
 def reporthook(count, block_size, total_size):
+
     global start_time
+
     if count == 0:
         start_time = time.time()
         return
@@ -133,8 +150,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def read_config():
-    global config_file
+def read_config(config_file):
 
     if not os.path.isfile(config_file):
         print(bcolors.FAIL + config_file + ' not found, please create one.' + bcolors.ENDC)
@@ -148,6 +164,9 @@ def read_config():
 
 
 def parse_args():
+
+    global plugins
+
     parser = argparse.ArgumentParser(description='A tool to help manage xonotic maps',
                                      epilog="Very early alpha. Please be patient.")
 
@@ -166,6 +185,20 @@ def parse_args():
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
 
     parser_update = subparsers.add_parser('update', help='update sources json')
+
+    # Handle plugins
+    for i in pluginloader.get_plugins():
+        #print("Loading plugin: " + i["name"])
+        command = i['name']
+        plugin = pluginloader.load_plugin(i)
+        plugin.register(config)
+        plugin_args = [plugin.get_args()]
+        plugins[command] = plugin
+
+        # Import args from plugins
+        for p in plugin_args:
+            parser_plugin = subparsers.add_parser(p[0], **p[1])
+            parser_plugin.add_argument(*p[2], **p[3])
 
     return parser.parse_args()
 
