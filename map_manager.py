@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+# z@xnz.me
+import configparser
+import argparse
+import os
+import re
+import json
+import subprocess
+
+config_file = 'config.ini'
+config = {}
+
+
+def main():
+    global config
+
+    config = read_config()
+    args = parse_args()
+
+    # print(args)
+
+    if args.command == 'search':
+        search_maps(args.map)
+
+    if args.command == 'add':
+        add_maps(args.url)
+
+    if args.command == 'remove':
+        remove_maps(args.pk3)
+
+
+def search_maps(search_string):
+    global config
+
+    if not os.path.isfile(config['cache_maps']):
+        print(bcolors.FAIL + config['cache_maps'] + ' not found.' + bcolors.ENDC)
+        raise SystemExit
+
+    f = open(config['cache_maps'])
+    data = f.read()
+    maps_json = json.loads(data)['data']
+    f.close()
+
+    print('Searching for: ' + bcolors.BOLD + search_string + bcolors.ENDC)
+
+    for m in maps_json:
+        bsps = m['bsp']
+        keys = list(bsps)
+        keys.sort()
+
+        for bsp in keys:
+            if re.search('^.*' + search_string + '.*$', bsp):
+                print(bcolors.BOLD + bsp + bcolors.ENDC)
+                print(config['repo_url'] + m['pk3'])
+
+
+def add_maps(url):
+    print('Adding map: ' + bcolors.BOLD + url + bcolors.ENDC)
+    pk3 = os.path.basename(url)
+    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']) + pk3)
+    if not os.path.exists(pk3_with_path):
+        subprocess.call(['curl', '-o', os.path.dirname(config['map_dir']) + pk3, url])
+        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+    else:
+        print(bcolors.FAIL + 'map already exists, please remove first.' + bcolors.ENDC)
+
+
+def remove_maps(pk3):
+    print('Removing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
+    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']) + pk3)
+    if os.path.exists(pk3_with_path):
+        os.remove(pk3_with_path)
+        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+    else:
+        print(bcolors.FAIL + 'map does not exist.' + bcolors.ENDC)
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def read_config():
+    global config_file
+
+    if not os.path.isfile(config_file):
+        print(bcolors.FAIL + config_file + ' not found, please create one.' + bcolors.ENDC)
+        raise SystemExit
+
+    conf = configparser.ConfigParser()
+
+    conf.read(config_file)
+
+    return conf['default']
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='A tool to help manage xonotic maps',
+                                     epilog="Very early alpha. Please be patient.")
+
+    subparsers = parser.add_subparsers(help='sub-command help', dest='command')
+    subparsers.required = True
+
+    parser_search = subparsers.add_parser('search', help='search for maps based on bsp names')
+    parser_search.add_argument('map', nargs='?', help='map', type=str)
+
+    parser_add = subparsers.add_parser('add', help='add a map based on url')
+    parser_add.add_argument('url', nargs='?', help='url', type=str)
+
+    parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
+    parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main()
