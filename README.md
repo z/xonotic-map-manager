@@ -22,18 +22,23 @@ Very early alpha. Please be patient.
 ```
 
 ```
-./map_manager.py search -h
-usage: map_manager.py search [-h] [--gametype [GAMETYPE]] [--author [AUTHOR]]
+usage: map_manager.py search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
+                             [--title [TITLE]] [--author [AUTHOR]]
+                             [--shasum [SHASUM]]
                              [string]
 
 positional arguments:
-  string                string
+  string                bsp name found in a package, works on packages with
+                        many bsps
 
 optional arguments:
   -h, --help            show this help message and exit
   --gametype [GAMETYPE]
-                        gametype
-  --author [AUTHOR]     author
+                        filter by gametype
+  --pk3 [PK3]           filter by pk3 name
+  --title [TITLE]       filter by title
+  --author [AUTHOR]     filter by author
+  --shasum [SHASUM]     filter by shasum
 ```
 
 ### Searching
@@ -100,6 +105,7 @@ config = {}
 def register(conf):
     global config
     config = conf
+
 
 # Change this
 def get_args():

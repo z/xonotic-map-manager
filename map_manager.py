@@ -202,7 +202,7 @@ def parse_args():
     subparsers.required = True
 
     parser_search = subparsers.add_parser('search', help='search for maps based on bsp names')
-    parser_search.add_argument('string', nargs='?', help='bsp name found in a package', type=str)
+    parser_search.add_argument('string', nargs='?', help='bsp name found in a package, works on packages with many bsps', type=str)
     parser_search.add_argument('--gametype', nargs='?', help='filter by gametype', type=str)
     parser_search.add_argument('--pk3', nargs='?', help='filter by pk3 name', type=str)
     parser_search.add_argument('--title', nargs='?', help='filter by title', type=str)
