@@ -5,7 +5,9 @@ import argparse
 import os
 import re
 import json
+import urllib.request
 import subprocess
+import sys
 
 config_file = 'config.ini'
 config = {}
@@ -28,15 +30,18 @@ def main():
     if args.command == 'remove':
         remove_maps(args.pk3)
 
+    if args.command == 'update':
+        update_data()
+
 
 def search_maps(search_string):
     global config
 
-    if not os.path.isfile(config['cache_maps']):
-        print(bcolors.FAIL + config['cache_maps'] + ' not found.' + bcolors.ENDC)
+    if not os.path.isfile(config['api_data']):
+        print(bcolors.FAIL + config['api_data'] + ' not found. Trying running update.' + bcolors.ENDC)
         raise SystemExit
 
-    f = open(config['cache_maps'])
+    f = open(config['api_data'])
     data = f.read()
     maps_json = json.loads(data)['data']
     f.close()
@@ -56,23 +61,52 @@ def search_maps(search_string):
 
 def add_maps(url):
     print('Adding map: ' + bcolors.BOLD + url + bcolors.ENDC)
+
     pk3 = os.path.basename(url)
-    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']) + pk3)
+    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']), pk3)
+
     if not os.path.exists(pk3_with_path):
-        subprocess.call(['curl', '-o', os.path.dirname(config['map_dir']) + pk3, url])
+
+        if config['use_curl'] == 'False':
+            urllib.request.urlretrieve(url, pk3_with_path, reporthook)
+        else:
+            subprocess.call(['curl', '-o', pk3_with_path, url])
+
         print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+        
     else:
         print(bcolors.FAIL + 'map already exists, please remove first.' + bcolors.ENDC)
 
 
 def remove_maps(pk3):
     print('Removing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
-    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']) + pk3)
+
+    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']), pk3)
+
     if os.path.exists(pk3_with_path):
         os.remove(pk3_with_path)
         print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+
     else:
         print(bcolors.FAIL + 'map does not exist.' + bcolors.ENDC)
+
+
+def update_data():
+    urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
+
+
+def reporthook(blocknum, blocksize, totalsize):
+    readsofar = blocknum * blocksize
+    if totalsize > 0:
+        percent = readsofar * 1e2 / totalsize
+        s = "\r%5.1f%% %*d / %d" % (
+            percent, len(str(totalsize)), readsofar, totalsize)
+        sys.stderr.write(s)
+        if readsofar >= totalsize: # near the end
+            sys.stderr.write("\n")
+    else: # total size is unknown
+        sys.stderr.write("read %d\n" % (readsofar,))
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -114,6 +148,8 @@ def parse_args():
 
     parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
+
+    parser_update = subparsers.add_parser('update', help='update sources json')
 
     return parser.parse_args()
 
