@@ -1,13 +1,13 @@
 # xonotic-map-manager
 
 ```
-./map_manager.py -h                           
-usage: map_manager.py [-h] {search,add,install,remove,update,hello} ...
+./xmm.py -h                           
+usage: xmm.py [-h] {search,add,install,remove,update,hello} ...
 
-A tool to help manage xonotic maps
+Xonotic Map Manager is a tool to help manage Xonotic maps
 
 positional arguments:
-  {search,add,install,remove,update,world,hello}
+  {search,add,install,remove,update,hello}
                         sub-command help
     search              search for maps based on bsp names
     add                 add a map based on url
@@ -25,7 +25,7 @@ Very early alpha. Please be patient.
 ### Searching
 
 ```
-./map_manager.py search snowdance
+./xmm.py search snowdance
 Searching for: snowdance
 snowdance2
 http://dl.xonotic.co/snowdance2.pk3
@@ -34,7 +34,7 @@ http://dl.xonotic.co/snowdance_xon.pk3
 ```
 
 ```
-./map_manager.py search -p nexdance --long
+./xmm.py search -p nexdance --long
 Searching for packages with the following criteria:
 pk3: nexdance
 
@@ -52,8 +52,8 @@ Total packages found: 1
 ```
 
 ```
-./map_manager.py search -h                
-usage: map_manager.py search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
+./xmm.py search -h                
+usage: xmm.py search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
                              [--title [TITLE]] [--author [AUTHOR]]
                              [--shasum [SHASUM]] [--long]
                              [string]
@@ -80,19 +80,19 @@ optional arguments:
 ### Installing from the repository
 
 ```
-./map_manager.py install snowdance_xon.pk3
+./xmm.py install snowdance_xon.pk3
 Installing map from repository: snowdance_xon.pk3
 ...100%, 5 MB, 2438 KB/s, 2 seconds passed. Done.
 ```
 
 ```
-./map_manager.py install snowdance_xon.pk3 
+./xmm.py install snowdance_xon.pk3 
 Installing map from repository: snowdance_xon.pk3
 package already exists, please remove first.
 ```
 
 ```
-./map_manager.py install fake.pk3   
+./xmm.py install fake.pk3   
 Installing map from repository: fake.pk3
 package does not exist in the repository.
 ```
@@ -100,7 +100,7 @@ package does not exist in the repository.
 ### Adding (from any URL)
 
 ```
-./map_manager.py add http://dl.xonotic.co/snowdance2.pk3
+./xmm.py add http://dl.xonotic.co/snowdance2.pk3
 Adding map: http://dl.xonotic.co/snowdance2.pk3
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -109,7 +109,7 @@ Done.
 ```
 
 ```
-./map_manager.py add http://dl.xonotic.co/snowdance2.pk3
+./xmm.py add http://dl.xonotic.co/snowdance2.pk3
 Adding map: http://dl.xonotic.co/snowdance2.pk3
 map already exists, please remove first.
 ```
@@ -117,13 +117,13 @@ map already exists, please remove first.
 ### Removing
 
 ```
-./map_manager.py remove snowdance2.pk3
+./xmm.py remove snowdance2.pk3
 Removing map: snowdance2.pk3
 Done.
 ```
 
 ```
-./map_manager.py remove snowdance2.pk3
+./xmm.py remove snowdance2.pk3
 Removing map: snowdance2.pk3
 map does not exist.
 ```
@@ -131,7 +131,7 @@ map does not exist.
 ### Update
 
 ```
-./map_manager.py update
+./xmm.py update
 Updating sources json.
 ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 ```

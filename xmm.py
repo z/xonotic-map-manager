@@ -247,7 +247,7 @@ def parse_args():
 
     global plugins
 
-    parser = argparse.ArgumentParser(description='A tool to help manage xonotic maps',
+    parser = argparse.ArgumentParser(description='Xonotic Map Manager is a tool to help manage Xonotic maps',
                                      epilog="Very early alpha. Please be patient.")
 
     subparsers = parser.add_subparsers(help='sub-command help', dest='command')
