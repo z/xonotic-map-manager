@@ -29,13 +29,13 @@ def main():
         search_maps(args)
 
     if args.command == 'add':
-        add_maps(args.url)
+        add_maps(args)
 
     if args.command == 'install':
-        install_maps(args.pk3)
+        install_maps(args)
 
     if args.command == 'remove':
-        remove_maps(args.pk3)
+        remove_maps(args)
 
     if args.command == 'update':
         update_repo_data()
@@ -119,27 +119,38 @@ def search_maps(args):
     print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
 
-def add_maps(url):
+def add_maps(args):
+
+    url = args.url
+    map_dir = args.T if args.T else config['map_dir']
 
     print('Adding map: ' + bcolors.BOLD + url + bcolors.ENDC)
 
-    pk3 = os.path.basename(url)
-    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']), pk3)
+    if os.path.exists(map_dir):
 
-    if not os.path.exists(pk3_with_path):
+        pk3 = os.path.basename(url)
+        pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
-        if config['use_curl'] == 'False':
-            urllib.request.urlretrieve(url, pk3_with_path, reporthook)
+        if not os.path.exists(pk3_with_path):
+
+            if config['use_curl'] == 'False':
+                urllib.request.urlretrieve(url, pk3_with_path, reporthook)
+            else:
+                subprocess.call(['curl', '-o', pk3_with_path, url])
+
+            print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+
         else:
-            subprocess.call(['curl', '-o', pk3_with_path, url])
-
-        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+            print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
 
     else:
-        print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
+        print(bcolors.FAIL + 'Directory does not exist.' + bcolors.ENDC)
 
 
-def install_maps(pk3):
+def install_maps(args):
+
+    pk3 = args.pk3
+    map_dir = args.T if args.T else config['map_dir']
 
     print('Installing map from repository: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
 
@@ -152,7 +163,7 @@ def install_maps(pk3):
             map_in_repo = True
 
             repo_pk3 = config['repo_url'] + pk3
-            pk3_with_path = os.path.join(os.path.dirname(config['map_dir']), pk3)
+            pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
             if not os.path.exists(pk3_with_path):
 
@@ -170,17 +181,23 @@ def install_maps(pk3):
         print(bcolors.FAIL + 'package does not exist in the repository.' + bcolors.ENDC)
 
 
-def remove_maps(pk3):
+def remove_maps(args):
 
-    print('Removing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
+    pk3 = args.pk3
+    map_dir = args.T if args.T else config['map_dir']
 
-    pk3_with_path = os.path.join(os.path.dirname(config['map_dir']), pk3)
+    print('Removing package: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
 
-    if os.path.exists(pk3_with_path):
-        os.remove(pk3_with_path)
-        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+    if os.path.exists(map_dir):
+        pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
+
+        if os.path.exists(pk3_with_path):
+            os.remove(pk3_with_path)
+            print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+        else:
+            print(bcolors.FAIL + 'package does not exist.' + bcolors.ENDC)
     else:
-        print(bcolors.FAIL + 'map does not exist.' + bcolors.ENDC)
+        print(bcolors.FAIL + 'directory does not exist.' + bcolors.ENDC)
 
 
 def get_repo_data():

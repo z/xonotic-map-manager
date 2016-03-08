@@ -1,23 +1,22 @@
 # xonotic-map-manager
 
 ```
-./xmm.py -h                           
-usage: xmm.py [-h] {search,add,install,remove,update,hello} ...
+usage: xmm.py [-h] [-T [T]] {search,install,add,remove,update,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
 
 positional arguments:
-  {search,add,install,remove,update,hello}
-                        sub-command help
+  {search,install,add,remove,update,hello}
     search              search for maps based on bsp names
-    add                 add a map based on url
     install             install a map from the repository
+    add                 add map from a url
     remove              remove based on pk3 name
     update              update sources json
     hello               help for hello
 
 optional arguments:
   -h, --help            show this help message and exit
+  -T [T]                target directory
 
 Very early alpha. Please be patient.
 ```
