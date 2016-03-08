@@ -2,7 +2,7 @@
 
 ```
 ./map_manager.py -h                           
-usage: map_manager.py [-h] {search,add,install,remove,update,world,hello} ...
+usage: map_manager.py [-h] {search,add,install,remove,update,hello} ...
 
 A tool to help manage xonotic maps
 
@@ -14,7 +14,6 @@ positional arguments:
     install             install a map from the repository
     remove              remove based on pk3 name
     update              update sources json
-    world               help for world
     hello               help for hello
 
 optional arguments:
