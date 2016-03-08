@@ -2,7 +2,6 @@
 # z@xnz.me
 #
 # TODO: exception handling
-# TODO: tracking of installed packages via JSON
 # TODO: Inspection of packages
 
 import argparse
@@ -14,16 +13,19 @@ import subprocess
 import sys
 import time
 import urllib.request
+import pickle
 from plugins import pluginloader
 
 config_file = 'config.ini'
 config = {}
 plugins = {}
+repo_data = {}
 
 
 def main():
 
     global config
+    global repo_data
 
     config = read_config(config_file)
     args = parse_args()
@@ -33,8 +35,8 @@ def main():
     if args.command == 'search':
         search_maps(args)
 
-    if args.command == 'add':
-        add_maps(args)
+    if args.command == 'save':
+        export_package_db(args)
 
     if args.command == 'install':
         install_maps(args)
@@ -146,12 +148,14 @@ def install_maps(args):
     map_in_repo = False
     for m in maps_json:
         if m['pk3'] == pk3 or is_url:
+            db_add_package(m['shasum'], m['pk3'])
             add_map(pk3_with_path, url)
             map_in_repo = True
             break
 
     if not map_in_repo:
         print(bcolors.FAIL + 'package does not exist in the repository.' + bcolors.ENDC)
+        raise SystemExit
 
 
 def add_map(pk3_with_path, url):
@@ -167,6 +171,7 @@ def add_map(pk3_with_path, url):
 
     else:
         print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
+        raise SystemExit
 
 
 def remove_maps(args):
@@ -181,24 +186,105 @@ def remove_maps(args):
 
         if os.path.exists(pk3_with_path):
             os.remove(pk3_with_path)
+
+            repo_data = get_repo_data()
+
+            for m in repo_data:
+                if m['pk3'] == pk3:
+                    db_remove_package(str(m['shasum']), str(m['pk3']))
+
             print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
         else:
             print(bcolors.FAIL + 'package does not exist.' + bcolors.ENDC)
+            raise SystemExit
+
     else:
         print(bcolors.FAIL + 'directory does not exist.' + bcolors.ENDC)
+        raise SystemExit
+
+
+# remote data
+def update_repo_data():
+    print('Updating sources json...')
+    urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
+    print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
 
 def get_repo_data():
-    f = open(config['api_data'])
-    data = f.read()
+
+    global repo_data
+
+    if not repo_data:
+        f = open(config['api_data'])
+        data = f.read()
+        repo_data = json.loads(data)['data']
+        f.close()
+
+    return repo_data
+
+
+# local data
+def get_package_db():
+
+    if file_is_empty(config['package_store']):
+        package_store = {}
+    else:
+        db = open(config['package_store'], 'rb')
+        package_store = pickle.load(db)
+        db.close()
+
+    return package_store
+
+
+def db_add_package(shasum, pk3):
+
+    # shasum + pk3 need to be used together to be unique
+    # this should be hashed into a shorter/safer key
+    data = { shasum + pk3: '1' }
+
+    package_store = []
+
+    if os.path.exists(config['package_store']):
+        if not file_is_empty(config['package_store']):
+            db_in = open(config['package_store'], 'rb+')
+            package_store = pickle.load(db_in)
+            package_store.append(data)
+            db_in.close()
+    else:
+        package_store = [ data ]
+
+    db_out = open(config['package_store'], 'wb+')
+    pickle.dump(package_store, db_out)
+    db_out.close()
+
+
+def db_remove_package(shasum, pk3):
+
+    package_store = []
+
+    if not file_is_empty(config['package_store']):
+        db_in = open(config['package_store'], 'rb+')
+        package_store = pickle.load(db_in)
+        package_store[:] = [d for d in package_store if d.get(shasum + pk3) == 1]
+        db_in.close()
+
+    db_out = open(config['package_store'], 'wb+')
+    pickle.dump(package_store, db_out)
+    db_out.close()
+
+
+def export_package_db(args):
+
+    data = get_package_db()
+    package_store = json.dumps(data)
+
+    f = open(args.file, 'w')
+    f.write(package_store)
     f.close()
-    return json.loads(data)['data']
 
 
-def update_repo_data():
-    print('Updating sources json.')
-    urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
-    print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+def file_is_empty(path):
+    return os.stat(path).st_size == 0
 
 
 def convert_size(num):
@@ -276,6 +362,10 @@ def parse_args():
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
 
     parser_update = subparsers.add_parser('update', help='update sources json')
+
+    parser_remove = subparsers.add_parser('save', help='export locally managed packages to a file')
+    parser_remove.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
+    parser_remove.add_argument('file', nargs='?', help='file name to export to', type=str)
 
     # Handle plugins
     for i in pluginloader.get_plugins():

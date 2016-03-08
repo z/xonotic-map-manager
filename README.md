@@ -7,16 +7,17 @@ Usage is pretty straight forward and the command-line documentation is
 there to help.
 
 ```
-usage: xmm.py [-h] [-T [T]] {search,install,remove,update,hello} ...
+usage: xmm.py [-h] [-T [T]] {search,install,remove,update,save,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
 
 positional arguments:
-  {search,install,remove,update,hello}
+  {search,install,remove,update,save,hello}
     search              search for maps based on bsp names
     install             install a map from the repository, or specify a URL.
     remove              remove based on pk3 name
     update              update sources json
+    save                export locally managed packages to a file
     hello               hello is an example plugin
 
 optional arguments:
@@ -157,6 +158,14 @@ map does not exist.
 ./xmm.py update
 Updating sources json.
 ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
+```
+
+### Export
+
+```
+% ./xmm.py save test.json                                                                                                                                                                         (master*%=)
+% cat test.json                                                                                                                                                                                   (master*%=)
+[{"ef00d43838430b2d1673f03bbe1440eef100ece6dance.pk3": "1"}]%  
 ```
 
 ## Developers
