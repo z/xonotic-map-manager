@@ -1,10 +1,6 @@
-config = {}
+from plugins import pluginbase
 
-
-def register(conf):
-    global config
-    config = conf
-
+config = pluginbase.config
 
 def get_args():
     command='hello'

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # z@xnz.me
-import configparser
 import argparse
+import configparser
+import json
 import os
 import re
-import json
-import time
-import urllib.request
 import subprocess
 import sys
-import pluginloader
+import time
+import urllib.request
+from plugins import pluginloader
 
 config_file = 'config.ini'
 config = {}
@@ -250,7 +250,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Xonotic Map Manager is a tool to help manage Xonotic maps',
                                      epilog="Very early alpha. Please be patient.")
 
-    subparsers = parser.add_subparsers(help='sub-command help', dest='command')
+    parser.add_argument("-T", nargs='?', help="target directory", type=str)
+
+    subparsers = parser.add_subparsers(dest='command')
     subparsers.required = True
 
     parser_search = subparsers.add_parser('search', help='search for maps based on bsp names')
@@ -262,11 +264,11 @@ def parse_args():
     parser_search.add_argument('--shasum', '-s', nargs='?', help='filter by shasum', type=str)
     parser_search.add_argument('--long', '-l', help='show long format', action='store_true')
 
-    parser_add = subparsers.add_parser('add', help='add a map based on url')
-    parser_add.add_argument('url', nargs='?', help='url', type=str)
-
     parser_add = subparsers.add_parser('install', help='install a map from the repository')
     parser_add.add_argument('pk3', nargs='?', help='use a pk3 name', type=str)
+
+    parser_add = subparsers.add_parser('add', help='add map from a url')
+    parser_add.add_argument('url', nargs='?', help='url', type=str)
 
     parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
@@ -278,7 +280,7 @@ def parse_args():
         #print("Loading plugin: " + i["name"])
         command = i['name']
         plugin = pluginloader.load_plugin(i)
-        plugin.register(config)
+        plugin.pluginbase.register(config)
         plugin_args = [plugin.get_args()]
         plugins[command] = plugin
 

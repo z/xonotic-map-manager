@@ -34,19 +34,19 @@ http://dl.xonotic.co/snowdance_xon.pk3
 ```
 
 ```
-./xmm.py search -p nexdance --long
+./xmm.py search -p bloodrage_v2.pk3 --long  
 Searching for packages with the following criteria:
-pk3: nexdance
+pk3: bloodrage_v2.pk3
 
-         pk3: nexdance.pk3
-         bsp: nexdance
-       title: <TITLE>
- description: <DESCRIPTION>
-      author: <AUTHOR>
-      shasum: 73fb31ad90846e64bd87369e33d360c24f1bff41
-        date: 2008-03-16
-        size: 7MB
-          dl: http://dl.xonotic.co/nexdance.pk3
+         pk3: bloodrage_v2.pk3
+         bsp: bloodrage_v2
+       title: Bloodrage
+ description: Small, brutal and violent 1on1 map
+      author: Cortez and FruitieX
+      shasum: 488b05976e73456bf6f9833e353f72d3a8d0cbce
+        date: 2009-10-17
+        size: 1MB
+          dl: http://dl.xonotic.co/bloodrage_v2.pk3
 
 Total packages found: 1
 ```
@@ -143,19 +143,13 @@ Updating sources json.
 Checkout the examples in the `plugins` directory.
 
 ```python
-# Leave this
-config = {}
+from plugins import pluginbase
 
+config = pluginbase.config
 
-def register(conf):
-    global config
-    config = conf
-
-
-# Change this
 def get_args():
     command='hello'
-    command_help={'help': 'hello a command'}
+    command_help={'help': 'help for hello'}
     args=['-f', '--foo']
     kwargs={'type': int, 'nargs': '?', 'help': 'this is a help line'}
     return command, command_help, args, kwargs
