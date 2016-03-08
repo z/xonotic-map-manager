@@ -244,6 +244,7 @@ def show_map(pk3, args):
     if not map_found:
         print(bcolors.FAIL + 'Package not currently installed' + bcolors.ENDC)
 
+
 def show_map_details(m, args):
 
     bsp = ''
@@ -273,12 +274,15 @@ def show_map_details(m, args):
 
 def get_package_db():
 
-    if file_is_empty(config['package_store']):
-        package_store = {}
-    else:
+    package_store = {}
+
+    if os.path.exists(config['package_store']):
         db = open(config['package_store'], 'rb')
         package_store = pickle.load(db)
         db.close()
+    else:
+        print(bcolors.FAIL + 'No package database found (don\'t worry, it will be created when you install a map' + bcolors.ENDC)
+        raise SystemExit
 
     return package_store
 
