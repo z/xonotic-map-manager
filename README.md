@@ -163,8 +163,8 @@ Updating sources json.
 ### Export
 
 ```
-% ./xmm.py save test.json                                                                                                                                                                         (master*%=)
-% cat test.json                                                                                                                                                                                   (master*%=)
+% ./xmm.py save test.json
+% cat test.json
 [{"ef00d43838430b2d1673f03bbe1440eef100ece6dance.pk3": "1"}]%  
 ```
 
