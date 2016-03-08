@@ -14,6 +14,7 @@ import sys
 import time
 import urllib.request
 import pickle
+from plugins import pluginbase
 from plugins import pluginloader
 
 config_file = 'config.ini'
@@ -28,6 +29,7 @@ def main():
     global repo_data
 
     config = read_config(config_file)
+    pluginbase.set_config(config)
     args = parse_args()
 
     # print(args)
@@ -36,7 +38,7 @@ def main():
         search_maps(args)
 
     if args.command == 'save':
-        export_package_db(args)
+        db_export_packages(args)
 
     if args.command == 'install':
         install_maps(args)
@@ -273,7 +275,7 @@ def db_remove_package(shasum, pk3):
     db_out.close()
 
 
-def export_package_db(args):
+def db_export_packages(args):
 
     data = get_package_db()
     package_store = json.dumps(data)
@@ -372,7 +374,6 @@ def parse_args():
         #print("Loading plugin: " + i["name"])
         command = i['name']
         plugin = pluginloader.load_plugin(i)
-        plugin.pluginbase.register(config)
         plugin_args = [plugin.get_args()]
         plugins[command] = plugin
 

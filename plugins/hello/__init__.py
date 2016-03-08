@@ -1,6 +1,7 @@
 from plugins import pluginbase
 
-config = pluginbase.config
+config = pluginbase.get_config()
+
 
 def get_args():
     command='hello'
