@@ -9,7 +9,6 @@ import time
 import urllib.request
 import subprocess
 import sys
-import copy
 import pluginloader
 
 config_file = 'config.ini'
@@ -103,9 +102,21 @@ def search_maps(args):
 
         for bsp in keys:
             if re.search('^.*' + search_string + '.*$', bsp):
-                print('\n' + bcolors.BOLD + bsp + bcolors.ENDC)
-                print(config['repo_url'] + m['pk3'])
-                total = total + 1
+                print('')
+                if not args.long:
+                    print(bcolors.BOLD + bsp + bcolors.ENDC)
+                    print(config['repo_url'] + m['pk3'])
+                else:
+                    print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
+                    print('         bsp: ' + bcolors.OKBLUE + bsp + bcolors.ENDC)
+                    print('       title: ' + str(m['title']))
+                    print(' description: ' + str(m['description']))
+                    print('      author: ' + str(m['author']))
+                    print('      shasum: ' + str(m['shasum']))
+                    print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
+                    print('        size: ' + convert_size(m['filesize']).strip())
+                    print('          dl: ' + config['repo_url'] + m['pk3'])
+                total += 1
 
     print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
@@ -150,6 +161,14 @@ def update_data():
     urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
 
     print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+
+
+def convert_size(num):
+    for x in ['B', 'KB', 'MB', 'GB']:
+        if num < 1024.0:
+            return "%3.1d%s" % (num, x)
+        num /= 1024.0
+    return "%3.1f%s" % (num, 'TB')
 
 
 def reporthook(count, block_size, total_size):
@@ -208,6 +227,7 @@ def parse_args():
     parser_search.add_argument('--title', nargs='?', help='filter by title', type=str)
     parser_search.add_argument('--author', nargs='?', help='filter by author', type=str)
     parser_search.add_argument('--shasum', nargs='?', help='filter by shasum', type=str)
+    parser_search.add_argument('--long', help='show long format', action='store_true')
 
     parser_add = subparsers.add_parser('add', help='add a map based on url')
     parser_add.add_argument('url', nargs='?', help='url', type=str)
