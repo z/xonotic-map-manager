@@ -7,17 +7,20 @@ Usage is pretty straight forward and the command-line documentation is
 there to help.
 
 ```
-usage: xmm.py [-h] [-T [T]] {search,install,remove,update,save,hello} ...
+usage: xmm.py [-h] [-T [T]]
+              {search,install,remove,update,save,list,show,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
 
 positional arguments:
-  {search,install,remove,update,save,hello}
+  {search,install,remove,update,save,list,show,hello}
     search              search for maps based on bsp names
     install             install a map from the repository, or specify a URL.
     remove              remove based on pk3 name
     update              update sources json
     save                export locally managed packages to a file
+    list                list locally installed packages
+    show                show details of locally installed package
     hello               hello is an example plugin
 
 optional arguments:
