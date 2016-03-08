@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # z@xnz.me
 #
-# TODO: combine add/install
 # TODO: exception handling
 # TODO: tracking of installed packages via JSON
 # TODO: Inspection of packages
