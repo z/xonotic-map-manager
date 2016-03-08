@@ -1,18 +1,23 @@
 # xonotic-map-manager
 
+I'm going to let the output do the talking for the majority of this
+documentation.
+
+Usage is pretty straight forward and the command-line documentation is 
+there to help.
+
 ```
-usage: xmm.py [-h] [-T [T]] {search,install,add,remove,update,hello} ...
+usage: xmm.py [-h] [-T [T]] {search,install,remove,update,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
 
 positional arguments:
-  {search,install,add,remove,update,hello}
+  {search,install,remove,update,hello}
     search              search for maps based on bsp names
-    install             install a map from the repository
-    add                 add map from a url
+    install             install a map from the repository, or specify a URL.
     remove              remove based on pk3 name
     update              update sources json
-    hello               help for hello
+    hello               hello is an example plugin
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -20,6 +25,23 @@ optional arguments:
 
 Very early alpha. Please be patient.
 ```
+
+This application works by reading a locally cached json file generated.
+ This file is accessible as a web-frontend at http://xonotic.co, which is using the [xonotic-map-repository](https://github.com/z/xonotic-map-repository) to
+generate it from a directory of map packages (pk3 files).
+
+The data set you find in the JSON is more rich than what you see in game.
+It also makes it easier to discern differences in packages.
+
+For information about what data is available check [JSON Structure](#JSON structure).
+
+It's possible to host your own collection of curated maps with a web-frontend
+ and point this tool at it to manage maps on a server.
+
+## Configuration
+
+The default settings are likely similar to yours, however, you will need
+to edit `config.ini` if you actually want to use install or remove.
 
 ### Searching
 
@@ -49,6 +71,8 @@ pk3: bloodrage_v2.pk3
 
 Total packages found: 1
 ```
+
+Inline help is available on all sub-commands:
 
 ```
 ./xmm.py search -h                
@@ -96,11 +120,11 @@ Installing map from repository: fake.pk3
 package does not exist in the repository.
 ```
 
-### Adding (from any URL)
+Example below is also showing the use of curl instead of python's urllib:
 
 ```
-./xmm.py add http://dl.xonotic.co/snowdance2.pk3
-Adding map: http://dl.xonotic.co/snowdance2.pk3
+./xmm.py install http://somerepo.org/snowdance2.pk3
+Adding map: http://somerepo.org/snowdance2.pk3
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 5530k  100 5530k    0     0   205k      0  0:00:26  0:00:26 --:--:--  179k
@@ -108,8 +132,8 @@ Done.
 ```
 
 ```
-./xmm.py add http://dl.xonotic.co/snowdance2.pk3
-Adding map: http://dl.xonotic.co/snowdance2.pk3
+./xmm.py install http://somerepo.org/snowdance2.pk3
+Adding map: http://somerepo.org/snowdance2.pk3
 map already exists, please remove first.
 ```
 

@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 # z@xnz.me
+#
+# TODO: combine add/install
+# TODO: exception handling
+# TODO: tracking of installed packages via JSON
+# TODO: Inspection of packages
+
 import argparse
 import configparser
 import json
@@ -102,7 +108,8 @@ def search_maps(args):
             if re.search('^.*' + search_string + '.*$', bsp):
                 print('')
                 if not args.long:
-                    print(bcolors.BOLD + bsp + bcolors.ENDC)
+                    print(bcolors.BOLD + m['pk3'] + bcolors.ENDC)
+                    print(bcolors.OKBLUE + bsp + bcolors.ENDC)
                     print(config['repo_url'] + m['pk3'])
                 else:
                     print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
@@ -119,66 +126,48 @@ def search_maps(args):
     print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
 
-def add_maps(args):
-
-    url = args.url
-    map_dir = args.T if args.T else config['map_dir']
-
-    print('Adding map: ' + bcolors.BOLD + url + bcolors.ENDC)
-
-    if os.path.exists(map_dir):
-
-        pk3 = os.path.basename(url)
-        pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
-
-        if not os.path.exists(pk3_with_path):
-
-            if config['use_curl'] == 'False':
-                urllib.request.urlretrieve(url, pk3_with_path, reporthook)
-            else:
-                subprocess.call(['curl', '-o', pk3_with_path, url])
-
-            print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
-
-        else:
-            print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
-
-    else:
-        print(bcolors.FAIL + 'Directory does not exist.' + bcolors.ENDC)
-
-
 def install_maps(args):
 
-    pk3 = args.pk3
     map_dir = args.T if args.T else config['map_dir']
+
+    is_url = False
+    if re.match('^(ht|f)tp(s)?://', args.pk3):
+        url = args.pk3
+        pk3 = os.path.basename(url)
+        is_url = True
+    else:
+        pk3 = args.pk3
+        url = config['repo_url'] + pk3
+
+    pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
     print('Installing map from repository: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
 
     maps_json = get_repo_data()
     map_in_repo = False
-
     for m in maps_json:
-        if m['pk3'] == pk3:
-
+        if m['pk3'] == pk3 or is_url:
+            add_map(pk3_with_path, url)
             map_in_repo = True
-
-            repo_pk3 = config['repo_url'] + pk3
-            pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
-
-            if not os.path.exists(pk3_with_path):
-
-                if config['use_curl'] == 'False':
-                    urllib.request.urlretrieve(repo_pk3, pk3_with_path, reporthook)
-                else:
-                    subprocess.call(['curl', '-o', pk3_with_path, repo_pk3])
-
-                print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
-
-            else:
-                print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
+            break
 
     if not map_in_repo:
         print(bcolors.FAIL + 'package does not exist in the repository.' + bcolors.ENDC)
+
+
+def add_map(pk3_with_path, url):
+
+    if not os.path.exists(pk3_with_path):
+
+        if config['use_curl'] == 'False':
+            urllib.request.urlretrieve(url, pk3_with_path, reporthook)
+        else:
+            subprocess.call(['curl', '-o', pk3_with_path, url])
+
+        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+
+    else:
+        print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
 
 
 def remove_maps(args):
@@ -281,11 +270,8 @@ def parse_args():
     parser_search.add_argument('--shasum', '-s', nargs='?', help='filter by shasum', type=str)
     parser_search.add_argument('--long', '-l', help='show long format', action='store_true')
 
-    parser_add = subparsers.add_parser('install', help='install a map from the repository')
+    parser_add = subparsers.add_parser('install', help='install a map from the repository, or specify a URL.')
     parser_add.add_argument('pk3', nargs='?', help='use a pk3 name', type=str)
-
-    parser_add = subparsers.add_parser('add', help='add map from a url')
-    parser_add.add_argument('url', nargs='?', help='url', type=str)
 
     parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
