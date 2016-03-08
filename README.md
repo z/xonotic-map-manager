@@ -160,6 +160,86 @@ Updating sources json.
 ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 ```
 
+### List
+
+```
+./xmm.py list
+
+steelspace_v5.pk3
+steelspace_v5
+http://dl.xonotic.co/steelspace_v5.pk3
+
+coolness_ut.pk3
+coolness_ut
+http://dl.xonotic.co/coolness_ut.pk3
+
+dance.pk3
+dance
+http://dl.xonotic.co/dance.pk3
+
+Total packages found: 3
+```
+
+```
+./xmm.py list -l
+
+         pk3: steelspace_v5.pk3
+         bsp: steelspace_v5
+       title: False
+ description: False
+      author: False
+      shasum: ed427e31628b70fb29d163c750ce815673eeb02a
+        date: 2009-07-31
+        size: 6MB
+          dl: http://dl.xonotic.co/steelspace_v5.pk3
+
+         pk3: coolness_ut.pk3
+         bsp: coolness_ut
+       title: False
+ description: False
+      author: False
+      shasum: 908cda62276a0de299217f8d6e3a197b6334f06a
+        date: 2015-07-03
+        size: 2MB
+          dl: http://dl.xonotic.co/coolness_ut.pk3
+
+         pk3: dance.pk3
+         bsp: dance
+       title: <TITLE>
+ description: <DESCRIPTION>
+      author: <AUTHOR>
+      shasum: ef00d43838430b2d1673f03bbe1440eef100ece6
+        date: 2008-03-16
+        size: 7MB
+          dl: http://dl.xonotic.co/dance.pk3
+
+Total packages found: 3
+```
+
+### Show
+
+```
+./xmm.py show dance.pk3
+
+dance.pk3
+dance
+http://dl.xonotic.co/dance.pk3
+```
+
+```
+./xmm.py show dance.pk3 -l
+
+         pk3: dance.pk3
+         bsp: dance
+       title: <TITLE>
+ description: <DESCRIPTION>
+      author: <AUTHOR>
+      shasum: ef00d43838430b2d1673f03bbe1440eef100ece6
+        date: 2008-03-16
+        size: 7MB
+          dl: http://dl.xonotic.co/dance.pk3
+```
+
 ### Export
 
 ```

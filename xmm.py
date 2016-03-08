@@ -49,6 +49,12 @@ def main():
     if args.command == 'update':
         update_repo_data()
 
+    if args.command == 'list':
+        list_installed(args)
+
+    if args.command == 'show':
+        show_map(args.pk3, args)
+
     # Plugins
     for cmd, value in plugins.items():
         if args.command == cmd:
@@ -109,21 +115,7 @@ def search_maps(args):
 
         for bsp in keys:
             if re.search('^.*' + search_string + '.*$', bsp):
-                print('')
-                if not args.long:
-                    print(bcolors.BOLD + m['pk3'] + bcolors.ENDC)
-                    print(bcolors.OKBLUE + bsp + bcolors.ENDC)
-                    print(config['repo_url'] + m['pk3'])
-                else:
-                    print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
-                    print('         bsp: ' + bcolors.OKBLUE + bsp + bcolors.ENDC)
-                    print('       title: ' + str(m['title']))
-                    print(' description: ' + str(m['description']))
-                    print('      author: ' + str(m['author']))
-                    print('      shasum: ' + str(m['shasum']))
-                    print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
-                    print('        size: ' + convert_size(m['filesize']).strip())
-                    print('          dl: ' + config['repo_url'] + m['pk3'])
+                show_map_details(m, args)
                 total += 1
 
     print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
@@ -226,6 +218,59 @@ def get_repo_data():
 
 
 # local data
+def list_installed(args):
+
+    packages = get_package_db()
+
+    total = 0
+    for p in packages:
+        show_map_details(p, args)
+        total += 1
+
+    print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
+
+
+def show_map(pk3, args):
+
+    packages = get_package_db()
+    map_found = False
+
+    for p in packages:
+        if p['pk3'] == pk3:
+            show_map_details(p, args)
+            map_found = True
+            print('')
+
+    if not map_found:
+        print(bcolors.FAIL + 'Package not currently installed' + bcolors.ENDC)
+
+def show_map_details(m, args):
+
+    bsp = ''
+    bsps = m['bsp']
+    keys = list(bsps)
+    keys.sort()
+
+    for b in keys:
+        bsp += b
+
+    print('')
+    if not args.long:
+        print(bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
+        print(bcolors.OKBLUE + bsp + bcolors.ENDC)
+        print(config['repo_url'] + str(m['pk3']))
+    else:
+        print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
+        print('         bsp: ' + bcolors.OKBLUE + bsp + bcolors.ENDC)
+        print('       title: ' + str(m['title']))
+        print(' description: ' + str(m['description']))
+        print('      author: ' + str(m['author']))
+        print('      shasum: ' + str(m['shasum']))
+        print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
+        print('        size: ' + convert_size(m['filesize']).strip())
+        print('          dl: ' + config['repo_url'] + m['pk3'])
+
+
 def get_package_db():
 
     if file_is_empty(config['package_store']):
@@ -367,6 +412,13 @@ def parse_args():
     parser_remove = subparsers.add_parser('save', help='export locally managed packages to a file')
     parser_remove.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
     parser_remove.add_argument('file', nargs='?', help='file name to export to', type=str)
+
+    parser_list = subparsers.add_parser('list', help='list locally installed packages')
+    parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
+
+    parser_show = subparsers.add_parser('show', help='show details of locally installed package')
+    parser_show.add_argument('pk3', nargs='?', help='pk3 to show details for', type=str)
+    parser_show.add_argument('--long', '-l', help='show long format', action='store_true')
 
     # Handle plugins
     for i in pluginloader.get_plugins():
