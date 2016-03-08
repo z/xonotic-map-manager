@@ -150,7 +150,7 @@ def install_maps(args):
     map_in_repo = False
     for m in maps_json:
         if m['pk3'] == pk3 or is_url:
-            db_add_package(m['shasum'], m['pk3'])
+            db_add_package(m)
             add_map(pk3_with_path, url)
             map_in_repo = True
             break
@@ -193,7 +193,7 @@ def remove_maps(args):
 
             for m in repo_data:
                 if m['pk3'] == pk3:
-                    db_remove_package(str(m['shasum']), str(m['pk3']))
+                    db_remove_package(m)
 
             print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
         else:
@@ -238,36 +238,35 @@ def get_package_db():
     return package_store
 
 
-def db_add_package(shasum, pk3):
+def db_add_package(package):
 
     # shasum + pk3 need to be used together to be unique
     # this should be hashed into a shorter/safer key
-    data = { shasum + pk3: '1' }
+    data = package
 
     package_store = []
 
-    if os.path.exists(config['package_store']):
-        if not file_is_empty(config['package_store']):
-            db_in = open(config['package_store'], 'rb+')
-            package_store = pickle.load(db_in)
-            package_store.append(data)
-            db_in.close()
+    if os.path.exists(config['package_store']) and not file_is_empty(config['package_store']):
+        db_in = open(config['package_store'], 'rb+')
+        package_store = pickle.load(db_in)
+        package_store.append(data)
+        db_in.close()
     else:
-        package_store = [ data ]
+        package_store.append(data)
 
     db_out = open(config['package_store'], 'wb+')
     pickle.dump(package_store, db_out)
     db_out.close()
 
 
-def db_remove_package(shasum, pk3):
+def db_remove_package(package):
 
     package_store = []
 
     if not file_is_empty(config['package_store']):
         db_in = open(config['package_store'], 'rb+')
         package_store = pickle.load(db_in)
-        package_store[:] = [d for d in package_store if d.get(shasum + pk3) == 1]
+        package_store[:] = [m for m in package_store if (m.get('shasum') != package['shasum'] and m.get('pk3') != package['pk3'])]
         db_in.close()
 
     db_out = open(config['package_store'], 'wb+')
