@@ -31,11 +31,14 @@ def main():
     if args.command == 'add':
         add_maps(args.url)
 
+    if args.command == 'install':
+        install_maps(args.pk3)
+
     if args.command == 'remove':
         remove_maps(args.pk3)
 
     if args.command == 'update':
-        update_data()
+        update_repo_data()
 
     # Plugins
     for cmd, value in plugins.items():
@@ -51,12 +54,7 @@ def search_maps(args):
         print(bcolors.FAIL + config['api_data'] + ' not found. Trying running update.' + bcolors.ENDC)
         raise SystemExit
 
-    f = open(config['api_data'])
-    data = f.read()
-    maps_json = json.loads(data)['data']
-    f.close()
-
-    filtered_maps_json = maps_json
+    filtered_maps_json = get_repo_data()
     criteria = []
 
     # Filter based on args
@@ -138,7 +136,38 @@ def add_maps(url):
         print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
     else:
-        print(bcolors.FAIL + 'map already exists, please remove first.' + bcolors.ENDC)
+        print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
+
+
+def install_maps(pk3):
+
+    print('Installing map from repository: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
+
+    maps_json = get_repo_data()
+    map_in_repo = False
+
+    for m in maps_json:
+        if m['pk3'] == pk3:
+
+            map_in_repo = True
+
+            repo_pk3 = config['repo_url'] + pk3
+            pk3_with_path = os.path.join(os.path.dirname(config['map_dir']), pk3)
+
+            if not os.path.exists(pk3_with_path):
+
+                if config['use_curl'] == 'False':
+                    urllib.request.urlretrieve(repo_pk3, pk3_with_path, reporthook)
+                else:
+                    subprocess.call(['curl', '-o', pk3_with_path, repo_pk3])
+
+                print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+
+            else:
+                print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
+
+    if not map_in_repo:
+        print(bcolors.FAIL + 'package does not exist in the repository.' + bcolors.ENDC)
 
 
 def remove_maps(pk3):
@@ -154,12 +183,16 @@ def remove_maps(pk3):
         print(bcolors.FAIL + 'map does not exist.' + bcolors.ENDC)
 
 
-def update_data():
+def get_repo_data():
+    f = open(config['api_data'])
+    data = f.read()
+    f.close()
+    return json.loads(data)['data']
 
+
+def update_repo_data():
     print('Updating sources json.')
-
     urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
-
     print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
 
@@ -222,15 +255,18 @@ def parse_args():
 
     parser_search = subparsers.add_parser('search', help='search for maps based on bsp names')
     parser_search.add_argument('string', nargs='?', help='bsp name found in a package, works on packages with many bsps', type=str)
-    parser_search.add_argument('--gametype', nargs='?', help='filter by gametype', type=str)
-    parser_search.add_argument('--pk3', nargs='?', help='filter by pk3 name', type=str)
-    parser_search.add_argument('--title', nargs='?', help='filter by title', type=str)
-    parser_search.add_argument('--author', nargs='?', help='filter by author', type=str)
-    parser_search.add_argument('--shasum', nargs='?', help='filter by shasum', type=str)
-    parser_search.add_argument('--long', help='show long format', action='store_true')
+    parser_search.add_argument('--gametype', '-g', nargs='?', help='filter by gametype', type=str)
+    parser_search.add_argument('--pk3', '-p', nargs='?', help='filter by pk3 name', type=str)
+    parser_search.add_argument('--title', '-t', nargs='?', help='filter by title', type=str)
+    parser_search.add_argument('--author', '-a', nargs='?', help='filter by author', type=str)
+    parser_search.add_argument('--shasum', '-s', nargs='?', help='filter by shasum', type=str)
+    parser_search.add_argument('--long', '-l', help='show long format', action='store_true')
 
     parser_add = subparsers.add_parser('add', help='add a map based on url')
     parser_add.add_argument('url', nargs='?', help='url', type=str)
+
+    parser_add = subparsers.add_parser('install', help='install a map from the repository')
+    parser_add.add_argument('pk3', nargs='?', help='use a pk3 name', type=str)
 
     parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)

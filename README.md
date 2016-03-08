@@ -1,44 +1,26 @@
 # xonotic-map-manager
 
 ```
-./map_manager.py -h                                
-usage: map_manager.py [-h] {search,add,remove,update} ...
+./map_manager.py -h                           
+usage: map_manager.py [-h] {search,add,install,remove,update,world,hello} ...
 
 A tool to help manage xonotic maps
 
 positional arguments:
-  {search,add,remove,update}
+  {search,add,install,remove,update,world,hello}
                         sub-command help
     search              search for maps based on bsp names
     add                 add a map based on url
+    install             install a map from the repository
     remove              remove based on pk3 name
     update              update sources json
+    world               help for world
+    hello               help for hello
 
 optional arguments:
   -h, --help            show this help message and exit
 
 Very early alpha. Please be patient.
-
-```
-
-```
-usage: map_manager.py search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
-                             [--title [TITLE]] [--author [AUTHOR]]
-                             [--shasum [SHASUM]]
-                             [string]
-
-positional arguments:
-  string                bsp name found in a package, works on packages with
-                        many bsps
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --gametype [GAMETYPE]
-                        filter by gametype
-  --pk3 [PK3]           filter by pk3 name
-  --title [TITLE]       filter by title
-  --author [AUTHOR]     filter by author
-  --shasum [SHASUM]     filter by shasum
 ```
 
 ### Searching
@@ -52,7 +34,71 @@ snowdance2
 http://dl.xonotic.co/snowdance_xon.pk3
 ```
 
-### Adding
+```
+./map_manager.py search -p nexdance --long
+Searching for packages with the following criteria:
+pk3: nexdance
+
+         pk3: nexdance.pk3
+         bsp: nexdance
+       title: <TITLE>
+ description: <DESCRIPTION>
+      author: <AUTHOR>
+      shasum: 73fb31ad90846e64bd87369e33d360c24f1bff41
+        date: 2008-03-16
+        size: 7MB
+          dl: http://dl.xonotic.co/nexdance.pk3
+
+Total packages found: 1
+```
+
+```
+./map_manager.py search -h                
+usage: map_manager.py search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
+                             [--title [TITLE]] [--author [AUTHOR]]
+                             [--shasum [SHASUM]] [--long]
+                             [string]
+
+positional arguments:
+  string                bsp name found in a package, works on packages with
+                        many bsps
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --gametype [GAMETYPE], -g [GAMETYPE]
+                        filter by gametype
+  --pk3 [PK3], -p [PK3]
+                        filter by pk3 name
+  --title [TITLE], -t [TITLE]
+                        filter by title
+  --author [AUTHOR], -a [AUTHOR]
+                        filter by author
+  --shasum [SHASUM], -s [SHASUM]
+                        filter by shasum
+  --long, -l            show long format
+```
+
+### Installing from the repository
+
+```
+./map_manager.py install snowdance_xon.pk3
+Installing map from repository: snowdance_xon.pk3
+...100%, 5 MB, 2438 KB/s, 2 seconds passed. Done.
+```
+
+```
+./map_manager.py install snowdance_xon.pk3 
+Installing map from repository: snowdance_xon.pk3
+package already exists, please remove first.
+```
+
+```
+./map_manager.py install fake.pk3   
+Installing map from repository: fake.pk3
+package does not exist in the repository.
+```
+
+### Adding (from any URL)
 
 ```
 ./map_manager.py add http://dl.xonotic.co/snowdance2.pk3
@@ -87,9 +133,9 @@ map does not exist.
 
 ```
 ./map_manager.py update
-100.1% 8167424 / 8159512
+Updating sources json.
+...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 ```
-
 
 ## Developers
 
