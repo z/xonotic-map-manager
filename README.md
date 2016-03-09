@@ -18,7 +18,7 @@ positional arguments:
     install             install a map from the repository, or specify a URL.
     remove              remove based on pk3 name
     update              update sources json
-    save                export locally managed packages to a file
+    export              export locally managed packages to a file
     list                list locally installed packages
     show                show details of locally installed package
     hello               hello is an example plugin
@@ -37,7 +37,7 @@ generate it from a directory of map packages (pk3 files).
 The data set you find in the JSON is more rich than what you see in game.
 It also makes it easier to discern differences in packages.
 
-For information about what data is available check [JSON Structure](#JSON structure).
+For information about what data is available check [JSON Structure](#JSON-structure).
 
 It's possible to host your own collection of curated maps with a web-frontend
  and point this tool at it to manage maps on a server.
@@ -246,9 +246,9 @@ http://dl.xonotic.co/dance.pk3
 ### Export
 
 ```
-% ./xmm save test.json
+% ./xmm export test.json
 % cat test.json
-[{"ef00d43838430b2d1673f03bbe1440eef100ece6dance.pk3": "1"}]%  
+[{"mapinfo": ["maps/dance.mapinfo"], "date": 1205715512, "title": "<TITLE>", "radar": [], "waypoints": [], "gametypes": ["ctf", "dm", "lms", "arena"], "mapshot": ["maps/dance.jpg"], "description": "<DESCRIPTION>", "shasum": "ef00d43838430b2d1673f03bbe1440eef100ece6", "filesize": 7468410, "pk3": "dance.pk3", "map": ["maps/dance.map"], "author": "<AUTHOR>", "license": false, "bsp": {"dance": {"entities": {"item_cells": 14, "item_bullets": 14, "info_player_team1": 10, "item_rockets": 16, "info_player_team2": 11, "item_invincible": 1, "weapon_hagar": 2, "item_flag_team1": 1, "weapon_electro": 2, "item_health_medium": 14, "item_health_small": 20, "weapon_machinegun": 2, "item_strength": 1, "weapon_vortex": 3, "item_armor_small": 19, "weapon_devastator": 2, "item_flag_team2": 1, "weapon_grenadelauncher": 2}}}}]% 
 ```
 
 ## Developers
