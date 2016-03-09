@@ -1,8 +1,9 @@
 import imp
 import os
 
-plugin_folder = "./plugins"
+plugin_folder = "./xmmc/plugins"
 main_module = "__init__"
+
 
 def get_plugins():
     plugins = []
@@ -14,6 +15,7 @@ def get_plugins():
         info = imp.find_module(main_module, [location])
         plugins.append({"name": i, "info": info})
     return plugins
+
 
 def load_plugin(plugin):
     return imp.load_module(plugin['name'], *plugin["info"])

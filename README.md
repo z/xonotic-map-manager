@@ -260,11 +260,13 @@ xmm show dance.pk3 -l
 
 ### Plugin System
 
-Checkout the examples in the `plugins` directory.
+Checkout the examples in the `./xmmc/plugins` directory.
 
 ```python
 from plugins import pluginbase
+from xmmc import util
 
+bcolors = util.bcolors
 config = pluginbase.get_config()
 
 
@@ -279,6 +281,7 @@ def get_args():
 def run():
     print("Hello from a plugin!")
     print("Look, I have access to the config: " + config['api_data'])
+    print(bcolors.BOLD + "and also utils" + bcolors.ENDC)
 ```
 
 ### JSON structure

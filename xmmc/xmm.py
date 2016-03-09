@@ -4,17 +4,19 @@
 # TODO: Inspection of packages
 
 import argparse
-import configparser
 import json
 import os
+import pickle
 import re
 import subprocess
-import sys
 import time
 import urllib.request
-import pickle
-from plugins import pluginbase
-from plugins import pluginloader
+
+from xmmc.plugins import pluginbase
+from xmmc.plugins import pluginloader
+from . import util
+
+bcolors = util.bcolors
 
 config = {}
 plugins = {}
@@ -26,7 +28,7 @@ def main():
     global config
     global repo_data
 
-    config = parse_config()
+    config = util.parse_config()
     pluginbase.set_config(config)
     args = parse_args()
 
@@ -162,7 +164,7 @@ def add_map(pk3_with_path, url):
     if not os.path.exists(pk3_with_path):
 
         if config['use_curl'] == 'False':
-            urllib.request.urlretrieve(url, pk3_with_path, reporthook)
+            urllib.request.urlretrieve(url, pk3_with_path, util.reporthook)
         else:
             subprocess.call(['curl', '-o', pk3_with_path, url])
 
@@ -205,7 +207,7 @@ def remove_maps(args):
 # remote data
 def update_repo_data():
     print('Updating sources json...')
-    urllib.request.urlretrieve(config['api_data_url'], config['api_data'], reporthook)
+    urllib.request.urlretrieve(config['api_data_url'], config['api_data'], util.reporthook)
     print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
 
@@ -273,7 +275,7 @@ def show_map_details(m, args):
         print('      author: ' + str(m['author']))
         print('      shasum: ' + str(m['shasum']))
         print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
-        print('        size: ' + convert_size(m['filesize']).strip())
+        print('        size: ' + util.convert_size(m['filesize']).strip())
         print('          dl: ' + config['repo_url'] + m['pk3'])
 
 
@@ -300,7 +302,7 @@ def db_add_package(package):
 
     package_store = []
 
-    if os.path.exists(config['package_store']) and not file_is_empty(config['package_store']):
+    if os.path.exists(config['package_store']) and not util.file_is_empty(config['package_store']):
         db_in = open(config['package_store'], 'rb+')
         package_store = pickle.load(db_in)
         package_store.append(data)
@@ -312,14 +314,16 @@ def db_add_package(package):
     pickle.dump(package_store, db_out)
     db_out.close()
 
+
 def get_map_dir(args):
     return args.T if args.T else os.path.expanduser(config['map_dir'])
+
 
 def db_remove_package(package):
 
     package_store = []
 
-    if not file_is_empty(config['package_store']):
+    if not util.file_is_empty(config['package_store']):
         db_in = open(config['package_store'], 'rb+')
         package_store = pickle.load(db_in)
         package_store[:] = [m for m in package_store if (m.get('shasum') != package['shasum'] and m.get('pk3') != package['pk3'])]
@@ -338,59 +342,6 @@ def db_export_packages(args):
     f = open(args.file, 'w')
     f.write(package_store)
     f.close()
-
-
-def file_is_empty(path):
-    return os.stat(path).st_size == 0
-
-
-def convert_size(num):
-    for x in ['B', 'KB', 'MB', 'GB']:
-        if num < 1024.0:
-            return "%3.1d%s" % (num, x)
-        num /= 1024.0
-    return "%3.1f%s" % (num, 'TB')
-
-
-def reporthook(count, block_size, total_size):
-
-    global start_time
-
-    if count == 0:
-        start_time = time.time()
-        return
-    duration = time.time() - start_time
-    progress_size = int(count * block_size)
-    speed = int(progress_size / (1024 * duration))
-    percent = int(count * block_size * 100 / total_size)
-    sys.stdout.write("\r...%d%%, %d MB, %d KB/s, %d seconds passed. " %
-                    (percent, progress_size / (1024 * 1024), speed, duration))
-    sys.stdout.flush()
-
-
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
-def parse_config():
-
-    config_file = 'config.ini'
-
-    if not os.path.isfile(config_file):
-        print(bcolors.WARNING + config_file + ' not found, please create one.' + bcolors.ENDC)
-        raise SystemExit
-
-    conf = configparser.ConfigParser()
-    conf.read(config_file)
-
-    return conf['default']
 
 
 def parse_args():
