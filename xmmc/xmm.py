@@ -1,6 +1,6 @@
 # z@xnz.me
 #
-# TODO: exception handling
+# TODO: exception handling / file exists checks
 # TODO: Inspection of packages
 
 import argparse
@@ -32,7 +32,7 @@ def main():
     home = os.path.expanduser('~')
     config_file_with_path = os.path.join(home, config_file)
 
-    util.check_if_not_create(config_file_with_path, config_file)
+    util.check_if_not_create(config_file_with_path, 'config/xmm.cfg')
 
     config = util.parse_config(config_file_with_path)
     pluginbase.set_config(config)
@@ -69,11 +69,6 @@ def main():
 
 
 def search_maps(args):
-
-    # Get the api data
-    if not os.path.isfile(config['api_data']):
-        print(bcolors.FAIL + config['api_data'] + ' not found. Trying running update.' + bcolors.ENDC)
-        raise SystemExit
 
     filtered_maps_json = get_repo_data()
     criteria = []
@@ -213,7 +208,7 @@ def remove_maps(args):
 # remote data
 def update_repo_data():
     print('Updating sources json...')
-    urllib.request.urlretrieve(config['api_data_url'], config['api_data'], util.reporthook)
+    urllib.request.urlretrieve(config['api_data_url'], os.path.expanduser(config['api_data']), util.reporthook)
     print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
 
@@ -221,8 +216,15 @@ def get_repo_data():
 
     global repo_data
 
+    api_data_file = os.path.expanduser(config['api_data'])
+
     if not repo_data:
-        f = open(config['api_data'])
+        if not os.path.exists(api_data_file):
+            api_data_file = os.path.expanduser(config['api_data'])
+            print(bcolors.WARNING + 'Could not find a repo file. Downloading one.' + bcolors.ENDC)
+            util.check_if_not_create(api_data_file, './resources/data/maps.json')
+
+        f = open(api_data_file)
         data = f.read()
         repo_data = json.loads(data)['data']
         f.close()
@@ -287,14 +289,18 @@ def show_map_details(m, args):
 
 def get_package_db():
 
+    global repo_data
+
     package_store = {}
 
-    if os.path.exists(config['package_store']):
-        db = open(config['package_store'], 'rb')
+    package_store_file  = os.path.expanduser(config['package_store'])
+
+    if os.path.exists(package_store_file ):
+        db = open(package_store_file , 'rb')
         package_store = pickle.load(db)
         db.close()
     else:
-        print(bcolors.FAIL + 'No package database found (don\'t worry, it will be created when you install a map' + bcolors.ENDC)
+        print(bcolors.WARNING + 'No package database found (don\'t worry, it will be created when you install a map' + bcolors.ENDC)
         raise SystemExit
 
     return package_store
@@ -302,21 +308,18 @@ def get_package_db():
 
 def db_add_package(package):
 
-    # shasum + pk3 need to be used together to be unique
-    # this should be hashed into a shorter/safer key
-    data = package
-
     package_store = []
+    package_store_file = os.path.expanduser(config['package_store'])
 
-    if os.path.exists(config['package_store']) and not util.file_is_empty(config['package_store']):
-        db_in = open(config['package_store'], 'rb+')
+    if os.path.exists(package_store_file) and not util.file_is_empty(package_store_file ):
+        db_in = open(package_store_file , 'rb+')
         package_store = pickle.load(db_in)
-        package_store.append(data)
+        package_store.append(package)
         db_in.close()
     else:
-        package_store.append(data)
+        package_store.append(package)
 
-    db_out = open(config['package_store'], 'wb+')
+    db_out = open(package_store_file , 'wb+')
     pickle.dump(package_store, db_out)
     db_out.close()
 
@@ -328,14 +331,15 @@ def get_map_dir(args):
 def db_remove_package(package):
 
     package_store = []
+    package_store_file = os.path.expanduser(config['package_store'])
 
-    if not util.file_is_empty(config['package_store']):
-        db_in = open(config['package_store'], 'rb+')
+    if not util.file_is_empty(package_store_file):
+        db_in = open(package_store_file, 'rb+')
         package_store = pickle.load(db_in)
         package_store[:] = [m for m in package_store if (m.get('shasum') != package['shasum'] and m.get('pk3') != package['pk3'])]
         db_in.close()
 
-    db_out = open(config['package_store'], 'wb+')
+    db_out = open(package_store_file, 'wb+')
     pickle.dump(package_store, db_out)
     db_out.close()
 

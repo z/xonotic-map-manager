@@ -46,6 +46,7 @@ def parse_config(config_file):
 
 def check_if_not_create(file, template):
     if not os.path.isfile(file):
+        os.makedirs(os.path.dirname(file), exist_ok=True)
         copyfile(template, file)
 
 class bcolors:
