@@ -21,12 +21,13 @@ python3 setup.py install
 ## Configuration
 
 The default settings are likely similar to yours, however, you may need
-to edit `~/~.xmm.cfg` if you aren't using `~/.xonotic/data` as a path for
+to edit `~/.xmm.cfg` if you aren't using `~/.xonotic/data` as a path for
 map packages.
 
 `~/.xmm.cfg`:
 
 ```
+# This file is read from ~/.xmm.cfg, make sure that's where you are editing it
 [default]
 
 # Where should xmm manage maps?
@@ -34,14 +35,14 @@ map_dir = ~/.xonotic/data/
 
 # You don't need to change tehse unless you're running your own repo
 repo_url = http://dl.xonotic.co/
-api_data = ./resources/data/maps.json
+api_data = ~/.xmm/maps.json
 api_data_url = http://xonotic.co/resources/data/maps.json
 
 # This is only preference
 use_curl = False
 
 # This is for the future local tracking of installed packages
-package_store = ./resources/data/packages.db
+package_store = ~/.xmm/packages.db
 ```
 
 ## Usage
