@@ -420,9 +420,9 @@ def parse_args():
 
     parser_update = subparsers.add_parser('update', help='update sources json')
 
-    parser_remove = subparsers.add_parser('export', help='export locally managed packages to a file')
-    parser_remove.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
-    parser_remove.add_argument('file', nargs='?', help='file name to export to', type=str)
+    parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
+    parser_export.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
+    parser_export.add_argument('file', nargs='?', help='file name to export to', type=str)
 
     parser_list = subparsers.add_parser('list', help='list locally installed packages')
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
