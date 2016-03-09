@@ -125,6 +125,7 @@ def install_maps(args):
 
     map_dir = args.T if args.T else config['map_dir']
 
+    installed = False
     is_url = False
     if re.match('^(ht|f)tp(s)?://', args.pk3):
         url = args.pk3
@@ -136,20 +137,26 @@ def install_maps(args):
 
     pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
-    print('Installing map from repository: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
-
     maps_json = get_repo_data()
     map_in_repo = False
     for m in maps_json:
-        if m['pk3'] == pk3 or is_url:
+        if m['pk3'] == pk3:
             db_add_package(m)
-            add_map(pk3_with_path, url)
             map_in_repo = True
             break
 
+    if map_in_repo or is_url:
+        print('Installing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
+        add_map(pk3_with_path, url)
+        installed = True
+
     if not map_in_repo:
-        print(bcolors.FAIL + 'package does not exist in the repository.' + bcolors.ENDC)
-        raise SystemExit
+        if installed:
+            print(bcolors.WARNING + 'package does not exist in the repository, ' +
+                                    'it won\'t be added to the local database.' + bcolors.ENDC)
+        else:
+            print(bcolors.FAIL + 'package does not exist in the repository. cannot install.' + bcolors.ENDC)
+            raise SystemExit
 
 
 def add_map(pk3_with_path, url):
