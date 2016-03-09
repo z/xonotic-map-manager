@@ -37,9 +37,6 @@ def main():
     if args.command == 'search':
         search_maps(args)
 
-    if args.command == 'export':
-        db_export_packages(args)
-
     if args.command == 'install':
         install_maps(args)
 
@@ -54,6 +51,9 @@ def main():
 
     if args.command == 'show':
         show_map(args.pk3, args)
+
+    if args.command == 'export':
+        db_export_packages(args)
 
     # Plugins
     for cmd, value in plugins.items():
@@ -420,16 +420,16 @@ def parse_args():
 
     parser_update = subparsers.add_parser('update', help='update sources json')
 
-    parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
-    parser_export.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
-    parser_export.add_argument('file', nargs='?', help='file name to export to', type=str)
-
     parser_list = subparsers.add_parser('list', help='list locally installed packages')
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
 
     parser_show = subparsers.add_parser('show', help='show details of locally installed package')
     parser_show.add_argument('pk3', nargs='?', help='pk3 to show details for', type=str)
     parser_show.add_argument('--long', '-l', help='show long format', action='store_true')
+
+    parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
+    parser_export.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
+    parser_export.add_argument('file', nargs='?', help='file name to export to', type=str)
 
     # Handle plugins
     for i in pluginloader.get_plugins():
