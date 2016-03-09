@@ -2,17 +2,15 @@
 
 ## About
 
-This application works by reading a locally cached json file generated.
- This file is accessible as a web-frontend at http://xonotic.co, which is using the [xonotic-map-repository](https://github.com/z/xonotic-map-repository) to
-generate it from a directory of map packages (pk3 files).
+This application works by reading a locally cached json file that was generated
+with the [xonotic-map-repository](https://github.com/z/xonotic-map-repository).
+The list of installable packages are the ones found on http://xonotic.co, which
+is uses the same exact json file used by the table on that website.
 
-The data set you find in the JSON is more rich than what you see in game.
-It also makes it easier to discern differences in packages.
+The JSON includes more information than what you see in game.
+It also makes it easier to discern differences between packages.
 
 For information about what data is available check [JSON Structure](#JSON-structure).
-
-It's possible to host your own collection of curated maps with a web-frontend
- and point this tool at it to manage maps on a server.
 
 ## Installation
 
