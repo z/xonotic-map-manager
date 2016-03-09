@@ -2,7 +2,7 @@ import configparser
 import os
 import sys
 import time
-
+from shutil import copyfile
 
 def file_is_empty(path):
     return os.stat(path).st_size == 0
@@ -32,9 +32,7 @@ def reporthook(count, block_size, total_size):
     sys.stdout.flush()
 
 
-def parse_config():
-
-    config_file = 'config.ini'
+def parse_config(config_file):
 
     if not os.path.isfile(config_file):
         print(bcolors.WARNING + config_file + ' not found, please create one.' + bcolors.ENDC)
@@ -45,6 +43,10 @@ def parse_config():
 
     return conf['default']
 
+
+def check_if_not_create(file, template):
+    if not os.path.isfile(file):
+        copyfile(template, file)
 
 class bcolors:
     HEADER = '\033[95m'

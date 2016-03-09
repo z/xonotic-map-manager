@@ -28,7 +28,13 @@ def main():
     global config
     global repo_data
 
-    config = util.parse_config()
+    config_file = '.xmm.cfg'
+    home = os.path.expanduser('~')
+    config_file_with_path = os.path.join(home, config_file)
+
+    util.check_if_not_create(config_file_with_path, config_file)
+
+    config = util.parse_config(config_file_with_path)
     pluginbase.set_config(config)
     args = parse_args()
 
