@@ -7,7 +7,7 @@ Usage is pretty straight forward and the command-line documentation is
 there to help.
 
 ```
-usage: xmm.py [-h] [-T [T]]
+usage: xmm [-h] [-T [T]]
               {search,install,remove,update,save,list,show,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
@@ -50,7 +50,7 @@ to edit `config.ini` if you actually want to use install or remove.
 ### Searching
 
 ```
-./xmm.py search snowdance
+./xmm search snowdance
 Searching for: snowdance
 snowdance2
 http://dl.xonotic.co/snowdance2.pk3
@@ -59,7 +59,7 @@ http://dl.xonotic.co/snowdance_xon.pk3
 ```
 
 ```
-./xmm.py search -p bloodrage_v2.pk3 --long  
+./xmm search -p bloodrage_v2.pk3 --long  
 Searching for packages with the following criteria:
 pk3: bloodrage_v2.pk3
 
@@ -79,8 +79,8 @@ Total packages found: 1
 Inline help is available on all sub-commands:
 
 ```
-./xmm.py search -h                
-usage: xmm.py search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
+./xmm search -h                
+usage: xmm search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
                              [--title [TITLE]] [--author [AUTHOR]]
                              [--shasum [SHASUM]] [--long]
                              [string]
@@ -107,19 +107,19 @@ optional arguments:
 ### Installing from the repository
 
 ```
-./xmm.py install snowdance_xon.pk3
+./xmm install snowdance_xon.pk3
 Installing map from repository: snowdance_xon.pk3
 ...100%, 5 MB, 2438 KB/s, 2 seconds passed. Done.
 ```
 
 ```
-./xmm.py install snowdance_xon.pk3 
+./xmm install snowdance_xon.pk3 
 Installing map from repository: snowdance_xon.pk3
 package already exists, please remove first.
 ```
 
 ```
-./xmm.py install fake.pk3   
+./xmm install fake.pk3   
 Installing map from repository: fake.pk3
 package does not exist in the repository.
 ```
@@ -127,7 +127,7 @@ package does not exist in the repository.
 Example below is also showing the use of curl instead of python's urllib:
 
 ```
-./xmm.py install http://somerepo.org/snowdance2.pk3
+./xmm install http://somerepo.org/snowdance2.pk3
 Adding map: http://somerepo.org/snowdance2.pk3
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -136,7 +136,7 @@ Done.
 ```
 
 ```
-./xmm.py install http://somerepo.org/snowdance2.pk3
+./xmm install http://somerepo.org/snowdance2.pk3
 Adding map: http://somerepo.org/snowdance2.pk3
 map already exists, please remove first.
 ```
@@ -144,13 +144,13 @@ map already exists, please remove first.
 ### Removing
 
 ```
-./xmm.py remove snowdance2.pk3
+./xmm remove snowdance2.pk3
 Removing map: snowdance2.pk3
 Done.
 ```
 
 ```
-./xmm.py remove snowdance2.pk3
+./xmm remove snowdance2.pk3
 Removing map: snowdance2.pk3
 map does not exist.
 ```
@@ -158,7 +158,7 @@ map does not exist.
 ### Update
 
 ```
-./xmm.py update
+./xmm update
 Updating sources json.
 ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 ```
@@ -166,7 +166,7 @@ Updating sources json.
 ### List
 
 ```
-./xmm.py list
+./xmm list
 
 steelspace_v5.pk3
 steelspace_v5
@@ -184,7 +184,7 @@ Total packages found: 3
 ```
 
 ```
-./xmm.py list -l
+./xmm list -l
 
          pk3: steelspace_v5.pk3
          bsp: steelspace_v5
@@ -222,7 +222,7 @@ Total packages found: 3
 ### Show
 
 ```
-./xmm.py show dance.pk3
+./xmm show dance.pk3
 
 dance.pk3
 dance
@@ -230,7 +230,7 @@ http://dl.xonotic.co/dance.pk3
 ```
 
 ```
-./xmm.py show dance.pk3 -l
+./xmm show dance.pk3 -l
 
          pk3: dance.pk3
          bsp: dance
@@ -246,7 +246,7 @@ http://dl.xonotic.co/dance.pk3
 ### Export
 
 ```
-% ./xmm.py save test.json
+% ./xmm save test.json
 % cat test.json
 [{"ef00d43838430b2d1673f03bbe1440eef100ece6dance.pk3": "1"}]%  
 ```
