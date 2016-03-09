@@ -1,3 +1,8 @@
 .idea
 __pycache__
 resources/data/packages.db
+dist
+build
+venv
+xmm.egg-info
+activate

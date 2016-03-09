@@ -1,10 +1,32 @@
 # xonotic-map-manager
 
-I'm going to let the output do the talking for the majority of this
-documentation.
+## Installation
 
-Usage is pretty straight forward and the command-line documentation is 
-there to help.
+```
+python3 setup.py install
+```
+
+## Configuration
+
+The default settings are likely similar to yours, however, you may need
+to edit `config.ini` if you aren't using `~/.xonotic/data` as a path for
+map packages.
+
+## About
+
+This application works by reading a locally cached json file generated.
+ This file is accessible as a web-frontend at http://xonotic.co, which is using the [xonotic-map-repository](https://github.com/z/xonotic-map-repository) to
+generate it from a directory of map packages (pk3 files).
+
+The data set you find in the JSON is more rich than what you see in game.
+It also makes it easier to discern differences in packages.
+
+For information about what data is available check [JSON Structure](#JSON-structure).
+
+It's possible to host your own collection of curated maps with a web-frontend
+ and point this tool at it to manage maps on a server.
+
+## Usage
 
 ```
 usage: xmm [-h] [-T [T]]
@@ -30,27 +52,10 @@ optional arguments:
 Very early alpha. Please be patient.
 ```
 
-This application works by reading a locally cached json file generated.
- This file is accessible as a web-frontend at http://xonotic.co, which is using the [xonotic-map-repository](https://github.com/z/xonotic-map-repository) to
-generate it from a directory of map packages (pk3 files).
-
-The data set you find in the JSON is more rich than what you see in game.
-It also makes it easier to discern differences in packages.
-
-For information about what data is available check [JSON Structure](#JSON-structure).
-
-It's possible to host your own collection of curated maps with a web-frontend
- and point this tool at it to manage maps on a server.
-
-## Configuration
-
-The default settings are likely similar to yours, however, you will need
-to edit `config.ini` if you actually want to use install or remove.
-
 ### Searching
 
 ```
-./xmm search snowdance
+xmm search snowdance
 Searching for: snowdance
 snowdance2
 http://dl.xonotic.co/snowdance2.pk3
@@ -59,7 +64,7 @@ http://dl.xonotic.co/snowdance_xon.pk3
 ```
 
 ```
-./xmm search -p bloodrage_v2.pk3 --long  
+xmm search -p bloodrage_v2.pk3 --long  
 Searching for packages with the following criteria:
 pk3: bloodrage_v2.pk3
 
@@ -79,7 +84,7 @@ Total packages found: 1
 Inline help is available on all sub-commands:
 
 ```
-./xmm search -h                
+xmm search -h                
 usage: xmm search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
                              [--title [TITLE]] [--author [AUTHOR]]
                              [--shasum [SHASUM]] [--long]
@@ -107,19 +112,19 @@ optional arguments:
 ### Installing from the repository
 
 ```
-./xmm install snowdance_xon.pk3
+xmm install snowdance_xon.pk3
 Installing map from repository: snowdance_xon.pk3
 ...100%, 5 MB, 2438 KB/s, 2 seconds passed. Done.
 ```
 
 ```
-./xmm install snowdance_xon.pk3 
+xmm install snowdance_xon.pk3 
 Installing map from repository: snowdance_xon.pk3
 package already exists, please remove first.
 ```
 
 ```
-./xmm install fake.pk3   
+xmm install fake.pk3   
 Installing map from repository: fake.pk3
 package does not exist in the repository.
 ```
@@ -127,7 +132,7 @@ package does not exist in the repository.
 Example below is also showing the use of curl instead of python's urllib:
 
 ```
-./xmm install http://somerepo.org/snowdance2.pk3
+xmm install http://somerepo.org/snowdance2.pk3
 Adding map: http://somerepo.org/snowdance2.pk3
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -136,7 +141,7 @@ Done.
 ```
 
 ```
-./xmm install http://somerepo.org/snowdance2.pk3
+xmm install http://somerepo.org/snowdance2.pk3
 Adding map: http://somerepo.org/snowdance2.pk3
 map already exists, please remove first.
 ```
@@ -144,13 +149,13 @@ map already exists, please remove first.
 ### Removing
 
 ```
-./xmm remove snowdance2.pk3
+xmm remove snowdance2.pk3
 Removing map: snowdance2.pk3
 Done.
 ```
 
 ```
-./xmm remove snowdance2.pk3
+xmm remove snowdance2.pk3
 Removing map: snowdance2.pk3
 map does not exist.
 ```
@@ -158,7 +163,7 @@ map does not exist.
 ### Update
 
 ```
-./xmm update
+xmm update
 Updating sources json.
 ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 ```
@@ -166,7 +171,7 @@ Updating sources json.
 ### List
 
 ```
-./xmm list
+xmm list
 
 steelspace_v5.pk3
 steelspace_v5
@@ -184,7 +189,7 @@ Total packages found: 3
 ```
 
 ```
-./xmm list -l
+xmm list -l
 
          pk3: steelspace_v5.pk3
          bsp: steelspace_v5
@@ -222,7 +227,7 @@ Total packages found: 3
 ### Show
 
 ```
-./xmm show dance.pk3
+xmm show dance.pk3
 
 dance.pk3
 dance
@@ -230,7 +235,7 @@ http://dl.xonotic.co/dance.pk3
 ```
 
 ```
-./xmm show dance.pk3 -l
+xmm show dance.pk3 -l
 
          pk3: dance.pk3
          bsp: dance
@@ -246,7 +251,7 @@ http://dl.xonotic.co/dance.pk3
 ### Export
 
 ```
-% ./xmm export test.json
+% xmm export test.json
 % cat test.json
 [{"mapinfo": ["maps/dance.mapinfo"], "date": 1205715512, "title": "<TITLE>", "radar": [], "waypoints": [], "gametypes": ["ctf", "dm", "lms", "arena"], "mapshot": ["maps/dance.jpg"], "description": "<DESCRIPTION>", "shasum": "ef00d43838430b2d1673f03bbe1440eef100ece6", "filesize": 7468410, "pk3": "dance.pk3", "map": ["maps/dance.map"], "author": "<AUTHOR>", "license": false, "bsp": {"dance": {"entities": {"item_cells": 14, "item_bullets": 14, "info_player_team1": 10, "item_rockets": 16, "info_player_team2": 11, "item_invincible": 1, "weapon_hagar": 2, "item_flag_team1": 1, "weapon_electro": 2, "item_health_medium": 14, "item_health_small": 20, "weapon_machinegun": 2, "item_strength": 1, "weapon_vortex": 3, "item_armor_small": 19, "weapon_devastator": 2, "item_flag_team2": 1, "weapon_grenadelauncher": 2}}}}]% 
 ```

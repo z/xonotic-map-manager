@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+from xmmc import xmm
+
+
+def main():
+    xmm.main()

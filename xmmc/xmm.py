@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # z@xnz.me
 #
 # TODO: exception handling
@@ -452,3 +451,5 @@ def parse_args():
 
 if __name__ == "__main__":
     main()
+
+main()
