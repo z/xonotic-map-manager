@@ -6,7 +6,7 @@ A command-line package manager for the [xonotic-map-repository](https://github.c
 
 Used by default with the unofficial Xonotic map repository [xonotic.co](http://xonotic.co).
 
-The JSON provides rich metadata about map packages which makes it easier to 
+The JSON provides rich metadata about map packages which makes it easier
 to discern differences between them.
 
 For information about what data is available check [JSON Structure](#JSON-structure).
