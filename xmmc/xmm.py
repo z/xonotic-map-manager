@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 # z@xnz.me
 #
 # TODO: exception handling / file exists checks
 # TODO: Inspection of packages
 
 import argparse
+import argcomplete
 import json
 import os
 import pickle
@@ -407,10 +409,10 @@ def parse_args():
             parser_plugin = subparsers.add_parser(p[0], **p[1])
             parser_plugin.add_argument(*p[2], **p[3])
 
+    argcomplete.autocomplete(parser)
+
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     main()
-
-main()

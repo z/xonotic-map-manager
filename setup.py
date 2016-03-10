@@ -7,6 +7,9 @@ with open('README.md') as f:
 with open('LICENSE') as f:
     license = f.read()
 
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='xmm',
     version='0.3.0',
@@ -17,5 +20,11 @@ setup(
     url='https://github.com/z/xonotic-map-manager',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
-    scripts=['bin/xmm']
+    scripts=['pkg/xmm.bash', 'pkg/xmm.zsh'],
+    entry_points={
+       'console_scripts': [
+          'xmm = xmmc.xmm:main'
+       ]
+    },
+    install_requires=required
 )
