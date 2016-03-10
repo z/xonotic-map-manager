@@ -12,10 +12,19 @@ It also makes it easier to discern differences between packages.
 
 For information about what data is available check [JSON Structure](#JSON-structure).
 
+![xmm in action](resources/images/xmm.png)
+
 ## Installation
 
 ```
 python3 setup.py install
+```
+
+If you want tab completions
+
+```
+sudo pip install argcomplete
+activate-global-python-argcomplete --user
 ```
 
 ## Configuration
