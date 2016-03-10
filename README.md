@@ -132,9 +132,10 @@ optional arguments:
                         filter by title
   --author [AUTHOR], -a [AUTHOR]
                         filter by author
-  --shasum [SHASUM], -s [SHASUM]
-                        filter by shasum
+  --shasum [SHASUM]     filter by shasum
   --long, -l            show long format
+  --short, -s           show short format
+
 ```
 
 ### Installing from the repository

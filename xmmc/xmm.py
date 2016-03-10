@@ -72,28 +72,28 @@ def main():
 
 def search_maps(args):
 
-    filtered_maps_json = get_repo_data()
+    maps_json = get_repo_data()
     criteria = []
 
     # Filter based on args
     if args.gametype:
-        filtered_maps_json = [x for x in filtered_maps_json if args.gametype in str(x['gametypes'])]
+        maps_json = [x for x in maps_json if args.gametype in str(x['gametypes'])]
         criteria.append(('gametype', args.gametype))
 
     if args.pk3:
-        filtered_maps_json = [x for x in filtered_maps_json if args.pk3 in str(x['pk3'])]
+        maps_json = [x for x in maps_json if args.pk3 in str(x['pk3'])]
         criteria.append(('pk3', args.pk3))
 
     if args.author:
-        filtered_maps_json = [x for x in filtered_maps_json if args.author in str(x['author'])]
+        maps_json = [x for x in maps_json if args.author in str(x['author'])]
         criteria.append(('author', args.author))
 
     if args.title:
-        filtered_maps_json = [x for x in filtered_maps_json if args.title in str(x['title'])]
+        maps_json = [x for x in maps_json if args.title in str(x['title'])]
         criteria.append(('title', args.title))
 
     if args.shasum:
-        filtered_maps_json = [x for x in filtered_maps_json if args.shasum in str(x['shasum'])]
+        maps_json = [x for x in maps_json if args.shasum in str(x['shasum'])]
         criteria.append(('shasum', args.shasum))
 
     # Handle search string
@@ -111,7 +111,7 @@ def search_maps(args):
     # Print out all matching packages
     total = 0
 
-    for m in filtered_maps_json:
+    for m in maps_json:
         bsps = m['bsp']
         keys = list(bsps)
         keys.sort()
@@ -272,11 +272,8 @@ def show_map_details(m, args):
     for b in keys:
         bsp += b
 
-    print('')
-    if not args.long:
-        print(bcolors.BOLD + str(m['pk3']) + bcolors.ENDC + ' [' + bcolors.OKBLUE + bsp + bcolors.ENDC + ']')
-        print(config['repo_url'] + str(m['pk3']))
-    else:
+    if args.long:
+        print('')
         print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
         print('         bsp: ' + bcolors.OKBLUE + bsp + bcolors.ENDC)
         print('       title: ' + str(m['title']))
@@ -286,6 +283,12 @@ def show_map_details(m, args):
         print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
         print('        size: ' + util.convert_size(m['filesize']).strip())
         print('          dl: ' + config['repo_url'] + m['pk3'])
+    elif args.short:
+        print(str(m['pk3']))
+    else:
+        print('')
+        print(bcolors.BOLD + str(m['pk3']) + bcolors.ENDC + ' [' + bcolors.OKBLUE + bsp + bcolors.ENDC + ']')
+        print(config['repo_url'] + str(m['pk3']))
 
 
 def get_package_db():
@@ -371,8 +374,9 @@ def parse_args():
     parser_search.add_argument('--pk3', '-p', nargs='?', help='filter by pk3 name', type=str)
     parser_search.add_argument('--title', '-t', nargs='?', help='filter by title', type=str)
     parser_search.add_argument('--author', '-a', nargs='?', help='filter by author', type=str)
-    parser_search.add_argument('--shasum', '-s', nargs='?', help='filter by shasum', type=str)
+    parser_search.add_argument('--shasum', nargs='?', help='filter by shasum', type=str)
     parser_search.add_argument('--long', '-l', help='show long format', action='store_true')
+    parser_search.add_argument('--short', '-s', help='show short format', action='store_true')
 
     parser_add = subparsers.add_parser('install', help='install a map from the repository, or specify a URL.')
     parser_add.add_argument('pk3', nargs='?', help='use a pk3 name', type=str)
@@ -384,10 +388,12 @@ def parse_args():
 
     parser_list = subparsers.add_parser('list', help='list locally installed packages')
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
+    parser_list.add_argument('--short', '-s', help='show short format', action='store_true')
 
     parser_show = subparsers.add_parser('show', help='show details of locally installed package')
     parser_show.add_argument('pk3', nargs='?', help='pk3 to show details for', type=str)
     parser_show.add_argument('--long', '-l', help='show long format', action='store_true')
+    parser_show.add_argument('--short', '-s', help='show short format', action='store_true')
 
     parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
     parser_export.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
