@@ -5,7 +5,7 @@
 # TODO: Inspection of packages
 
 import argparse
-# import argcomplete # still figuring this out
+import argcomplete # still figuring this out
 import json
 import os
 import pickle
@@ -99,7 +99,7 @@ def search_maps(args):
     # Handle search string
     if args.string:
         search_string = args.string
-        print(bcolors.HEADER + 'Searching for packages names matching: ' + bcolors.ENDC + bcolors.BOLD + search_string + bcolors.ENDC)
+        print('\n' + bcolors.HEADER + 'Searching packages with bsps matching: ' + bcolors.ENDC + bcolors.BOLD + search_string + bcolors.ENDC)
     else:
         search_string = ''
 
@@ -274,8 +274,7 @@ def show_map_details(m, args):
 
     print('')
     if not args.long:
-        print(bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
-        print(bcolors.OKBLUE + bsp + bcolors.ENDC)
+        print(bcolors.BOLD + str(m['pk3']) + bcolors.ENDC + ' [' + bcolors.OKBLUE + bsp + bcolors.ENDC + ']')
         print(config['repo_url'] + str(m['pk3']))
     else:
         print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
@@ -292,8 +291,6 @@ def show_map_details(m, args):
 def get_package_db():
 
     global repo_data
-
-    package_store = {}
 
     package_store_file  = os.path.expanduser(config['package_store'])
 
@@ -409,7 +406,7 @@ def parse_args():
             parser_plugin = subparsers.add_parser(p[0], **p[1])
             parser_plugin.add_argument(*p[2], **p[3])
 
-    # argcomplete.autocomplete(parser)
+    argcomplete.autocomplete(parser)
 
     return parser.parse_args()
 
