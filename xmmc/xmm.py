@@ -5,7 +5,6 @@
 # TODO: Inspection of packages
 
 import argparse
-import argcomplete # still figuring this out
 import json
 import os
 import pickle
@@ -411,8 +410,6 @@ def parse_args():
         for p in plugin_args:
             parser_plugin = subparsers.add_parser(p[0], **p[1])
             parser_plugin.add_argument(*p[2], **p[3])
-
-    argcomplete.autocomplete(parser)
 
     return parser.parse_args()
 

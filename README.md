@@ -19,13 +19,6 @@ For information about what data is available check [JSON Structure](#JSON-struct
 python3 setup.py install
 ```
 
-If you want tab completions
-
-```
-sudo pip install argcomplete
-activate-global-python-argcomplete --user
-```
-
 ## Configuration
 
 The default settings are likely similar to yours, however, you may need
