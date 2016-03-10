@@ -2,13 +2,12 @@
 
 ## About
 
-This application works by reading a locally cached json file that was generated
-with the [xonotic-map-repository](https://github.com/z/xonotic-map-repository).
-The list of installable packages are the ones found on http://xonotic.co, which
-is uses the same exact json file used by the table on that website.
+A command-line package manager for the [xonotic-map-repository](https://github.com/z/xonotic-map-repository) project.
 
-The JSON includes more information than what you see in game.
-It also makes it easier to discern differences between packages.
+Used by default with the unofficial Xonotic map repository [xonotic.co](http://xonotic.co).
+
+The JSON provides rich metadata about map packages which makes it easier to 
+to discern differences between them.
 
 For information about what data is available check [JSON Structure](#JSON-structure).
 
