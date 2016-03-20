@@ -105,10 +105,10 @@ Inline help is available on all sub-commands:
 
 ```
 xmm search -h                
-usage: xmm search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]]
-                             [--title [TITLE]] [--author [AUTHOR]]
-                             [--shasum [SHASUM]] [--long]
-                             [string]
+usage: xmm search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]] [--title [TITLE]]
+                  [--author [AUTHOR]] [--shasum [SHASUM]] [--long] [--short]
+                  [--highlight]
+                  [string]
 
 positional arguments:
   string                bsp name found in a package, works on packages with
@@ -127,6 +127,7 @@ optional arguments:
   --shasum [SHASUM]     filter by shasum
   --long, -l            show long format
   --short, -s           show short format
+  --highlight, -H       highlight search term in results
 
 ```
 
@@ -194,53 +195,51 @@ Updating sources json.
 ```
 xmm list
 
-steelspace_v5.pk3
-steelspace_v5
-http://dl.xonotic.co/steelspace_v5.pk3
+gasoline_02.pk3 [gasoline_02, gasoline_3teams_02, gasoline_4teams_02, gasoline_noteams_02]
+http://dl.xonotic.co/gasoline_02.pk3
 
-coolness_ut.pk3
-coolness_ut
-http://dl.xonotic.co/coolness_ut.pk3
-
-dance.pk3
-dance
+dance.pk3 [dance]
 http://dl.xonotic.co/dance.pk3
 
-Total packages found: 3
+Total packages found: 2
+
 ```
 
 ```
 xmm list -l
 
-         pk3: steelspace_v5.pk3
-         bsp: steelspace_v5
-       title: False
- description: False
-      author: False
-      shasum: ed427e31628b70fb29d163c750ce815673eeb02a
-        date: 2009-07-31
-        size: 6MB
-          dl: http://dl.xonotic.co/steelspace_v5.pk3
-
-         pk3: coolness_ut.pk3
-         bsp: coolness_ut
-       title: False
- description: False
-      author: False
-      shasum: 908cda62276a0de299217f8d6e3a197b6334f06a
-        date: 2015-07-03
-        size: 2MB
-          dl: http://dl.xonotic.co/coolness_ut.pk3
+         pk3: gasoline_02.pk3
+         bsp: gasoline_02
+       title:  Gasoline Powered
+ description:  Retextured and glowy
+      author:  FruitieX, Kid, Mario
+         bsp: gasoline_3teams_02
+       title:  Gasoline Powered
+ description:  Retextured and glowy with 3 teams
+      author:  FruitieX, Kid, Mario, Freddy
+         bsp: gasoline_4teams_02
+       title:  Gasoline Powered
+ description:  Retextured and glowy with 4 teams
+      author:  FruitieX, Kid, Mario
+         bsp: gasoline_noteams_02
+       title:  Gasoline Powered - Teamless
+ description:  Retextured and glowy
+      author:  FruitieX, Kid, Mario
+      shasum: 099b0cc16fe998e5e29893dbecd5673683a5b69d
+        date: 2015-10-17
+        size: 14MB
+          dl: http://dl.xonotic.co/gasoline_02.pk3
 
          pk3: dance.pk3
          bsp: dance
-       title: <TITLE>
- description: <DESCRIPTION>
-      author: <AUTHOR>
+       title:  <TITLE>
+ description:  <DESCRIPTION>
+      author:  <AUTHOR>
       shasum: ef00d43838430b2d1673f03bbe1440eef100ece6
         date: 2008-03-16
         size: 7MB
           dl: http://dl.xonotic.co/dance.pk3
+
 
 Total packages found: 3
 ```
@@ -307,51 +306,61 @@ def run():
 
 ### JSON structure
 
-Same structure as uses by xonotic-map-repository
+Same structure used by [xonotic-map-repository](https://github.com/z/xonotic-map-repository):
 
 ```json
 {
-	"title": "Disarray",
-	"map": ["maps/disarray_v1r2.map"],
-	"description": "Fast-paced space CTF map",
-	"mapshot": ["maps/disarray_v1r2.jpg"],
-	"pk3": "disarray_v1r2.pk3",
-	"mapinfo": ["maps/disarray_v1r2.mapinfo"],
-	"shasum": "f1dbf1b4850266688d481baf7e5b26af0fb891ae",
-	"bsp": {
-		"disarray_v1r2": {
-			"entities": {
-				"info_player_team1": 6,
-				"info_player_team2": 6,
-				"item_armor_big": 2,
-				"item_armor_large": 2,
-				"item_armor_medium": 5,
-				"item_armor_small": 36,
-				"item_bullets": 4,
-				"item_cells": 10,
-				"item_flag_team1": 1,
-				"item_flag_team2": 1,
-				"item_health_large": 1,
-				"item_health_medium": 12,
-				"item_health_mega": 2,
-				"item_health_small": 32,
-				"item_rockets": 12,
-				"item_shells": 4,
-				"item_strength": 1,
-				"weapon_crylink": 2,
-				"weapon_devastator": 2,
-				"weapon_grenadelauncher": 2,
-				"weapon_machinegun": 2,
-				"weapon_vortex": 2
-			}
-		}
-	},
-	"filesize": 3274139,
-	"date": 1423534626,
-	"license": false,
-	"gametypes": ["ctf"],
-	"author": "SpiKe",
-	"waypoints": [],
-	"radar": ["gfx/disarray_v1r2_mini.tga"]
+  "data": [
+    {
+      "date": 1453749340,
+      "filesize": 7856907,
+      "bsp": {
+        "vapor_alpha_2": {
+          "radar": "gfx/vapor_alpha_2_mini.tga",
+          "waypoints": "",
+          "title": "Vapor",
+          "description": "Such CTF. Many Vehicles. Wow.",
+          "map": "maps/vapor_alpha_2.map",
+          "entities": {
+            "info_player_deathmatch": 4,
+            "info_player_team1": 11,
+            "info_player_team2": 11,
+            "item_armor_big": 10,
+            "item_armor_large": 4,
+            "item_armor_medium": 16,
+            "item_armor_small": 124,
+            "item_bullets": 10,
+            "item_cells": 14,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_health_large": 6,
+            "item_health_medium": 30,
+            "item_health_mega": 2,
+            "item_health_small": 100,
+            "item_invincible": 1,
+            "item_rockets": 20,
+            "item_strength": 1,
+            "weapon_crylink": 4,
+            "weapon_devastator": 6,
+            "weapon_electro": 2,
+            "weapon_grenadelauncher": 6,
+            "weapon_hagar": 4,
+            "weapon_machinegun": 6,
+            "weapon_vortex": 4
+          },
+          "mapinfo": "maps/vapor_alpha_2.mapinfo",
+          "author": "-z-",
+          "gametypes": [
+            "ctf",
+            "DM"
+          ],
+          "license": true,
+          "mapshot": "maps/vapor_alpha_2.jpg"
+        }
+      },
+      "shasum": "3df0143516f72269f465070373f165c8787964d5",
+      "pk3": "map-vapor_alpha_2.pk3"
+    }
+  ]
 }
 ```

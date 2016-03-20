@@ -49,6 +49,11 @@ def check_if_not_create(file, template):
         os.makedirs(os.path.dirname(file), exist_ok=True)
         copyfile(template, file)
 
+
+def replace_last(s, old, new):
+    return s[::-1].replace(old[::-1], new[::-1], 1)[::-1]
+
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'

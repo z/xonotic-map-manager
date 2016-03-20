@@ -72,53 +72,66 @@ def main():
 def search_maps(args):
 
     maps_json = get_repo_data()
+    fmaps_json = []
     criteria = []
-
-    # Filter based on args
-    if args.gametype:
-        maps_json = [x for x in maps_json if args.gametype in str(x['gametypes'])]
-        criteria.append(('gametype', args.gametype))
-
-    if args.pk3:
-        maps_json = [x for x in maps_json if args.pk3 in str(x['pk3'])]
-        criteria.append(('pk3', args.pk3))
-
-    if args.author:
-        maps_json = [x for x in maps_json if args.author in str(x['author'])]
-        criteria.append(('author', args.author))
-
-    if args.title:
-        maps_json = [x for x in maps_json if args.title in str(x['title'])]
-        criteria.append(('title', args.title))
-
-    if args.shasum:
-        maps_json = [x for x in maps_json if args.shasum in str(x['shasum'])]
-        criteria.append(('shasum', args.shasum))
 
     # Handle search string
     if args.string:
         search_string = args.string
-        print('\n' + bcolors.HEADER + 'Searching packages with bsps matching: ' + bcolors.ENDC + bcolors.BOLD + search_string + bcolors.ENDC)
     else:
         search_string = ''
+
+    # Filter based on args
+    total = 0
+    for m in maps_json:
+        shown = False
+
+        for bsp in m['bsp']:
+            if re.search('^.*' + search_string + '.*$', bsp):
+                criteria.append(('bsp', search_string))
+                shown = True
+
+            if args.gametype in m['bsp'][bsp]['gametypes']:
+                criteria.append(('gametype', args.gametype))
+                shown = True
+
+            if re.search('^.*' + str(args.author) + '.*$', m['bsp'][bsp]['author']):
+                criteria.append(('author', args.author))
+                shown = True
+
+            if re.search('^.*' + str(args.title) + '.*$', m['bsp'][bsp]['title']):
+                criteria.append(('title', args.title))
+                shown = True
+
+        if args.pk3:
+            criteria.append(('pk3', args.pk3))
+            shown = True
+
+        if args.shasum:
+            criteria.append(('shasum', args.shasum))
+            shown = True
+
+        if shown:
+            total += 1
+            fmaps_json.append(m)
+
+    criteria = list(set(criteria))
 
     if len(criteria) > 0:
         print(bcolors.HEADER + 'Searching for packages with the following criteria:' + bcolors.ENDC)
         for c in criteria:
-            print(bcolors.BOLD + c[0] + bcolors.ENDC + ': ' + c[1])
+            print(bcolors.BOLD + str(c[0]) + bcolors.ENDC + ': ' + str(c[1]))
 
-    # Print out all matching packages
-    total = 0
-
-    for m in maps_json:
+    for m in fmaps_json:
         bsps = m['bsp']
         keys = list(bsps)
         keys.sort()
 
+        shown = False
         for bsp in keys:
-            if re.search('^.*' + search_string + '.*$', bsp):
+            if re.search('^.*' + search_string + '.*$', bsp) and not shown:
                 show_map_details(m, args)
-                total += 1
+                shown = True
 
     print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
@@ -263,30 +276,61 @@ def show_map(pk3, args):
 
 def show_map_details(m, args):
 
-    bsp = ''
+    highlight = False
+    search_string = ''
+
+    if 'string' in args:
+        search_string = args.string
+    elif 'pk3' in args:
+        search_string = args.pk3
+
+    if 'highlight' in args and args.highlight:
+        highlight = True
+
     bsps = m['bsp']
     keys = list(bsps)
     keys.sort()
 
-    for b in keys:
-        bsp += b
-
+    # little ugly here for a lot of pretty out
     if args.long:
         print('')
         print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
-        print('         bsp: ' + bcolors.OKBLUE + bsp + bcolors.ENDC)
-        print('       title: ' + str(m['title']))
-        print(' description: ' + str(m['description']))
-        print('      author: ' + str(m['author']))
+
+        for bsp in keys:
+            # Handle Hightlight
+            if search_string and highlight:
+                print('         bsp: ' + bcolors.OKBLUE
+                                            + bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE)
+                                        + bcolors.ENDC)
+            else:
+                print('         bsp: ' + bcolors.OKBLUE + bsp + bcolors.ENDC)
+
+            # bsp specific
+            print('       title:  ' + str(m['bsp'][bsp]['title']))
+            print(' description:  ' + str(m['bsp'][bsp]['description']))
+            print('      author:  ' + str(m['bsp'][bsp]['author']))
+
+        # pk3 specific
         print('      shasum: ' + str(m['shasum']))
         print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
         print('        size: ' + util.convert_size(m['filesize']).strip())
         print('          dl: ' + config['repo_url'] + m['pk3'])
+
+    # Formatting
     elif args.short:
         print(str(m['pk3']))
     else:
-        print('')
-        print(bcolors.BOLD + str(m['pk3']) + bcolors.ENDC + ' [' + bcolors.OKBLUE + bsp + bcolors.ENDC + ']')
+        bsp_string = '\n' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC + ' ['
+        for bsp in keys:
+            if search_string and highlight:
+                bsp_string += bcolors.OKBLUE +\
+                              bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE)\
+                              + bcolors.ENDC + ', '
+            else:
+                bsp_string += bcolors.OKBLUE + bsp + bcolors.ENDC + ', '
+        bsp_string = util.replace_last(bsp_string, ', ', '')
+        bsp_string += bcolors.ENDC + ']'
+        print(bsp_string)
         print(config['repo_url'] + str(m['pk3']))
 
 
@@ -294,7 +338,7 @@ def get_package_db():
 
     global repo_data
 
-    package_store_file  = os.path.expanduser(config['package_store'])
+    package_store_file = os.path.expanduser(config['package_store'])
 
     if os.path.exists(package_store_file ):
         db = open(package_store_file , 'rb')
@@ -376,6 +420,7 @@ def parse_args():
     parser_search.add_argument('--shasum', nargs='?', help='filter by shasum', type=str)
     parser_search.add_argument('--long', '-l', help='show long format', action='store_true')
     parser_search.add_argument('--short', '-s', help='show short format', action='store_true')
+    parser_search.add_argument('--highlight', '-H', help='highlight search term in results', action='store_true')
 
     parser_add = subparsers.add_parser('install', help='install a map from the repository, or specify a URL.')
     parser_add.add_argument('pk3', nargs='?', help='use a pk3 name', type=str)
@@ -388,6 +433,7 @@ def parse_args():
     parser_list = subparsers.add_parser('list', help='list locally installed packages')
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
     parser_list.add_argument('--short', '-s', help='show short format', action='store_true')
+    parser_list.add_argument('--highlight', '-H', help='highlight search term in results', action='store_true')
 
     parser_show = subparsers.add_parser('show', help='show details of locally installed package')
     parser_show.add_argument('pk3', nargs='?', help='pk3 to show details for', type=str)
