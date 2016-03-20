@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
+# A tool to help manage Xonotic maps
 # z@xnz.me
-#
-# TODO: exception handling / file exists checks
-# TODO: Inspection of packages
 
 import argparse
 import json
@@ -84,34 +82,34 @@ def search_maps(args):
     # Filter based on args
     total = 0
     for m in maps_json:
-        shown = False
 
+        show = False
         for bsp in m['bsp']:
             if re.search('^.*' + search_string + '.*$', bsp):
                 criteria.append(('bsp', search_string))
-                shown = True
+                show = True
 
             if args.gametype in m['bsp'][bsp]['gametypes']:
                 criteria.append(('gametype', args.gametype))
-                shown = True
+                show = True
 
             if re.search('^.*' + str(args.author) + '.*$', m['bsp'][bsp]['author']):
                 criteria.append(('author', args.author))
-                shown = True
+                show = True
 
             if re.search('^.*' + str(args.title) + '.*$', m['bsp'][bsp]['title']):
                 criteria.append(('title', args.title))
-                shown = True
+                show = True
 
         if args.pk3:
             criteria.append(('pk3', args.pk3))
-            shown = True
+            show = True
 
         if args.shasum:
             criteria.append(('shasum', args.shasum))
-            shown = True
+            show = True
 
-        if shown:
+        if show:
             total += 1
             fmaps_json.append(m)
 
@@ -394,7 +392,14 @@ def db_export_packages(args):
     data = get_package_db()
     package_store = json.dumps(data)
 
-    f = open(args.file, 'w')
+    if args.file:
+        filename = args.file
+    else:
+        default_name = 'xmm-export.json'
+        print(bcolors.WARNING + 'a name wasn\'t given. Exporting as: ' + default_name + bcolors.ENDC)
+        filename = default_name
+
+    f = open(filename, 'w')
     f.write(package_store)
     f.close()
 
