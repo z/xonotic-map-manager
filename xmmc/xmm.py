@@ -268,18 +268,12 @@ def discover_maps(args):
             map_found = show_map(file, 'all', args)
 
             if map_found:
-                print('found')
                 if args.add:
-                    print('add')
                     map_installed = False
                     if packages:
-                        print('packages')
                         for p in packages:
-                            print('pk3')
                             if p['pk3'] == args.pk3:
                                 map_installed = True
-
-                        print(map_installed)
 
                     if not map_installed:
                         db_add_package(map_found, args)
