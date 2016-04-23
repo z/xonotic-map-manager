@@ -4,6 +4,7 @@ import sys
 import time
 from shutil import copyfile
 
+
 def file_is_empty(path):
     return os.stat(path).st_size == 0
 

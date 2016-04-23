@@ -1,0 +1,10 @@
+{
+  "myserver1": {
+    "target_dir": "~/.xonotic/data/myserver1/",
+    "package_db": "~/.xmm/packages-myserver1.db"
+  },
+  "myserver2": {
+    "target_dir": "~/.xonotic/data/myserver2/",
+    "package_db": "~/.xmm/packages-myserver2.db"
+  }
+}
