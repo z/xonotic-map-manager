@@ -48,17 +48,20 @@ def main():
     if args.command == 'remove':
         remove_maps(args)
 
-    if args.command == 'update':
-        update_repo_data()
+    if args.command == 'discover':
+        discover_maps(args)
 
     if args.command == 'list':
         list_installed(args)
 
     if args.command == 'show':
-        show_map(args.pk3, args)
+        show_map(args.pk3, 'installed', args)
 
     if args.command == 'export':
         db_export_packages(args)
+
+    if args.command == 'update':
+        update_repo_data()
 
     # Plugins
     for cmd, value in plugins.items():
@@ -142,8 +145,10 @@ def install_maps(args):
     if installed_packages:
         for m in installed_packages:
             if m['pk3'] == args.pk3:
-                print(bcolors.FAIL + args.pk3 + " already exists.")
-                raise SystemExit
+                print(bcolors.FAIL + args.pk3 + " already exists." + bcolors.ENDC)
+                install = util.query_yes_no('continue?', 'no')
+                if not install:
+                    raise SystemExit
 
     installed = False
     is_url = False
@@ -251,6 +256,28 @@ def get_repo_data():
     return repo_data
 
 
+def discover_maps(args):
+
+    map_dir = os.path.expanduser(get_map_dir(args))
+    packages = get_package_db(args)
+
+    for file in os.listdir(map_dir):
+        if file.endswith('.pk3'):
+            args.pk3 = file
+            args.shasum = util.hash_file(os.path.join(map_dir, file))
+            map_found = show_map(file, 'all', args)
+
+            if map_found and args.add:
+                installed = False
+                if packages:
+                    for p in packages:
+                        if p['pk3'] == args.pk3:
+                            installed = True
+
+                    if not installed:
+                        db_add_package(map_found, args)
+
+
 # local data
 def list_installed(args):
 
@@ -265,20 +292,34 @@ def list_installed(args):
     print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
 
-def show_map(pk3, args):
+def show_map(pk3, ftype, args):
 
-    packages = get_package_db(args)
-    map_found = False
+    if ftype == 'all':
+        packages = get_repo_data()
+    elif ftype == 'installed':
+        packages = get_package_db(args)
+
+    found_map = False
+    hash_match = True
 
     if packages:
         for p in packages:
             if p['pk3'] == pk3:
-                show_map_details(p, args)
-                map_found = True
-                print('')
+                if p['shasum'] == args.shasum:
+                    show_map_details(p, args)
+                    found_map = p
+                    print('')
+                else:
+                    print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.WARNING + " hash different from repositories" + bcolors.ENDC)
+                    hash_match = False
 
-    if not map_found:
-        print(bcolors.FAIL + 'Package not currently installed' + bcolors.ENDC)
+    if not found_map and hash_match:
+        if ftype == 'all':
+            print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.FAIL + ' package was not found in repository' + bcolors.ENDC)
+        elif ftype == 'installed':
+            print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.FAIL + ' package not currently installed' + bcolors.ENDC)
+
+    return found_map
 
 
 def show_map_details(m, args):
@@ -475,7 +516,10 @@ def parse_args():
     parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
 
-    parser_update = subparsers.add_parser('update', help='update sources json')
+    parser_discover = subparsers.add_parser('discover', help='discover packages in a target directory')
+    parser_discover.add_argument('--long', '-l', help='show long format', action='store_true')
+    parser_discover.add_argument('--short', '-s', help='show short format', action='store_true')
+    parser_discover.add_argument('--add', '-a', help='add discovered files to the db', action='store_true')
 
     parser_list = subparsers.add_parser('list', help='list locally installed packages')
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
@@ -490,6 +534,8 @@ def parse_args():
     parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
     parser_export.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
     parser_export.add_argument('file', nargs='?', help='file name to export to', type=str)
+
+    parser_update = subparsers.add_parser('update', help='update sources json')
 
     # Handle plugins
     for i in pluginloader.get_plugins():

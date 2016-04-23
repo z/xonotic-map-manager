@@ -53,7 +53,7 @@ servers = ~/.xmm/servers.json
 
 ```
 usage: xmm [-h] [-T [T]] [-s [S]]
-           {search,install,remove,update,list,show,export,hello} ...
+           {search,install,remove,discover,list,show,export,update,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
 
@@ -62,10 +62,11 @@ positional arguments:
     search              search for maps based on bsp names
     install             install a map from the repository, or specify a URL.
     remove              remove based on pk3 name
-    update              update sources json
+    discover            discover packages in a target directory    
     list                list locally installed packages
     show                show details of locally installed package
     export              export locally managed packages to a file
+    update              update sources json    
     hello               hello is an example plugin
 
 optional arguments:
@@ -184,12 +185,46 @@ Removing map: snowdance2.pk3
 map does not exist.
 ```
 
-### Update
+
+### Discover
+
+A summary of discovered packages:
 
 ```
-xmm update
-Updating sources json.
-...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
+xmm -s myserver1 discover
+
+map-ctf-moonstone_nex_r3.pk3 [moonstone_nex_r3]
+http://dl.xonotic.co/map-ctf-moonstone_nex_r3.pk3
+
+map-ctf-mIKEctf1_nex_r1.pk3 package was not found in repository
+
+dance.pk3 [dance]
+http://dl.xonotic.co/dance.pk3
+
+
+snowdance_xon.pk3 [snowdance2]
+http://dl.xonotic.co/snowdance_xon.pk3
+
+
+dance-fixed.pk3 [dance-fixed]
+http://dl.xonotic.co/dance-fixed.pk3
+
+
+got_wood-on-xctf3.pk3 [got_wood]
+http://dl.xonotic.co/got_wood-on-xctf3.pk3
+
+
+map-ctf-mikectf3_nex_r3_fix.pk3 [mIKEctf3_nex_r3]
+http://dl.xonotic.co/map-ctf-mikectf3_nex_r3_fix.pk3
+
+map-vapor_alpha_2.pk3 hash different from repositories
+
+```
+
+Add discovered maps:
+
+```
+xmm -s myserver1 discover --add
 ```
 
 ### List
@@ -276,6 +311,14 @@ xmm show dance.pk3 -l
 % xmm export test.json
 % cat test.json
 [{"mapinfo": ["maps/dance.mapinfo"], "date": 1205715512, "title": "<TITLE>", "radar": [], "waypoints": [], "gametypes": ["ctf", "dm", "lms", "arena"], "mapshot": ["maps/dance.jpg"], "description": "<DESCRIPTION>", "shasum": "ef00d43838430b2d1673f03bbe1440eef100ece6", "filesize": 7468410, "pk3": "dance.pk3", "map": ["maps/dance.map"], "author": "<AUTHOR>", "license": false, "bsp": {"dance": {"entities": {"item_cells": 14, "item_bullets": 14, "info_player_team1": 10, "item_rockets": 16, "info_player_team2": 11, "item_invincible": 1, "weapon_hagar": 2, "item_flag_team1": 1, "weapon_electro": 2, "item_health_medium": 14, "item_health_small": 20, "weapon_machinegun": 2, "item_strength": 1, "weapon_vortex": 3, "item_armor_small": 19, "weapon_devastator": 2, "item_flag_team2": 1, "weapon_grenadelauncher": 2}}}}]% 
+```
+
+### Update
+
+```
+xmm update
+Updating sources json.
+...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 ```
 
 ## Advanced Usage
