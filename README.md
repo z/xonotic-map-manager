@@ -325,7 +325,7 @@ Updating sources json.
 
 ### Multi-server support
 
-xmm can facilitate the management of multiple servers with a `servers.json` file to configure their settings, example below:
+xmm can facilitate the management of multiple servers with a `~/.xmm/~servers.json` file to configure their settings, example below:
 
 ```
 {
@@ -339,6 +339,8 @@ xmm can facilitate the management of multiple servers with a `servers.json` file
   }
 }
 ```
+
+An example is available in `./config/example.servers.json`
 
 To use these servers, use the `-s` flag to target the server.
 

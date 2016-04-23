@@ -267,14 +267,21 @@ def discover_maps(args):
             args.shasum = util.hash_file(os.path.join(map_dir, file))
             map_found = show_map(file, 'all', args)
 
-            if map_found and args.add:
-                installed = False
-                if packages:
-                    for p in packages:
-                        if p['pk3'] == args.pk3:
-                            installed = True
+            if map_found:
+                print('found')
+                if args.add:
+                    print('add')
+                    map_installed = False
+                    if packages:
+                        print('packages')
+                        for p in packages:
+                            print('pk3')
+                            if p['pk3'] == args.pk3:
+                                map_installed = True
 
-                    if not installed:
+                        print(map_installed)
+
+                    if not map_installed:
                         db_add_package(map_found, args)
 
 
@@ -424,13 +431,16 @@ def get_package_db(args):
 
     package_store_file = get_package_store(args)
 
-    if os.path.exists(package_store_file):
+    if os.path.exists(package_store_file) and not util.file_is_empty(package_store_file):
         db = open(package_store_file, 'rb')
         package_store = pickle.load(db)
         db.close()
     else:
-        print(bcolors.WARNING + 'No package database found (don\'t worry, it will be created when you install a map)' + bcolors.ENDC)
-        return False
+        print(bcolors.WARNING + 'No package database found (don\'t worry, it will be created)' + bcolors.ENDC)
+        db_out = open(package_store_file, 'wb+')
+        pickle.dump([], db_out)
+        db_out.close()
+        package_store = []
 
     return package_store
 
