@@ -48,17 +48,20 @@ def main():
     if args.command == 'remove':
         remove_maps(args)
 
-    if args.command == 'update':
-        update_repo_data()
+    if args.command == 'discover':
+        discover_maps(args)
 
     if args.command == 'list':
         list_installed(args)
 
     if args.command == 'show':
-        show_map(args.pk3, args)
+        show_map(args.pk3, 'installed', args)
 
     if args.command == 'export':
         db_export_packages(args)
+
+    if args.command == 'update':
+        update_repo_data()
 
     # Plugins
     for cmd, value in plugins.items():
@@ -137,6 +140,15 @@ def search_maps(args):
 def install_maps(args):
 
     map_dir = get_map_dir(args)
+    installed_packages = get_package_db(args)
+
+    if installed_packages:
+        for m in installed_packages:
+            if m['pk3'] == args.pk3:
+                print(bcolors.FAIL + args.pk3 + " already exists." + bcolors.ENDC)
+                install = util.query_yes_no('continue?', 'no')
+                if not install:
+                    raise SystemExit
 
     installed = False
     is_url = False
@@ -154,7 +166,7 @@ def install_maps(args):
     map_in_repo = False
     for m in maps_json:
         if m['pk3'] == pk3:
-            db_add_package(m)
+            db_add_package(m, args)
             map_in_repo = True
             break
 
@@ -177,7 +189,7 @@ def add_map(pk3_with_path, url):
     if not os.path.exists(pk3_with_path):
 
         if config['use_curl'] == 'False':
-            urllib.request.urlretrieve(url, pk3_with_path, util.reporthook)
+            urllib.request.urlretrieve(url, os.path.expanduser(pk3_with_path), util.reporthook)
         else:
             subprocess.call(['curl', '-o', pk3_with_path, url])
 
@@ -191,7 +203,7 @@ def add_map(pk3_with_path, url):
 def remove_maps(args):
 
     pk3 = args.pk3
-    map_dir = get_map_dir(args)
+    map_dir = os.path.expanduser(get_map_dir(args))
 
     print('Removing package: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
 
@@ -205,7 +217,7 @@ def remove_maps(args):
 
             for m in repo_data:
                 if m['pk3'] == pk3:
-                    db_remove_package(m)
+                    db_remove_package(m, args)
 
             print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
         else:
@@ -244,32 +256,71 @@ def get_repo_data():
     return repo_data
 
 
+def discover_maps(args):
+
+    map_dir = os.path.expanduser(get_map_dir(args))
+    packages = get_package_db(args)
+
+    for file in os.listdir(map_dir):
+        if file.endswith('.pk3'):
+            args.pk3 = file
+            args.shasum = util.hash_file(os.path.join(map_dir, file))
+            map_found = show_map(file, 'all', args)
+
+            if map_found:
+                if args.add:
+                    map_installed = False
+                    if packages:
+                        for p in packages:
+                            if p['pk3'] == args.pk3:
+                                map_installed = True
+
+                    if not map_installed:
+                        db_add_package(map_found, args)
+
+
 # local data
 def list_installed(args):
 
-    packages = get_package_db()
+    packages = get_package_db(args)
 
     total = 0
-    for p in packages:
-        show_map_details(p, args)
-        total += 1
+    if packages:
+        for p in packages:
+            show_map_details(p, args)
+            total += 1
 
     print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
 
-def show_map(pk3, args):
+def show_map(pk3, ftype, args):
 
-    packages = get_package_db()
-    map_found = False
+    if ftype == 'all':
+        packages = get_repo_data()
+    elif ftype == 'installed':
+        packages = get_package_db(args)
 
-    for p in packages:
-        if p['pk3'] == pk3:
-            show_map_details(p, args)
-            map_found = True
-            print('')
+    found_map = False
+    hash_match = True
 
-    if not map_found:
-        print(bcolors.FAIL + 'Package not currently installed' + bcolors.ENDC)
+    if packages:
+        for p in packages:
+            if p['pk3'] == pk3:
+                if p['shasum'] == args.shasum:
+                    show_map_details(p, args)
+                    found_map = p
+                    print('')
+                else:
+                    print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.WARNING + " hash different from repositories" + bcolors.ENDC)
+                    hash_match = False
+
+    if not found_map and hash_match:
+        if ftype == 'all':
+            print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.FAIL + ' package was not found in repository' + bcolors.ENDC)
+        elif ftype == 'installed':
+            print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.FAIL + ' package not currently installed' + bcolors.ENDC)
+
+    return found_map
 
 
 def show_map_details(m, args):
@@ -332,49 +383,84 @@ def show_map_details(m, args):
         print(config['repo_url'] + str(m['pk3']))
 
 
-def get_package_db():
+def get_map_dir(args):
+    #return args.T if args.T else os.path.expanduser(config['map_dir'])
+
+    if args.T:
+        target_dir = args.T
+    elif args.s:
+        servers_file = os.path.expanduser(config['servers'])
+        f = open(servers_file)
+        data = f.read()
+        server_data = json.loads(data)
+        f.close()
+        target_dir = server_data[args.s]['target_dir']
+    else:
+        target_dir = os.path.expanduser(config['map_dir'])
+
+    return target_dir
+
+
+def get_package_store(args):
+    if args.s:
+        servers_file = os.path.expanduser(config['servers'])
+        f = open(servers_file)
+        data = f.read()
+        server_data = json.loads(data)
+        f.close()
+        if args.s in server_data:
+            package_store_file = os.path.expanduser(server_data[args.s]['package_db'])
+        else:
+            print('server not defined in ' + config['servers'])
+            raise SystemExit
+    else:
+        package_store_file = os.path.expanduser(config['package_store'])
+
+    return package_store_file
+
+
+def get_package_db(args):
 
     global repo_data
 
-    package_store_file = os.path.expanduser(config['package_store'])
+    package_store_file = get_package_store(args)
 
-    if os.path.exists(package_store_file ):
-        db = open(package_store_file , 'rb')
+    if os.path.exists(package_store_file) and not util.file_is_empty(package_store_file):
+        db = open(package_store_file, 'rb')
         package_store = pickle.load(db)
         db.close()
     else:
-        print(bcolors.WARNING + 'No package database found (don\'t worry, it will be created when you install a map' + bcolors.ENDC)
-        raise SystemExit
+        print(bcolors.WARNING + 'No package database found (don\'t worry, it will be created)' + bcolors.ENDC)
+        db_out = open(package_store_file, 'wb+')
+        pickle.dump([], db_out)
+        db_out.close()
+        package_store = []
 
     return package_store
 
 
-def db_add_package(package):
+def db_add_package(package, args):
 
     package_store = []
-    package_store_file = os.path.expanduser(config['package_store'])
+    package_store_file = get_package_store(args)
 
-    if os.path.exists(package_store_file) and not util.file_is_empty(package_store_file ):
-        db_in = open(package_store_file , 'rb+')
+    if os.path.exists(package_store_file) and not util.file_is_empty(package_store_file):
+        db_in = open(package_store_file, 'rb+')
         package_store = pickle.load(db_in)
         package_store.append(package)
         db_in.close()
     else:
         package_store.append(package)
 
-    db_out = open(package_store_file , 'wb+')
+    db_out = open(package_store_file, 'wb+')
     pickle.dump(package_store, db_out)
     db_out.close()
 
 
-def get_map_dir(args):
-    return args.T if args.T else os.path.expanduser(config['map_dir'])
-
-
-def db_remove_package(package):
+def db_remove_package(package, args):
 
     package_store = []
-    package_store_file = os.path.expanduser(config['package_store'])
+    package_store_file = get_package_store(args)
 
     if not util.file_is_empty(package_store_file):
         db_in = open(package_store_file, 'rb+')
@@ -389,7 +475,7 @@ def db_remove_package(package):
 
 def db_export_packages(args):
 
-    data = get_package_db()
+    data = get_package_db(args)
     package_store = json.dumps(data)
 
     if args.file:
@@ -412,6 +498,7 @@ def parse_args():
                                      epilog="Very early alpha. Please be patient.")
 
     parser.add_argument("-T", nargs='?', help="target directory", type=str)
+    parser.add_argument("-s", nargs='?', help="target server as defined in servers.json", type=str)
 
     subparsers = parser.add_subparsers(dest='command')
     subparsers.required = True
@@ -433,7 +520,10 @@ def parse_args():
     parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)
 
-    parser_update = subparsers.add_parser('update', help='update sources json')
+    parser_discover = subparsers.add_parser('discover', help='discover packages in a target directory')
+    parser_discover.add_argument('--long', '-l', help='show long format', action='store_true')
+    parser_discover.add_argument('--short', '-s', help='show short format', action='store_true')
+    parser_discover.add_argument('--add', '-a', help='add discovered files to the db', action='store_true')
 
     parser_list = subparsers.add_parser('list', help='list locally installed packages')
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
@@ -448,6 +538,8 @@ def parse_args():
     parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
     parser_export.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
     parser_export.add_argument('file', nargs='?', help='file name to export to', type=str)
+
+    parser_update = subparsers.add_parser('update', help='update sources json')
 
     # Handle plugins
     for i in pluginloader.get_plugins():
