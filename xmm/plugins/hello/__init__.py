@@ -1,5 +1,5 @@
-from xmmc.plugins import pluginbase
-from xmmc import util
+from xmm.plugins import pluginbase
+from xmm import util
 
 bcolors = util.bcolors
 config = pluginbase.get_config()

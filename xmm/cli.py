@@ -11,30 +11,22 @@ import subprocess
 import time
 import urllib.request
 
-from xmmc.plugins import pluginbase
-from xmmc.plugins import pluginloader
+from xmm.plugins import pluginbase
+from xmm.plugins import pluginloader
+from xmm.config import conf
 from . import util
 
 bcolors = util.bcolors
 
-config = {}
 plugins = {}
 repo_data = {}
 
 
 def main():
 
-    global config
     global repo_data
 
-    config_file = '.xmm.cfg'
-    home = os.path.expanduser('~')
-    config_file_with_path = os.path.join(home, config_file)
-
-    util.check_if_not_create(config_file_with_path, 'config/xmm.cfg')
-
-    config = util.parse_config(config_file_with_path)
-    pluginbase.set_config(config)
+    pluginbase.set_config(conf)
     args = parse_args()
 
     # print(args)
@@ -158,7 +150,7 @@ def install_maps(args):
         is_url = True
     else:
         pk3 = args.pk3
-        url = config['repo_url'] + pk3
+        url = conf['repo_url'] + pk3
 
     pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
@@ -188,7 +180,7 @@ def add_map(pk3_with_path, url):
 
     if not os.path.exists(pk3_with_path):
 
-        if config['use_curl'] == 'False':
+        if conf['use_curl'] == 'False':
             urllib.request.urlretrieve(url, os.path.expanduser(pk3_with_path), util.reporthook)
         else:
             subprocess.call(['curl', '-o', pk3_with_path, url])
@@ -232,7 +224,7 @@ def remove_maps(args):
 # remote data
 def update_repo_data():
     print('Updating sources json...')
-    urllib.request.urlretrieve(config['api_data_url'], os.path.expanduser(config['api_data']), util.reporthook)
+    urllib.request.urlretrieve(conf['api_data_url'], os.path.expanduser(conf['api_data']), util.reporthook)
     print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
 
 
@@ -240,11 +232,11 @@ def get_repo_data():
 
     global repo_data
 
-    api_data_file = os.path.expanduser(config['api_data'])
+    api_data_file = os.path.expanduser(conf['api_data'])
 
     if not repo_data:
         if not os.path.exists(api_data_file):
-            api_data_file = os.path.expanduser(config['api_data'])
+            api_data_file = os.path.expanduser(conf['api_data'])
             print(bcolors.WARNING + 'Could not find a repo file. Downloading one.' + bcolors.ENDC)
             util.check_if_not_create(api_data_file, './resources/data/maps.json')
 
@@ -306,7 +298,8 @@ def show_map(pk3, ftype, args):
     if packages:
         for p in packages:
             if p['pk3'] == pk3:
-                if p['shasum'] == args.shasum:
+                shasum = util.hash_file(os.path.join(conf['map_dir'], pk3))
+                if p['shasum'] == shasum:
                     show_map_details(p, args)
                     found_map = p
                     print('')
@@ -363,7 +356,7 @@ def show_map_details(m, args):
         print('      shasum: ' + str(m['shasum']))
         print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
         print('        size: ' + util.convert_size(m['filesize']).strip())
-        print('          dl: ' + config['repo_url'] + m['pk3'])
+        print('          dl: ' + conf['repo_url'] + m['pk3'])
 
     # Formatting
     elif args.short:
@@ -380,30 +373,30 @@ def show_map_details(m, args):
         bsp_string = util.replace_last(bsp_string, ', ', '')
         bsp_string += bcolors.ENDC + ']'
         print(bsp_string)
-        print(config['repo_url'] + str(m['pk3']))
+        print(conf['repo_url'] + str(m['pk3']))
 
 
 def get_map_dir(args):
-    #return args.T if args.T else os.path.expanduser(config['map_dir'])
+    #return args.T if args.T else os.path.expanduser(conf['map_dir'])
 
     if args.T:
         target_dir = args.T
     elif args.s:
-        servers_file = os.path.expanduser(config['servers'])
+        servers_file = os.path.expanduser(conf['servers'])
         f = open(servers_file)
         data = f.read()
         server_data = json.loads(data)
         f.close()
         target_dir = server_data[args.s]['target_dir']
     else:
-        target_dir = os.path.expanduser(config['map_dir'])
+        target_dir = os.path.expanduser(conf['map_dir'])
 
     return target_dir
 
 
 def get_package_store(args):
     if args.s:
-        servers_file = os.path.expanduser(config['servers'])
+        servers_file = os.path.expanduser(conf['servers'])
         f = open(servers_file)
         data = f.read()
         server_data = json.loads(data)
@@ -411,10 +404,10 @@ def get_package_store(args):
         if args.s in server_data:
             package_store_file = os.path.expanduser(server_data[args.s]['package_db'])
         else:
-            print('server not defined in ' + config['servers'])
+            print('server not defined in ' + conf['servers'])
             raise SystemExit
     else:
-        package_store_file = os.path.expanduser(config['package_store'])
+        package_store_file = os.path.expanduser(conf['package_store'])
 
     return package_store_file
 

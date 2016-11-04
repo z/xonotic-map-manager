@@ -13,9 +13,11 @@ def file_is_empty(path):
 def convert_size(num):
     for x in ['B', 'KB', 'MB', 'GB']:
         if num < 1024.0:
-            return "%3.1d%s" % (num, x)
+            string = "%3.1d%s" % (num, x)
+            return string.strip()
         num /= 1024.0
-    return "%3.1f%s" % (num, 'TB')
+    string = "%3.1f%s" % (num, 'TB')
+    return string.strip()
 
 
 def reporthook(count, block_size, total_size):
