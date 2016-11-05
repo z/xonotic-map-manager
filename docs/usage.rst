@@ -4,7 +4,7 @@ Usage
 Basic Usage
 -----------
 
-CLI help docs::
+CLI help docs for ``xmm``::
 
     usage: xmm [-h] [-T [T]] [-s [S]]
                {search,install,remove,discover,list,show,export,update,hello} ...
@@ -290,7 +290,7 @@ Advanced Usage
 Multi-server support
 ~~~~~~~~~~~~~~~~~~~~
 
-xmm can facilitate the management of multiple servers with a ``~/.xmm/~servers.json`` file to configure their settings, example below:
+xmm can facilitate the management of multiple servers with a ``~/.xmm/servers.json`` file to configure their settings, example below:
 
 .. code-block:: json
 

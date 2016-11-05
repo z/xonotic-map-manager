@@ -5,7 +5,7 @@ Intro
 
 A command-line package manager for the xonotic-map-repository project.
 
-Use it like ``apt-get``::
+Use it like ``apt``::
 
     xmm update
     xmm install dance2.pk3
