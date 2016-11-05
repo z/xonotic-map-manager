@@ -1,10 +1,10 @@
 # xonotic-map-manager
 
-## About
+[![Build Status](https://travis-ci.org/z/xonotic-map-manager.svg?branch=develop)](https://travis-ci.org/z/xonotic-map-manager) [![Documentation Status](https://readthedocs.org/projects/xonotic-map-manager/badge/?version=latest)](http://xonotic-map-manager.readthedocs.io/en/latest/?badge=latest)
 
 A command-line package manager for the [xonotic-map-repository](https://github.com/z/xonotic-map-repository) project.
 
-Used by default with the unofficial Xonotic map repository [xonotic.co](http://xonotic.co).
+Used with the unofficial Xonotic map repository, [xonotic.co](http://xonotic.co), by default.
 
 ![xmm in action](resources/images/xmm.png)
 
