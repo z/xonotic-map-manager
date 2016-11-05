@@ -66,7 +66,7 @@ def hash_file(filename):
     h = hashlib.sha1()
 
     # open file for reading in binary mode
-    with open(filename,'rb') as file:
+    with open(filename, 'rb') as file:
 
         # loop till the end of the file
         chunk = 0

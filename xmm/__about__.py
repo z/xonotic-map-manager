@@ -22,4 +22,3 @@ __email__ = 'z@xnz.me'
 __license__ = 'MIT'
 __url__ = 'https://www.github.com/z/xonotic-map-manager'
 __copyright__ = 'Copyright 2016 Tyler Mulligan'
-

@@ -13,7 +13,7 @@ conf = {
     'map_dir': os.path.expanduser(config['map_dir']),
     'repo_url': os.path.expanduser(config['repo_url']),
     'api_data': os.path.expanduser(config['api_data']),
-    'api_data_url':  os.path.expanduser(config['api_data_url']),
+    'api_data_url': os.path.expanduser(config['api_data_url']),
     'use_curl': os.path.expanduser(config['use_curl']),
     'package_store': os.path.expanduser(config['package_store']),
     'servers': os.path.expanduser(config['servers']),

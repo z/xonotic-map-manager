@@ -22,7 +22,7 @@ clean:
 	@rm -rf .tox
 
 lint:
-	@flake8 --ignore=E221,E501 xmm/*.
+	@flake8 --ignore=E221,E501,F401,F841,E128 xmm/*.py
 
 docs: docs/
 	@cd docs && $(MAKE) html

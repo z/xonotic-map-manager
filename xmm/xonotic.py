@@ -51,24 +51,23 @@ class Server:
             print('         pk3: ' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC)
 
             for bsp in keys:
-                # Handle Hightlight
+                # Handle Highlight
                 if search_string and highlight:
-                    print('         bsp: ' + bcolors.OKBLUE
-                                                + bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE)
-                                            + bcolors.ENDC)
+                    print('         bsp: {}{}{}').format(bcolors.OKBLUE,
+                                                         bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE), bcolors.ENDC)
                 else:
-                    print('         bsp: ' + bcolors.OKBLUE + bsp + bcolors.ENDC)
+                    print('         bsp: {}'.format(bcolors.OKBLUE + bsp + bcolors.ENDC))
 
                 # bsp specific
-                print('       title:  ' + str(m['bsp'][bsp]['title']))
-                print(' description:  ' + str(m['bsp'][bsp]['description']))
-                print('      author:  ' + str(m['bsp'][bsp]['author']))
+                print('       title:  '.format(str(m['bsp'][bsp]['title'])))
+                print(' description:  '.format(str(m['bsp'][bsp]['description'])))
+                print('      author:  '.format(str(m['bsp'][bsp]['author'])))
 
             # pk3 specific
-            print('      shasum: ' + str(m['shasum']))
-            print('        date: ' + time.strftime('%Y-%m-%d', time.localtime(m['date'])))
-            print('        size: ' + util.convert_size(m['filesize']).strip())
-            print('          dl: ' + self.conf['repo_url'] + m['pk3'])
+            print('      shasum: '.format(str(m['shasum'])))
+            print('        date: '.format(time.strftime('%Y-%m-%d', time.localtime(m['date']))))
+            print('        size: '.format(util.convert_size(m['filesize']).strip()))
+            print('          dl: '.format(self.conf['repo_url'] + m['pk3']))
 
         # Formatting
         elif args.short:
@@ -77,9 +76,9 @@ class Server:
             bsp_string = '\n' + bcolors.BOLD + str(m['pk3']) + bcolors.ENDC + ' ['
             for bsp in keys:
                 if search_string and highlight:
-                    bsp_string += bcolors.OKBLUE +\
-                                  bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE)\
-                                  + bcolors.ENDC + ', '
+                    bsp_string += bcolors.OKBLUE + \
+                        bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE) \
+                        + bcolors.ENDC + ', '
                 else:
                     bsp_string += bcolors.OKBLUE + bsp + bcolors.ENDC + ', '
             bsp_string = util.replace_last(bsp_string, ', ', '')

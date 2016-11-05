@@ -18,10 +18,10 @@ class LibraryCommand(Server):
         self.repository = repository
 
     def install_maps(self, args):
-    
+
         map_dir = self.get_map_dir(args)
         installed_packages = self.store.get_package_db(args)
-    
+
         if installed_packages:
             for m in installed_packages:
                 if m['pk3'] == args.pk3:
@@ -29,7 +29,7 @@ class LibraryCommand(Server):
                     install = util.query_yes_no('continue?', 'no')
                     if not install:
                         raise SystemExit
-    
+
         installed = False
         is_url = False
         if re.match('^(ht|f)tp(s)?://', args.pk3):
@@ -39,9 +39,9 @@ class LibraryCommand(Server):
         else:
             pk3 = args.pk3
             url = self.conf['repo_url'] + pk3
-    
+
         pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
-    
+
         maps_json = self.repository.get_repo_data()
         map_in_repo = False
         for m in maps_json:
@@ -49,12 +49,12 @@ class LibraryCommand(Server):
                 self.store.db_add_package(m, args)
                 map_in_repo = True
                 break
-    
+
         if map_in_repo or is_url:
             print('Installing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
             self.add_map(pk3_with_path, url)
             installed = True
-    
+
         if not map_in_repo:
             if installed:
                 print(bcolors.WARNING + 'package does not exist in the repository, ' +
@@ -64,59 +64,59 @@ class LibraryCommand(Server):
                 raise SystemExit
 
     def add_map(self, pk3_with_path, url):
-    
+
         if not os.path.exists(pk3_with_path):
-    
+
             if self.conf['use_curl'] == 'False':
                 urllib.request.urlretrieve(url, os.path.expanduser(pk3_with_path), util.reporthook)
             else:
                 subprocess.call(['curl', '-o', pk3_with_path, url])
-    
+
             print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
-    
+
         else:
             print(bcolors.FAIL + 'package already exists, please remove first.' + bcolors.ENDC)
             raise SystemExit
-    
+
     def remove_maps(self, args):
-    
+
         pk3 = args.pk3
         map_dir = os.path.expanduser(self.get_map_dir(args))
-    
+
         print('Removing package: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
-    
+
         if os.path.exists(map_dir):
             pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
-    
+
             if os.path.exists(pk3_with_path):
                 os.remove(pk3_with_path)
-    
+
                 repo_data = self.repository.get_repo_data()
-    
+
                 for m in repo_data:
                     if m['pk3'] == pk3:
                         self.store.db_remove_package(m, args)
-    
+
                 print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
             else:
                 print(bcolors.FAIL + 'package does not exist.' + bcolors.ENDC)
                 raise SystemExit
-    
+
         else:
             print(bcolors.FAIL + 'directory does not exist.' + bcolors.ENDC)
             raise SystemExit
 
     def discover_maps(self, args):
-    
+
         map_dir = os.path.expanduser(self.get_map_dir(args))
         packages = self.store.get_package_db(args)
-    
+
         for file in os.listdir(map_dir):
             if file.endswith('.pk3'):
                 args.pk3 = file
                 args.shasum = util.hash_file(os.path.join(map_dir, file))
                 map_found = self.show_map(file, 'all', args)
-    
+
                 if map_found:
                     if args.add:
                         map_installed = False
@@ -124,22 +124,21 @@ class LibraryCommand(Server):
                             for p in packages:
                                 if p['pk3'] == args.pk3:
                                     map_installed = True
-    
+
                         if not map_installed:
                             self.store.db_add_package(map_found, args)
-    
-    
+
     # local data
     def list_installed(self, args):
-    
+
         packages = self.store.get_package_db(args)
-    
+
         total = 0
         if packages:
             for p in packages:
                 self.show_map_details(p, args)
                 total += 1
-    
+
         print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
     def show_map(self, pk3, ftype, args):

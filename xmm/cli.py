@@ -110,7 +110,7 @@ def parse_args():
 
     # Handle plugins
     for i in pluginloader.get_plugins():
-        #print("Loading plugin: " + i["name"])
+        # print("Loading plugin: " + i["name"])
         command = i['name']
         plugin = pluginloader.load_plugin(i)
         plugin_args = [plugin.get_args()]
