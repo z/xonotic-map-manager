@@ -142,9 +142,10 @@ class LibraryCommand(Server):
         print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
     def show_map(self, pk3, ftype, args):
-        if ftype == 'all':
-            packages = self.repository.get_repo_data()
-        elif ftype == 'installed':
+
+        packages = self.repository.get_repo_data()
+
+        if ftype == 'installed':
             packages = self.store.get_package_db(args)
 
         found_map = False
@@ -163,10 +164,10 @@ class LibraryCommand(Server):
                         hash_match = False
 
         if not found_map and hash_match:
-            if ftype == 'all':
-                print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.FAIL + ' package was not found in repository' + bcolors.ENDC)
-            elif ftype == 'installed':
+            if ftype == 'installed':
                 print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.FAIL + ' package not currently installed' + bcolors.ENDC)
+            else:
+                print(bcolors.BOLD + pk3 + bcolors.ENDC + bcolors.FAIL + ' package was not found in repository' + bcolors.ENDC)
 
         return found_map
 
@@ -194,8 +195,6 @@ class Store:
         return package_store_file
 
     def get_package_db(self, args):
-
-        global repo_data
 
         package_store_file = self.get_package_store(args)
 

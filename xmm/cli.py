@@ -61,8 +61,7 @@ def parse_args():
 
     global plugins
 
-    parser = argparse.ArgumentParser(description='Xonotic Map Manager is a tool to help manage Xonotic maps',
-                                     epilog="Very early alpha. Please be patient.")
+    parser = argparse.ArgumentParser(description='Xonotic Map Manager is a tool to help manage Xonotic maps')
 
     parser.add_argument("-T", nargs='?', help="target directory", type=str)
     parser.add_argument("-s", nargs='?', help="target server as defined in servers.json", type=str)
