@@ -21,4 +21,4 @@ def run():
     print(bcolors.FAIL + "oh noes! Something went wrong! (not really)" + bcolors.ENDC)
     print(bcolors.WARNING + "It's okay! Don't Cry" + bcolors.ENDC)
     print(bcolors.UNDERLINE + "Get Serious" + bcolors.ENDC)
-    print(bcolors.OKGREEN + "Look, I also have access to the config: " + config['api_data'])
+    print(bcolors.OKGREEN + "Look, I also have access to the config: " + config['servers_config'])

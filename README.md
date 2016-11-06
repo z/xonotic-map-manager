@@ -16,33 +16,37 @@ For information about what data is available check [JSON Structure](#JSON-struct
 ## Installation
 
 ```
+git clone https://github.com:z/xonotic-map-manager.git
+cd xonotic-map-manager
 python3 setup.py install
 ```
 
 ## Usage
 
 ```
-usage: xmm [-h] [-T [T]] [-s [S]]
+usage: xmm [-h] [-s [SERVER]] [-T [TARGET]]
            {search,install,remove,discover,list,show,export,update,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
 
 positional arguments:
-  {search,install,remove,update,list,show,export,hello}
+  {search,install,remove,discover,list,show,export,update,hello}
     search              search for maps based on bsp names
     install             install a map from the repository, or specify a URL.
     remove              remove based on pk3 name
-    discover            discover packages in a target directory    
+    discover            discover packages in a target directory
     list                list locally installed packages
     show                show details of locally installed package
     export              export locally managed packages to a file
-    update              update sources json    
+    update              update sources json
     hello               hello is an example plugin
 
 optional arguments:
   -h, --help            show this help message and exit
-  -T [T]                target directory
-  -s [S]                target server as defined in servers.json
+  -s [SERVER], --server [SERVER]
+                        target server as defined in servers.json
+  -T [TARGET], --target [TARGET]
+                        target directory
 ```
 
 

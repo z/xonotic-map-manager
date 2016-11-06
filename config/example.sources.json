@@ -1,0 +1,7 @@
+{
+  "default": {
+    "download_url": "http://dl.xonotic.co/",
+    "api_data_file": "~/.xmm/maps.json",
+    "api_data_url": "http://xonotic.co/resources/data/maps.json"
+  }
+}

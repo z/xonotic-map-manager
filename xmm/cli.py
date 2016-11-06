@@ -3,10 +3,10 @@
 # z@xnz.me
 
 import argparse
+import os
 
-from xmm.library import LibraryCommand
-from xmm.library import Store
-from xmm.repository import RepositoryCommand
+from xmm.server import LocalServer
+from xmm import util
 
 from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
@@ -19,36 +19,44 @@ def main():
 
     pluginbase.set_config(conf)
     args = parse_args()
+    server = None
 
-    store = Store(conf=conf)
-    repository = RepositoryCommand(args=args, conf=conf)
-    command = LibraryCommand(args=args, conf=conf, store=store, repository=repository)
+    if args.target:
+        target_dir = args.target
+        filename_with_path = os.path.join(target_dir, args.pk3)
+        url_with_file = '{}/{}'.format(conf['default']['download_url'], args.pk3)
+        util.download_file(filename_with_path=filename_with_path, url=url_with_file, use_curl=conf['default']['use_curl'])
+        exit(0)
 
-    # print(args)
+    elif args.server:
+        server = LocalServer(conf=conf, server_name=args.server)
+    else:
+        server = LocalServer(conf=conf, server_name=args.server, source_name='default')
 
     if args.command == 'search':
-        command.repository.search_maps(args)
+        server.source_collection.sources[0].search_maps(bsp_name=args.string, gametype=args.gametype, author=args.author,
+                                                        title=args.title, pk3_name=args.pk3, shasum=args.shasum, args=args)
 
     if args.command == 'install':
-        command.install_maps(args)
+        server.library.install_map(pk3_name=args.pk3)
 
     if args.command == 'remove':
-        command.remove_maps(args)
+        server.library.remove_map(pk3_name=args.pk3)
 
     if args.command == 'discover':
-        command.discover_maps(args)
+        server.library.discover_maps(args=args, add=args.add)
 
     if args.command == 'list':
-        command.list_installed(args)
+        server.library.list_installed(args=args)
 
     if args.command == 'show':
-        command.show_map(args.pk3, 'installed', args)
+        server.library.show_map(pk3_name=args.pk3, where='all', args=args)
 
     if args.command == 'export':
-        command.store.db_export_packages(args)
+        server.library.store.export_packages(filename=args.file)
 
     if args.command == 'update':
-        command.repository.update_repo_data()
+        server.source_collection.sources[0].update_repo_data()
 
     # Plugins
     for cmd, value in plugins.items():
@@ -63,8 +71,8 @@ def parse_args():
 
     parser = argparse.ArgumentParser(description='Xonotic Map Manager is a tool to help manage Xonotic maps')
 
-    parser.add_argument("-T", nargs='?', help="target directory", type=str)
-    parser.add_argument("-s", nargs='?', help="target server as defined in servers.json", type=str)
+    parser.add_argument("-s", '--server', nargs='?', help="target server as defined in servers.json", type=str)
+    parser.add_argument("-T", '--target', nargs='?', help="target directory", type=str)
 
     subparsers = parser.add_subparsers(dest='command')
     subparsers.required = True

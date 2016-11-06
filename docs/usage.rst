@@ -6,13 +6,13 @@ Basic Usage
 
 CLI help docs for ``xmm``::
 
-    usage: xmm [-h] [-T [T]] [-s [S]]
+    usage: xmm [-h] [-s [SERVER]] [-T [TARGET]]
                {search,install,remove,discover,list,show,export,update,hello} ...
 
     Xonotic Map Manager is a tool to help manage Xonotic maps
 
     positional arguments:
-      {search,install,remove,update,list,show,export,hello}
+      {search,install,remove,discover,list,show,export,update,hello}
         search              search for maps based on bsp names
         install             install a map from the repository, or specify a URL.
         remove              remove based on pk3 name
@@ -25,8 +25,10 @@ CLI help docs for ``xmm``::
 
     optional arguments:
       -h, --help            show this help message and exit
-      -T [T]                target directory
-      -s [S]                target server as defined in servers.json
+      -s [SERVER], --server [SERVER]
+                            target server as defined in servers.json
+      -T [TARGET], --target [TARGET]
+                            target directory
 
 
 Searching
@@ -296,12 +298,14 @@ xmm can facilitate the management of multiple servers with a ``~/.xmm/servers.js
 
     {
       "myserver1": {
-        "target_dir": "~/.xonotic/data/myserver1/",
-        "package_db": "~/.xmm/packages-myserver1.db"
+        "target_dir": "~/.xonotic/myserver1/data/",
+        "library": "~/.xmm/myserver1/library.json",
+        "sources": "~/.xmm/sources.json"
       },
       "myserver2": {
-        "target_dir": "~/.xonotic/data/myserver2/",
-        "package_db": "~/.xmm/packages-myserver2.db"
+        "target_dir": "~/.xonotic/myserver2/data/",
+        "library": "~/.xmm/myserver2/library.json",
+        "sources": "~/.xmm/myserver2/sources.json"
       }
     }
 
@@ -314,6 +318,16 @@ To use these servers, use the ``-s`` flag to target the server.::
     xmm -s myserver1 install dance.pk3
     xmm -s myserver1 list
     xmm -s myserver1 remove dance.pk3
+
+
+Targeting Directories
+~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes you may want to install a package to an arbitrary directory.::
+
+    xmm -T /path/to/directory/ install dance.pk3
+
+This install will not be tracked in the library.
 
 
 * :ref:`genindex`

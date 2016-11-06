@@ -1,13 +1,13 @@
 import configparser
 import os
 import sys
+import json
 import time
 import hashlib
+import subprocess
+import urllib.request
+from datetime import datetime
 from shutil import copyfile
-
-
-def file_is_empty(path):
-    return os.stat(path).st_size == 0
 
 
 def convert_size(num):
@@ -36,6 +36,36 @@ def reporthook(count, block_size, total_size):
     sys.stdout.flush()
 
 
+def download_file(filename_with_path, url, use_curl=False):
+    """
+    downloads a file from any URL
+
+    :param filename_with_path:
+        filename with path to download file to
+    :type filename_with_path: ``str``
+
+    :param url:
+        URL to download map from
+    :type url: ``str``
+
+    :param use_curl:
+        Whether or not to use curl to download the file, default ``False``
+    :type use_curl: ``bool``
+    """
+    if not os.path.exists(filename_with_path):
+
+        if not use_curl:
+            urllib.request.urlretrieve(url, os.path.expanduser(filename_with_path), reporthook)
+        else:
+            subprocess.call(['curl', '-o', filename_with_path, url])
+
+        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+
+    else:
+        print(bcolors.FAIL + 'file already exists, please remove first.' + bcolors.ENDC)
+        return False
+
+
 def parse_config(config_file):
 
     if not os.path.isfile(config_file):
@@ -49,9 +79,51 @@ def parse_config(config_file):
 
 
 def check_if_not_create(file, template):
+    """
+    Checks for a file, if it doesn't exist, it will be created from a template.
+
+    :param file:
+        filename with path to file
+    :type file: ``str``
+
+    :param template:
+        filename with path to template file
+    :type template: ``str``
+    """
     if not os.path.isfile(file):
         os.makedirs(os.path.dirname(file), exist_ok=True)
         copyfile(template, file)
+
+
+def create_if_not_exists(file, contents):
+    """
+    Checks for a file, if it doesn't exist, it will be created from a template.
+
+    :param file:
+        filename with path to file
+    :type file: ``str``
+
+    :param contents:
+        string contents of the file being created
+    :type contents: ``str``
+    """
+    if not os.path.isfile(file):
+        os.makedirs(os.path.dirname(file), exist_ok=True)
+        with open(file, 'w') as f:
+            f.write(contents)
+
+
+def file_is_empty(filename):
+    """
+    Checks to see if a file is empty
+
+    :param filename:
+        string filename
+    :type filename: ``str``
+
+    :returns: ``bool``
+    """
+    return os.stat(filename).st_size == 0
 
 
 def replace_last(s, old, new):
@@ -59,8 +131,10 @@ def replace_last(s, old, new):
 
 
 def hash_file(filename):
-    """This function returns the SHA-1 hash
-    of the file passed into it"""
+    """
+    This function returns the SHA-1 hash
+    of the file passed into it
+    """
 
     # make a hash object
     h = hashlib.sha1()
@@ -81,12 +155,18 @@ def hash_file(filename):
 
 # http://stackoverflow.com/questions/3041986/python-command-line-yes-no-input
 def query_yes_no(question, default="yes"):
-    """Ask a yes/no question via raw_input() and return their answer.
+    """
+    Ask a yes/no question via raw_input() and return their answer.
 
-    "question" is a string that is presented to the user.
-    "default" is the presumed answer if the user just hits <Enter>.
+    :param question:
+        a string that is presented to the user.
+    :type question: ``str``
+
+    :param default:
+        is the presumed answer if the user just hits <Enter>.
         It must be "yes" (the default), "no" or None (meaning
         an answer is required of the user).
+    :type default: ``str``
 
     The "answer" return value is True for "yes" or False for "no".
     """
@@ -122,3 +202,18 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
+
+# http://stackoverflow.com/a/24030569
+class ObjectEncoder(json.JSONEncoder):
+    """
+    JSONEncoder subclass that leverages an object's `__json__()` method,
+    if available, to obtain its default JSON representation.
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        if hasattr(obj, '__json__'):
+            return obj.__json__()
+
+        return json.JSONEncoder.default(self, obj)
