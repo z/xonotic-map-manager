@@ -15,7 +15,7 @@ class SourceCollection(object):
     """
     A *SourceCollection* is a collection of *SourceRepository* objects
 
-    :returns object: ``SourceCollection``
+    :returns object: *SourceCollection*
     """
     def __init__(self):
         self.sources = []
@@ -24,12 +24,23 @@ class SourceCollection(object):
         return str(vars(self))
 
     def __json__(self):
-        return self.sources
+        return {
+            'sources': self.sources,
+        }
 
     def to_json(self):
-        return json.dumps({'data': self.sources}, cls=util.ObjectEncoder)
+        """
+        :returns: A **JSON** encoded version of this object
+        """
+        return json.dumps(self, cls=util.ObjectEncoder)
 
     def add_repository(self, repository):
+        """
+        Add a *SourceRepository* to the *SourceCollection*
+
+        :param repository:
+        :type repository: ``SourceRepository``
+        """
         self.sources.append(repository)
 
 
@@ -43,7 +54,7 @@ class SourceRepository(Base):
     :type conf: ``dict``
 
     :param name:
-        A name for this SourceRepository
+        A name for this *SourceRepository*
     :type name: ``str``
 
     :param download_url:
@@ -70,6 +81,23 @@ class SourceRepository(Base):
         self.api_data_file = os.path.expanduser(api_data_file)
         self.repo_data = {}
 
+    def __repr__(self):
+        return str(vars(self))
+
+    def __json__(self):
+        return {
+            'name': self.name,
+            'api_data_url': self.api_data_url,
+            'download_url': self.download_url,
+            'api_data_file': self.api_data_file,
+        }
+
+    def to_json(self):
+        """
+        :returns: A **JSON** encoded version of this object
+        """
+        return json.dumps(self, cls=util.ObjectEncoder)
+
     def search_maps(self, bsp_name=False, gametype=False, author=False, title=False, pk3_name=False, shasum=False, args=None):
         """
         Searches the repository for maps matching criteria
@@ -79,27 +107,27 @@ class SourceRepository(Base):
         :type bsp_name: ``str``
 
         :param gametype:
-            Positional arguments
+            Search by gametype
         :type gametype: ``str``
 
         :param author:
-            Positional arguments
+            Search by author
         :type author: ``str``
 
         :param title:
-            Positional arguments
+            Search by title
         :type title: ``str``
 
         :param pk3_name:
-            Positional arguments
+            Search by pk3_name
         :type pk3_name: ``str``
 
         :param shasum:
-            Positional arguments
+            Search by shasum
         :type shasum: ``str``
 
         :param args:
-            Positional arguments
+            Positional arguments that will be *deprecated*
         :type args: ``tuple``
         """
         maps_json = self.get_repo_data()
@@ -166,7 +194,7 @@ class SourceRepository(Base):
     # remote data
     def update_repo_data(self):
         """
-        Updates sources cache with latest maps from repository
+        Updates sources cache with latest maps from *Repository*
         """
         print('Updating sources json...')
         urllib.request.urlretrieve(self.api_data_url, self.api_data, util.reporthook)
@@ -174,7 +202,7 @@ class SourceRepository(Base):
 
     def get_repo_data(self):
         """
-        Gets the cached map list from repository
+        Gets the cached map list from *Repository*
         :returns: ``json``
         """
         if not self.repo_data:

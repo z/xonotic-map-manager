@@ -41,17 +41,25 @@ class Library(Base):
         return str(vars(self))
 
     def __json__(self):
-        return self.maps
+        return {
+            'maps': self.maps,
+            'source_collection': self.source_collection,
+            'store': self.store,
+            'map_dir': self.map_dir,
+        }
 
     def to_json(self):
-        return json.dumps({'data': self.maps}, cls=util.ObjectEncoder)
+        """
+        :returns: A **JSON** encoded version of this object
+        """
+        return json.dumps(self, cls=util.ObjectEncoder)
 
     def add_map_package(self, package):
         """
-        Adds a *MapPackage* Object to ``self.maps``
+        Adds a *MapPackage* object to ``self.maps``
 
         :param package:
-            A MapPackage Object for the library
+            A *MapPackage* object for the *Library*
         :type package: ``MapPackage``
         """
         self.maps.append(package)
@@ -82,10 +90,12 @@ class Library(Base):
     # TODO: Rewrite this
     def install_map(self, pk3_name):
         """
-        Install a map from a repository
+        Install a *MapPackage* from a *Repository*
 
         :param pk3_name:
-            A pk3 name such as ``dance.pk3``, to install from the repository. Optionally prefixed with a URL to install map not in the repository. URL-only maps will not include rich metadata available to maps installed via the repo.
+            A pk3 name such as ``dance.pk3``, to install from the repository.'
+            Optionally prefixed with a URL to install map not in the repository.
+            URL-only maps will not include rich metadata available to maps installed via the repo.
         :type pk3_name: ``str``
         """
         map_dir = self.map_dir
@@ -170,7 +180,7 @@ class Library(Base):
 
     def discover_maps(self, args, add=False):
         """
-        Searches the *Server*'s map_dir for map packages known by the repository
+        Searches the *Server*'s map_dir for map packages known by the *Repository*
 
         :param args:
             Positional arguments

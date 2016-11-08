@@ -1,8 +1,10 @@
+import json
 from xmm.base import Base
 from xmm.library import Library
 from xmm.repository import SourceRepository
 from xmm.repository import SourceCollection
 from xmm.store import Store
+from xmm import util
 
 
 class ServerCollection(Base):
@@ -12,6 +14,15 @@ class ServerCollection(Base):
     def __init__(self, conf, args, servers):
         super().__init__(conf)
         self.servers = servers
+
+    def __repr__(self):
+        return str(vars(self))
+
+    def __json__(self):
+        return self.servers
+
+    def to_json(self):
+        return json.dumps(self.servers, cls=util.ObjectEncoder)
 
 
 class LocalServer(Base):
@@ -46,9 +57,8 @@ class LocalServer(Base):
 
     >>> from xmm.server import LocalServer
     >>> from xmm.config import conf
-    >>> from xmm.cli import parse_args
-    >>> args = parse_args()
-    >>> server = LocalServer(conf=conf, args=args)
+    >>> server = LocalServer(conf=conf, server_name='myserver1')
+    >>> print(server)
     """
 
     def __init__(self, conf, server_name, source_name=None):
@@ -73,3 +83,15 @@ class LocalServer(Base):
         self.source_collection.add_repository(source_repository)
 
         self.library = Library(conf=conf, store=store, source_collection=self.source_collection, map_dir=map_dir)
+
+    def __repr__(self):
+        return str(vars(self))
+
+    def __json__(self):
+        return {
+            'source_collection': self.source_collection,
+            'library': self.library,
+        }
+
+    def to_json(self):
+        return json.dumps(self, cls=util.ObjectEncoder)

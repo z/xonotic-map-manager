@@ -41,6 +41,17 @@ class Store(Base):
         self.data_file = package_store_file
         self.data = self.get_package_db()
 
+    def __json__(self):
+        return {
+            'data_file': self.data_file,
+        }
+
+    def to_json(self):
+        """
+        :returns: A **JSON** encoded version of this object
+        """
+        return json.dumps(self, cls=util.ObjectEncoder)
+
     def get_package_db(self):
         """
         Searches the repository for maps matching criteria

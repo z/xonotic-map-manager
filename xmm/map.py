@@ -65,7 +65,7 @@ class MapPackage(Base):
     # TODO: improve this function
     def show_map_details(self, args):
         """
-        Helper function for pretty printing details about a MapPackage
+        Helper function for pretty printing details about a *MapPackage*
         """
         highlight = False
         search_string = ''
@@ -219,4 +219,8 @@ class Bsp(object):
         }
 
     def to_json(self):
+        """
+        :returns: A **JSON** encoded version of this object
+        """
         return json.dumps(self, cls=util.ObjectEncoder)
+
