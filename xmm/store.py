@@ -120,6 +120,10 @@ class Store(Base):
         :param filename:
             Name for the exported json file, default ``xmm-export.json``
         :type filename: ``str``
+
+        >>> from xmm.server import LocalServer
+        >>> from xmm.config import conf
+        >>> server = LocalServer(conf=conf, server_name='myserver1')
         """
         # fix this
         data_out = []

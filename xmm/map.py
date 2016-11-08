@@ -223,4 +223,3 @@ class Bsp(object):
         :returns: A **JSON** encoded version of this object
         """
         return json.dumps(self, cls=util.ObjectEncoder)
-

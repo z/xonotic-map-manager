@@ -97,6 +97,12 @@ class Library(Base):
             Optionally prefixed with a URL to install map not in the repository.
             URL-only maps will not include rich metadata available to maps installed via the repo.
         :type pk3_name: ``str``
+
+        >>> from xmm.server import LocalServer
+        >>> from xmm.config import conf
+        >>> server = LocalServer(conf=conf, server_name='myserver1')
+        >>> server.library.install_map(pk3_name='dance.pk3')
+        >>> print(server.library.maps)
         """
         map_dir = self.map_dir
         installed_packages = self.store.get_package_db()
@@ -152,6 +158,14 @@ class Library(Base):
         :param pk3_name:
             The name of a pk3, such as ``dance.pk3``
         :type pk3_name: ``str``
+
+        >>> from xmm.server import LocalServer
+        >>> from xmm.config import conf
+        >>> server = LocalServer(conf=conf, server_name='myserver1')
+        >>> server.library.install_map(pk3_name='dance.pk3')
+        >>> print(server.library.maps)
+        >>> server.library.remove_map(pk3_name='dance.pk3')
+        >>> print(server.library.maps)
         """
         map_dir = os.path.expanduser(self.map_dir)
 
