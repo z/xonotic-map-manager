@@ -4,27 +4,27 @@ from xmm import __author__, __email__, __url__, __version__
 
 
 with open('README.md') as f:
-    readme = f.read()
+    readme_contents = f.read()
 
 with open('LICENSE') as f:
-    license = f.read()
+    license_contents = f.read()
 
 with open('requirements.in') as f:
-    required = f.read().splitlines()
+    install_requires = f.read().splitlines()
 
 setup(
     name='xmm',
     version=__version__,
     description='Xonotic Map Manager',
-    long_description=readme,
+    long_description=readme_contents,
     author=__author__,
     author_email=__email__,
     url=__url__,
-    license=license,
+    license=license_contents,
     packages=find_packages(exclude=('tests', 'docs')),
-    package_data={'': ['LICENSE', 'README.md', 'docs/*', 'config/*', 'bin/*']},
+    package_data={'': ['LICENSE', 'README.md', 'docs/*', 'config/*', 'bin/*', 'pkg/*', 'resources/*']},
     include_package_data=True,
-    install_requires=required,
+    install_requires=install_requires,
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     scripts=['pkg/xmm.bash', 'pkg/xmm.zsh'],

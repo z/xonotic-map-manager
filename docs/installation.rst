@@ -9,7 +9,11 @@ Requirements
 Install
 -------
 
-Install with setuptools::
+Install using pip::
+
+    pip install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm
+
+Install manually with setuptools::
 
    git clone https://github.com:z/xonotic-map-manager.git
    cd xonotic-map-manager
