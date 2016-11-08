@@ -186,13 +186,9 @@ class Library(Base):
             print(bcolors.FAIL + 'directory does not exist.' + bcolors.ENDC)
             Exception('directory does not exist.')
 
-    def discover_maps(self, args, add=False):
+    def discover_maps(self, add=False):
         """
         Searches the *Server*'s map_dir for map packages known by the *Repository*
-
-        :param args:
-            Positional arguments
-        :type args: ``tuple``
 
         :param add:
             Whether to add the discovered maps or not
@@ -201,30 +197,25 @@ class Library(Base):
         map_dir = os.path.expanduser(self.map_dir)
         packages = self.store.get_package_db()
 
-        for file in os.listdir(map_dir):
-            if file.endswith('.pk3'):
-                args.pk3 = file
-                args.shasum = util.hash_file(os.path.join(map_dir, file))
-                map_found = self.show_map(file, 'all', args)
+        for pk3_file in os.listdir(map_dir):
+            if pk3_file.endswith('.pk3'):
+                shasum = util.hash_file(os.path.join(map_dir, pk3_file))
+                map_found = self.show_map(pk3_file, 'all')
 
                 if map_found and add:
-                        map_installed = False
-                        if packages:
-                            for p in packages:
-                                if p['pk3'] == args.pk3:
-                                    map_installed = True
+                    map_installed = False
+                    if packages:
+                        for p in packages:
+                            if p['pk3'] == pk3_file and p['shasum'] == shasum:
+                                map_installed = True
 
-                        if not map_installed:
-                            self.store.add_package(map_found)
+                    if not map_installed:
+                        self.store.add_package(map_found)
 
     # local data
-    def list_installed(self, args):
+    def list_installed(self):
         """
         List maps currently tracked by the *Library*
-
-        :param args:
-            Positional arguments
-        :type args: ``tuple``
 
         :returns: ``SourceCollection``
         """
@@ -233,12 +224,12 @@ class Library(Base):
         total = 0
         if packages:
             for m in packages:
-                m.show_map_details(args=args)
+                m.show_map_details()
                 total += 1
 
         print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
-    def show_map(self, pk3_name, where, args):
+    def show_map(self, pk3_name, where, detail=None, highlight=False):
         """
         Convenience function to use the show_map_details helper
 
@@ -250,9 +241,13 @@ class Library(Base):
             Where [installed|all].
         :type where: ``str``
 
-        :param args:
-            Positional arguments
-        :type args: ``tuple``
+        :param detail:
+            How much detail to show, [short, None, long]
+        :type detail: ``str``
+
+        :param highlight:
+            Whether to highlight the results
+        :type highlight: ``bool``
 
         :returns: ``MapPackage``
         """
@@ -274,14 +269,13 @@ class Library(Base):
                     shasum = util.hash_file(os.path.join(self.map_dir, pk3_name))
                     if p.shasum == shasum:
                         hash_match = True
-                        # self.maps[p['bsp']].show_map_details(p, args)
-                        p.show_map_details(args=args)
+                        p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
                         found_map = p
                         print('')
                     else:
                         print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.WARNING + " hash different from repositories" + bcolors.ENDC)
                 else:
-                    p.show_map_details(args=args)
+                    p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
                     found_map = p
 
         if not found_map and not hash_match:

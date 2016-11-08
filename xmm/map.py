@@ -59,27 +59,17 @@ class MapPackage(Base):
         return json.dumps(self, cls=util.ObjectEncoder)
 
     # TODO: improve this function
-    def show_map_details(self, args):
+    def show_map_details(self, search_string="", detail=None, highlight=False):
         """
         Helper function for pretty printing details about a *MapPackage*
         """
-        highlight = False
-        search_string = ''
-
-        if 'string' in args:
-            search_string = args.string
-        elif 'pk3' in args:
-            search_string = args.pk3
-
-        if 'highlight' in args and args.highlight:
-            highlight = True
 
         bsps = self.bsp
         keys = list(bsps)
         keys.sort()
 
         # little ugly here for a lot of pretty out
-        if args.long:
+        if detail == 'long':
             print('')
             print('         pk3: ' + bcolors.BOLD + str(self.pk3_file) + bcolors.ENDC)
 
@@ -104,7 +94,7 @@ class MapPackage(Base):
             print('          dl: {}'.format(self.conf['default']['download_url'] + self.pk3_file))
 
         # Formatting
-        elif args.short:
+        elif detail == 'short':
             print(str(self.pk3_file))
         else:
             bsp_string = '\n' + bcolors.BOLD + str(self.pk3_file) + bcolors.ENDC + ' ['

@@ -94,7 +94,7 @@ class SourceRepository(Base):
         """
         return json.dumps(self, cls=util.ObjectEncoder)
 
-    def search_maps(self, bsp_name=False, gametype=False, author=False, title=False, pk3_name=False, shasum=False, args=None):
+    def search_maps(self, bsp_name=False, gametype=False, author=False, title=False, pk3_name=False, shasum=False, detail=None, highlight=False):
         """
         Searches the repository for maps matching criteria
 
@@ -122,9 +122,13 @@ class SourceRepository(Base):
             Search by shasum
         :type shasum: ``str``
 
-        :param args:
-            Positional arguments that will be *deprecated*
-        :type args: ``tuple``
+        :param detail:
+            How much detail in the results, [short, None, long]
+        :type detail: ``str``
+
+        :param highlight:
+            Whether to highlight the search string
+        :type highlight: ``bool``
         """
         maps_json = self.get_repo_data()
         fmaps_json = []
@@ -182,7 +186,13 @@ class SourceRepository(Base):
             shown = False
             for bsp in keys:
                 if re.search('^.*' + bsp_name + '.*$', bsp) and not shown:
-                    m.show_map_details(args=args)
+                    if bsp_name:
+                        m.show_map_details(search_string=bsp_name, detail=detail, highlight=highlight)
+                    elif pk3_name != '':
+                        m.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
+                    else:
+                        m.show_map_details(detail=detail, highlight=highlight)
+
                     shown = True
 
         print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)

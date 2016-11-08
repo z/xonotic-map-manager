@@ -33,9 +33,21 @@ def main():
     else:
         server = LocalServer(server_name=args.server, source_name='default')
 
+    if args.long:
+        detail = 'long'
+    elif args.short:
+        detail = 'short'
+    else:
+        detail = None
+
+    highlight = False
+    if 'highlight' in args and args.highlight:
+        highlight = True
+
     if args.command == 'search':
         server.source_collection.sources[0].search_maps(bsp_name=args.string, gametype=args.gametype, author=args.author,
-                                                        title=args.title, pk3_name=args.pk3, shasum=args.shasum, args=args)
+                                                        title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
+                                                        highlight=highlight)
 
     if args.command == 'install':
         server.library.install_map(pk3_name=args.pk3)
@@ -44,13 +56,13 @@ def main():
         server.library.remove_map(pk3_name=args.pk3)
 
     if args.command == 'discover':
-        server.library.discover_maps(args=args, add=args.add)
+        server.library.discover_maps(add=args.add)
 
     if args.command == 'list':
-        server.library.list_installed(args=args)
+        server.library.list_installed()
 
     if args.command == 'show':
-        server.library.show_map(pk3_name=args.pk3, where='all', args=args)
+        server.library.show_map(pk3_name=args.pk3, where='all', detail=detail, highlight=highlight)
 
     if args.command == 'export':
         server.library.store.export_packages(filename=args.file)
@@ -102,7 +114,6 @@ def parse_args():
     parser_list = subparsers.add_parser('list', help='list locally installed packages')
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
     parser_list.add_argument('--short', '-s', help='show short format', action='store_true')
-    parser_list.add_argument('--highlight', '-H', help='highlight search term in results', action='store_true')
 
     parser_show = subparsers.add_parser('show', help='show details of locally installed package')
     parser_show.add_argument('pk3', nargs='?', help='pk3 to show details for', type=str)
