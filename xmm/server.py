@@ -11,8 +11,8 @@ class ServerCollection(Base):
     """
     A *ServerCollection* is a group of *LocalServer* objects
     """
-    def __init__(self, conf, args, servers):
-        super().__init__(conf)
+    def __init__(self, servers):
+        super().__init__()
         self.servers = servers
 
     def __repr__(self):
@@ -46,43 +46,38 @@ class LocalServer(Base):
 
             * ``Repository``
 
-    :param conf:
-        The conf dictionary from ``config.py``
-    :type conf: ``dict``
-
     :returns object: ``LocalServer``
         Commands are available off ``self.library``.
 
     :Example:
 
     >>> from xmm.server import LocalServer
-    >>> from xmm.config import conf
-    >>> server = LocalServer(conf=conf, server_name='myserver1')
+    >>> server = LocalServer(server_name='myserver1')
     >>> print(server)
     """
 
-    def __init__(self, conf, server_name, source_name=None):
-        super().__init__(conf)
+    def __init__(self, server_name, source_name=None):
+        super().__init__()
 
-        store = Store(conf=conf, server_name=server_name)
+        store = Store(server_name=server_name)
 
         if source_name:
             # default
             one_repo = self.conf['sources'][source_name]
             map_dir = self.conf['default']['target_dir']
-            source_repository = SourceRepository(conf=conf, name=source_name, download_url=one_repo['download_url'],
+            source_repository = SourceRepository(name=source_name, download_url=one_repo['download_url'],
                                                  api_data_url=one_repo['api_data_url'], api_data_file=one_repo['api_data_file'])
         else:
             # TODO: for each source in one_repo
             # for source in self.conf['sources']:
             map_dir = self.conf['servers'][server_name]['target_dir']
-            source_repository = SourceRepository(conf=conf, name='default', download_url=self.conf['default']['download_url'],
+            source_repository = SourceRepository(name='default', download_url=self.conf['default']['download_url'],
                                                  api_data_url=self.conf['default']['api_data_url'], api_data_file=self.conf['default']['api_data_file'])
 
         self.source_collection = SourceCollection()
         self.source_collection.add_repository(source_repository)
 
-        self.library = Library(conf=conf, store=store, source_collection=self.source_collection, map_dir=map_dir)
+        self.library = Library(store=store, source_collection=self.source_collection, map_dir=map_dir)
 
     def __repr__(self):
         return str(vars(self))

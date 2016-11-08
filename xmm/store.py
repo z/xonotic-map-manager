@@ -12,10 +12,6 @@ class Store(Base):
     """
     *Store* is for interacting with the datastore for a *Library*
 
-    :param conf:
-        The conf dictionary from ``config.py``
-    :type conf: ``dict``
-
     :param server_name:
         Positional arguments
     :type server_name: ``tuple``
@@ -23,8 +19,8 @@ class Store(Base):
     :returns object: ``Store``
 
     """
-    def __init__(self, conf, server_name):
-        super().__init__(conf)
+    def __init__(self, server_name):
+        super().__init__()
 
         if server_name:
             server_data = self.conf['servers']
@@ -72,7 +68,7 @@ class Store(Base):
                 package_data = json.loads(data)
 
             for m in package_data:
-                new_map = MapPackage(conf=self.conf, map_package_json=m)
+                new_map = MapPackage(map_package_json=m)
                 repo_data.append(new_map)
 
         return repo_data
@@ -123,8 +119,7 @@ class Store(Base):
         :type filename: ``str``
 
         >>> from xmm.server import LocalServer
-        >>> from xmm.config import conf
-        >>> server = LocalServer(conf=conf, server_name='myserver1')
+        >>> server = LocalServer(server_name='myserver1')
         """
         # fix this
         data_out = []

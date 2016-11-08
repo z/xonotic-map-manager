@@ -11,10 +11,6 @@ class Library(Base):
     """
     A *Library* is a collection of *MapPackage* objects and commands for managing maps in the *Library*
 
-    :param conf:
-        The conf dictionary from ``config.py``
-    :type conf: ``dict``
-
     :param source_collection:
     :type source_collection: ``SourceCollection``
         A *SourceCollection* object with *Repository* objects
@@ -30,8 +26,8 @@ class Library(Base):
     :returns object: ``Library``
 
     """
-    def __init__(self, conf, source_collection, store, map_dir):
-        super().__init__(conf)
+    def __init__(self, source_collection, store, map_dir):
+        super().__init__()
         self.maps = []
         self.source_collection = source_collection
         self.store = store
@@ -99,8 +95,7 @@ class Library(Base):
         :type pk3_name: ``str``
 
         >>> from xmm.server import LocalServer
-        >>> from xmm.config import conf
-        >>> server = LocalServer(conf=conf, server_name='myserver1')
+        >>> server = LocalServer(server_name='myserver1')
         >>> server.library.install_map(pk3_name='dance.pk3')
         >>> print(server.library.maps)
         """
@@ -161,8 +156,7 @@ class Library(Base):
         :type pk3_name: ``str``
 
         >>> from xmm.server import LocalServer
-        >>> from xmm.config import conf
-        >>> server = LocalServer(conf=conf, server_name='myserver1')
+        >>> server = LocalServer(server_name='myserver1')
         >>> server.library.install_map(pk3_name='dance.pk3')
         >>> print(server.library.maps)
         >>> server.library.remove_map(pk3_name='dance.pk3')

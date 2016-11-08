@@ -49,10 +49,6 @@ class SourceRepository(Base):
     A *SourceRepository* contains a url which hosts content matching the
     **JSON** format described in the documentation
 
-    :param conf:
-        The conf dictionary from ``config.py``
-    :type conf: ``dict``
-
     :param name:
         A name for this *SourceRepository*
     :type name: ``str``
@@ -72,8 +68,8 @@ class SourceRepository(Base):
     :returns object: ``SourceRepository``
 
     """
-    def __init__(self, conf, name, download_url, api_data_url, api_data_file):
-        super().__init__(conf)
+    def __init__(self, name, download_url, api_data_url, api_data_file):
+        super().__init__()
         self.name = name
         self.api_data_url = api_data_url
         self.download_url = download_url
@@ -218,7 +214,7 @@ class SourceRepository(Base):
                 maps = json.loads(data)['data']
 
             for m in maps:
-                new_map = MapPackage(conf=self.conf, map_package_json=m)
+                new_map = MapPackage(map_package_json=m)
                 repo_data.append(new_map)
 
             self.repo_data = repo_data

@@ -10,10 +10,6 @@ class MapPackage(Base):
     """
     *MapPackage* contains top-level metadata about a pk3 file and list of *Bsp* objects inside this package
 
-    :param conf:
-        The conf dictionary from ``config.py``
-    :type conf: ``dict``
-
     :param map_package_json:
         *JSON* as specified in the documentation
     :type map_package_json: ``json``
@@ -21,8 +17,8 @@ class MapPackage(Base):
     :returns object: ``MapPackage``
 
     """
-    def __init__(self, conf, map_package_json):
-        super().__init__(conf)
+    def __init__(self, map_package_json):
+        super().__init__()
 
         if not isinstance(map_package_json, dict):
             map_package = json.loads(map_package_json)

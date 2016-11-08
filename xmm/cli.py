@@ -29,9 +29,9 @@ def main():
         exit(0)
 
     elif args.server:
-        server = LocalServer(conf=conf, server_name=args.server)
+        server = LocalServer(server_name=args.server)
     else:
-        server = LocalServer(conf=conf, server_name=args.server, source_name='default')
+        server = LocalServer(server_name=args.server, source_name='default')
 
     if args.command == 'search':
         server.source_collection.sources[0].search_maps(bsp_name=args.string, gametype=args.gametype, author=args.author,
