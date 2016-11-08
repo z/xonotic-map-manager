@@ -70,7 +70,7 @@ def parse_config(config_file):
 
     if not os.path.isfile(config_file):
         print(bcolors.WARNING + config_file + ' not found, please create one.' + bcolors.ENDC)
-        raise SystemExit
+        Exception('Config not found.')
 
     conf = configparser.ConfigParser()
     conf.read(config_file)

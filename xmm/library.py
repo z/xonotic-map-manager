@@ -135,6 +135,7 @@ class Library(Base):
         for m in maps_json:
             if m.pk3_file == pk3 and add_to_store:
                 self.store.add_package(m)
+                self.add_map_package(m)
                 map_in_repo = True
                 break
 
@@ -149,7 +150,7 @@ class Library(Base):
                                         'it won\'t be added to the local database.' + bcolors.ENDC)
             else:
                 print(bcolors.FAIL + 'package does not exist in the repository. cannot install.' + bcolors.ENDC)
-                raise SystemExit
+                Exception('package does not exist in the repository.')
 
     def remove_map(self, pk3_name):
         """
@@ -174,23 +175,22 @@ class Library(Base):
         if os.path.exists(map_dir):
             pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3_name)
 
+            repo_data = self.source_collection.sources[0].get_repo_data()
+
+            for m in repo_data:
+                if m.pk3_file == pk3_name:
+                    self.store.remove_package(m)
+
             if os.path.exists(pk3_with_path):
                 os.remove(pk3_with_path)
-
-                repo_data = self.source_collection.sources[0].get_repo_data()
-
-                for m in repo_data:
-                    if m.pk3_file == pk3_name:
-                        self.store.remove_package(m)
-
                 print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
             else:
                 print(bcolors.FAIL + 'package does not exist.' + bcolors.ENDC)
-                raise SystemExit
+                Exception('package does not exist.')
 
         else:
             print(bcolors.FAIL + 'directory does not exist.' + bcolors.ENDC)
-            raise SystemExit
+            Exception('directory does not exist.')
 
     def discover_maps(self, args, add=False):
         """

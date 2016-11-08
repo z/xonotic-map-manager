@@ -32,7 +32,7 @@ class Store(Base):
                 package_store_file = os.path.expanduser(server_data[server_name]['library'])
             else:
                 print('server not defined in: ' + self.conf['servers_config'])
-                raise SystemExit
+                Exception('Server not defined.')
         else:
             package_store_file = os.path.expanduser(self.conf['servers']['myserver1']['library'])
 
@@ -43,6 +43,7 @@ class Store(Base):
 
     def __json__(self):
         return {
+            'data': self.data,
             'data_file': self.data_file,
         }
 
