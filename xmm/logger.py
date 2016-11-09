@@ -1,9 +1,10 @@
 import logging
+import os
 
 logger = logging.getLogger('xmm')
 logger.setLevel(logging.DEBUG)
 
-fh = logging.FileHandler('xmm.log')
+fh = logging.FileHandler(os.path.expanduser('~/.xmm/xmm.log'))
 fh.setLevel(logging.DEBUG)
 
 # create console handler with a higher log level

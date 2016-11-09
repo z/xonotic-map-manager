@@ -10,6 +10,7 @@ from xmm import util
 
 from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
+from xmm.logger import logger
 from xmm.config import conf
 
 plugins = {}
@@ -21,6 +22,7 @@ def main():
     args = parse_args()
     server = None
 
+    # Just install
     if args.target:
         target_dir = args.target
         filename_with_path = os.path.join(target_dir, args.pk3)
@@ -28,14 +30,17 @@ def main():
         util.download_file(filename_with_path=filename_with_path, url=url_with_file, use_curl=conf['default']['use_curl'])
         exit(0)
 
+    # Use all source repositories
     elif args.server:
         server = LocalServer(server_name=args.server)
+    # Use only the default repository
     else:
         server = LocalServer(server_name=args.server, source_name='default')
 
-    if args.long:
+    # Sort out defaults
+    if 'long' in args and args.long:
         detail = 'long'
-    elif args.short:
+    elif 'short' in args and args.short:
         detail = 'short'
     else:
         detail = None
@@ -44,6 +49,7 @@ def main():
     if 'highlight' in args and args.highlight:
         highlight = True
 
+    # Commands
     if args.command == 'search':
         server.source_collection.sources[0].search_maps(bsp_name=args.string, gametype=args.gametype, author=args.author,
                                                         title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
@@ -128,7 +134,7 @@ def parse_args():
 
     # Handle plugins
     for i in pluginloader.get_plugins():
-        # print("Loading plugin: " + i["name"])
+        logger.debug("Loading plugin: " + i["name"])
         command = i['name']
         plugin = pluginloader.load_plugin(i)
         plugin_args = [plugin.get_args()]
