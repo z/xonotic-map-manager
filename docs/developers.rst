@@ -8,8 +8,8 @@ Checkout the examples in the ``./xmmc/plugins`` directory.
 
 .. code-block:: python
 
-    from plugins import pluginbase
-    from xmmc import util
+    from xmm.plugins import pluginbase
+    from xmm import util
 
     bcolors = util.bcolors
     config = pluginbase.get_config()
@@ -27,6 +27,10 @@ Checkout the examples in the ``./xmmc/plugins`` directory.
         print("Hello from a plugin!")
         print("Look, I have access to the config: " + config['api_data'])
         print(bcolors.BOLD + "and also utils" + bcolors.ENDC)
+
+.. warning::
+
+    This plugin system needs to be revisited and will likely change by the next minor release.
 
 JSON structure
 --------------
