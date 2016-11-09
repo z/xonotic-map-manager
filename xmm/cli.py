@@ -70,7 +70,10 @@ def main():
         server.library.list_installed()
 
     if args.command == 'show':
-        server.library.show_map(pk3_name=args.pk3, where='all', detail=detail, highlight=highlight)
+        if args.local:
+            server.library.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+        else:
+            server.source_collection.sources[0].show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
 
     if args.command == 'export':
         server.library.store.export_packages(filename=args.file)
@@ -123,8 +126,9 @@ def parse_args():
     parser_list.add_argument('--long', '-l', help='show long format', action='store_true')
     parser_list.add_argument('--short', '-s', help='show short format', action='store_true')
 
-    parser_show = subparsers.add_parser('show', help='show details of locally installed package')
+    parser_show = subparsers.add_parser('show', help='show details of remote or locally installed packages')
     parser_show.add_argument('pk3', nargs='?', help='pk3 to show details for', type=str)
+    parser_show.add_argument('--local', '-L', help='whether to show from local packages only or all repos', action='store_true')
     parser_show.add_argument('--long', '-l', help='show long format', action='store_true')
     parser_show.add_argument('--short', '-s', help='show short format', action='store_true')
 

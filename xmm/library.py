@@ -229,17 +229,13 @@ class Library(Base):
 
         print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
 
-    def show_map(self, pk3_name, where, detail=None, highlight=False):
+    def show_map(self, pk3_name, detail=None, highlight=False):
         """
         Convenience function to use the show_map_details helper
 
         :param pk3_name:
             The name of a pk3, such as ``dance.pk3``
         :type pk3_name: ``str``
-
-        :param where:
-            Where [installed|all].
-        :type where: ``str``
 
         :param detail:
             How much detail to show, [short, None, long]
@@ -251,37 +247,22 @@ class Library(Base):
 
         :returns: ``MapPackage``
         """
-        packages = None
-
-        if where == 'all':
-            packages = self.source_collection.sources[0].get_repo_data()
-
-        if where == 'installed':
-            packages = self.store.get_package_db()
+        packages = self.store.get_package_db()
 
         found_map = False
         hash_match = False
 
         for p in packages:
             if p.pk3_file == pk3_name:
-
-                if where == 'installed':
-                    shasum = util.hash_file(os.path.join(self.map_dir, pk3_name))
-                    if p.shasum == shasum:
-                        hash_match = True
-                        p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
-                        found_map = p
-                        print('')
-                    else:
-                        print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.WARNING + " hash different from repositories" + bcolors.ENDC)
-                else:
+                shasum = util.hash_file(os.path.join(self.map_dir, pk3_name))
+                if p.shasum == shasum:
+                    hash_match = True
                     p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
                     found_map = p
+                else:
+                    print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.WARNING + " hash different from repositories" + bcolors.ENDC)
 
         if not found_map and not hash_match:
-            if where == 'installed':
-                print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.FAIL + ' package not currently installed' + bcolors.ENDC)
-            else:
-                print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.FAIL + ' package was not found in repository' + bcolors.ENDC)
+            print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.FAIL + ' package not currently installed' + bcolors.ENDC)
 
         return found_map

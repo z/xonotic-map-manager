@@ -230,3 +230,35 @@ class SourceRepository(Base):
             self.repo_data = repo_data
 
         return self.repo_data
+
+    def show_map(self, pk3_name, detail=None, highlight=False):
+        """
+        Convenience function to use the show_map_details helper
+
+        :param pk3_name:
+            The name of a pk3, such as ``dance.pk3``
+        :type pk3_name: ``str``
+
+        :param detail:
+            How much detail to show, [short, None, long]
+        :type detail: ``str``
+
+        :param highlight:
+            Whether to highlight the results
+        :type highlight: ``bool``
+
+        :returns: ``MapPackage``
+        """
+
+        packages = self.get_repo_data()
+        found_map = False
+
+        for p in packages:
+            if p.pk3_file == pk3_name:
+                found_map = True
+                p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
+
+        if not found_map:
+            print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.FAIL + ' package was not found in repository' + bcolors.ENDC)
+
+        return found_map
