@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+# PYTHON_ARGCOMPLETE_OK
 # A tool to help manage Xonotic maps
 # z@xnz.me
 
+import argcomplete
 import argparse
 import os
 
@@ -144,6 +146,8 @@ def parse_args():
         for p in plugin_args:
             parser_plugin = subparsers.add_parser(p[0], **p[1])
             parser_plugin.add_argument(*p[2], **p[3])
+
+    argcomplete.autocomplete(parser)
 
     return parser.parse_args()
 
