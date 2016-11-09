@@ -11,6 +11,7 @@ config = util.parse_config(config_file_with_path)
 
 conf = {
     'default': {
+        'library': os.path.expanduser(os.path.join('~/.xmm/library.json')),
         'target_dir': os.path.expanduser(config['target_dir']),
         'download_url': os.path.expanduser(config['download_url']),
         'api_data_file': os.path.expanduser(config['api_data_file']),

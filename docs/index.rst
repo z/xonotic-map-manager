@@ -40,9 +40,9 @@ A command-line package manager for the xonotic-map-repository project.
    installation
    configuration
    usage
-   tests
    developers
    api
+   tests
    license
 
 

@@ -75,8 +75,8 @@ class LocalServer(Base):
             # TODO: for each source in one_repo
             for source_name in self.conf['sources']:
                 map_dir = self.conf['servers'][server_name]['target_dir']
-                source_repository = SourceRepository(name=source_name, download_url=self.conf[source_name]['download_url'],
-                                                     api_data_url=self.conf[source_name]['api_data_url'], api_data_file=self.conf[source_name]['api_data_file'])
+                source_repository = SourceRepository(name=source_name, download_url=self.conf['sources'][source_name]['download_url'],
+                                                     api_data_url=self.conf['sources'][source_name]['api_data_url'], api_data_file=self.conf['sources'][source_name]['api_data_file'])
 
                 self.source_collection.add_repository(source_repository)
 

@@ -22,6 +22,8 @@ class Store(Base):
     def __init__(self, server_name):
         super().__init__()
 
+        package_store_file = None
+
         if server_name:
             server_data = self.conf['servers']
             if server_name in server_data:
@@ -30,9 +32,10 @@ class Store(Base):
                 print('server not defined in: ' + self.conf['servers_config'])
                 Exception('Server not defined.')
         else:
-            package_store_file = os.path.expanduser(self.conf['servers']['myserver1']['library'])
+            package_store_file = os.path.expanduser(self.conf['default']['library'])
 
-        util.create_if_not_exists(package_store_file, json.dumps([]))
+        if package_store_file:
+            util.create_if_not_exists(package_store_file, json.dumps([]))
 
         self.data_file = package_store_file
         self.data = self.get_package_db()
