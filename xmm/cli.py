@@ -14,6 +14,7 @@ from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
 from xmm.logger import logger
 from xmm.config import conf
+from xmm.util import bcolors
 
 plugins = {}
 
@@ -76,7 +77,15 @@ def main():
             server.source_collection.sources[0].show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
 
     if args.command == 'export':
-        server.library.store.export_packages(filename=args.file)
+
+        default_export_name = 'xmm-export.json'
+        filename = args.file
+
+        if not filename:
+            filename = default_export_name
+            print(bcolors.WARNING + 'a name wasn\'t given. Exporting as: ' + filename + bcolors.ENDC)
+
+        server.library.store.export_packages(filename=filename)
 
     if args.command == 'update':
         server.source_collection.sources[0].update_repo_data()

@@ -4,7 +4,6 @@ import os
 from xmm.map import MapPackage
 
 from xmm.base import Base
-from xmm.util import bcolors
 from xmm import util
 
 
@@ -83,6 +82,8 @@ class Store(Base):
         :param package:
             MapPackage to add
         :type package: ``MapPackage``
+
+        :returns: False if fails
         """
         package_data = self.data
         package_data.append(package)
@@ -92,8 +93,12 @@ class Store(Base):
         for m in package_data:
             data_out.append(json.loads(m.to_json()))
 
-        with open(self.data_file, 'w+') as f:
-            json.dump(data_out, f)
+        try:
+            with open(self.data_file, 'w+') as f:
+                json.dump(data_out, f)
+        except EnvironmentError as e:
+            self.logger.error(e)
+            return False
 
     def remove_package(self, package):
         """
@@ -102,6 +107,8 @@ class Store(Base):
         :param package:
             MapPackage to remove
         :type package: ``MapPackage``
+
+        :returns: False if fails
         """
         package_store = []
 
@@ -110,8 +117,12 @@ class Store(Base):
                 package_store = json.load(f)
                 package_store[:] = [m for m in package_store if (m.get('shasum') != package.shasum and m.get('pk3') != package.pk3_file)]
 
-        with open(self.data_file, 'w+') as f:
-            json.dump(package_store, f)
+        try:
+            with open(self.data_file, 'w+') as f:
+                json.dump(package_store, f)
+        except EnvironmentError as e:
+            self.logger.error(e)
+            return False
 
     def export_packages(self, filename=None):
         """
@@ -121,18 +132,22 @@ class Store(Base):
             Name for the exported json file, default ``xmm-export.json``
         :type filename: ``str``
 
+        :returns: False if fails
         >>> from xmm.server import LocalServer
         >>> server = LocalServer(server_name='myserver1')
         """
-        # fix this
+        default_export_name = 'xmm-export.json'
+
         data_out = []
         for m in self.data:
             data_out.append(json.loads(m.to_json()))
 
         if not filename:
-            default_name = 'xmm-export.json'
-            print(bcolors.WARNING + 'a name wasn\'t given. Exporting as: ' + default_name + bcolors.ENDC)
-            filename = default_name
+            filename = default_export_name
 
-        with open(filename, 'w') as f:
-            f.write(json.dumps(data_out))
+        try:
+            with open(filename, 'w') as f:
+                f.write(json.dumps(data_out))
+        except EnvironmentError as e:
+            self.logger.error(e)
+            return False
