@@ -16,9 +16,15 @@ For information about what data is available check [JSON Structure](#JSON-struct
 ## Installation
 
 ```
+pip install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm
+```
+
+or for development:
+
+```
 git clone https://github.com:z/xonotic-map-manager.git
 cd xonotic-map-manager
-python3 setup.py install
+python3 setup.py develop
 ```
 
 ## Usage
