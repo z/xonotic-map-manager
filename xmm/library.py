@@ -12,16 +12,16 @@ class Library(Base):
     A *Library* is a collection of *MapPackage* objects and commands for managing maps in the *Library*
 
     :param source_collection:
-    :type source_collection: ``SourceCollection``
         A *SourceCollection* object with *Repository* objects
+    :type source_collection: ``SourceCollection``
 
     :param store:
-    :type store: ``Store``
         A *Store* object for communicate with the data store for this *Library*
+    :type store: ``Store``
 
     :param map_dir:
-    :type map_dir: ``str``
         The directory this *Library* is associated with
+    :type map_dir: ``str``
 
     :returns object: ``Library``
 
@@ -193,6 +193,10 @@ class Library(Base):
         :param add:
             Whether to add the discovered maps or not
         :type add: ``bool``
+
+        >>> from xmm.server import LocalServer
+        >>> server = LocalServer()
+        >>> server.library.discover_maps(add=False)
         """
         map_dir = os.path.expanduser(self.map_dir)
         packages = self.store.get_package_db()
@@ -218,6 +222,10 @@ class Library(Base):
         List maps currently tracked by the *Library*
 
         :returns: ``SourceCollection``
+
+        >>> from xmm.server import LocalServer
+        >>> server = LocalServer()
+        >>> server.library.list_installed()
         """
         packages = self.store.data
 
@@ -246,6 +254,10 @@ class Library(Base):
         :type highlight: ``bool``
 
         :returns: ``MapPackage``
+
+        >>> from xmm.server import LocalServer
+        >>> server = LocalServer()
+        >>> server.library.show_map('dance.pk3', detail='long')
         """
         packages = self.store.get_package_db()
 

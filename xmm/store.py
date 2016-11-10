@@ -18,20 +18,8 @@ class Store(Base):
     :returns object: ``Store``
 
     """
-    def __init__(self, server_name):
+    def __init__(self, package_store_file):
         super().__init__()
-
-        package_store_file = None
-
-        if server_name:
-            server_data = self.conf['servers']
-            if server_name in server_data:
-                package_store_file = os.path.expanduser(server_data[server_name]['library'])
-            else:
-                print('server not defined in: ' + self.conf['servers_config'])
-                Exception('Server not defined.')
-        else:
-            package_store_file = os.path.expanduser(self.conf['default']['library'])
 
         if package_store_file:
             util.create_if_not_exists(package_store_file, json.dumps([]))
@@ -133,8 +121,10 @@ class Store(Base):
         :type filename: ``str``
 
         :returns: False if fails
+
         >>> from xmm.server import LocalServer
-        >>> server = LocalServer(server_name='myserver1')
+        >>> server = LocalServer()
+        >>> server.library.store.export_packages(filename='test.json')
         """
         default_export_name = 'xmm-export.json'
 

@@ -1,4 +1,6 @@
 import json
+import os
+
 from xmm.base import Base
 from xmm.library import Library
 from xmm.repository import SourceRepository
@@ -56,25 +58,30 @@ class LocalServer(Base):
     >>> print(server)
     """
 
-    def __init__(self, server_name, source_name=None):
+    def __init__(self, server_name='default', source_name=None):
         super().__init__()
 
-        store = Store(server_name=server_name)
         map_dir = self.conf['default']['target_dir']
+        package_store_file = os.path.expanduser(self.conf['default']['library'])
+
+        if server_name != 'default':
+            map_dir = self.conf['servers'][server_name]['target_dir']
+            server_data = self.conf['servers']
+            if server_name in server_data:
+                package_store_file = os.path.expanduser(server_data[server_name]['library'])
+
+        store = Store(package_store_file=package_store_file)
 
         self.source_collection = SourceCollection()
 
         if source_name:
-            # default
             one_repo = self.conf['sources'][source_name]
             source_repository = SourceRepository(name=source_name, download_url=one_repo['download_url'],
                                                  api_data_url=one_repo['api_data_url'], api_data_file=one_repo['api_data_file'])
             self.source_collection.add_repository(source_repository)
 
         else:
-            # TODO: for each source in one_repo
             for source_name in self.conf['sources']:
-                map_dir = self.conf['servers'][server_name]['target_dir']
                 source_repository = SourceRepository(name=source_name, download_url=self.conf['sources'][source_name]['download_url'],
                                                      api_data_url=self.conf['sources'][source_name]['api_data_url'], api_data_file=self.conf['sources'][source_name]['api_data_file'])
 
