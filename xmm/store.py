@@ -15,6 +15,11 @@ class Store(Base):
         Positional arguments
     :type server_name: ``tuple``
 
+    >>> import os
+    >>> from xmm.store import Store
+    >>> package_store_file = os.path.expanduser('~/.xmm/library.json')
+    >>> store = Store(package_store_file=package_store_file)
+
     :returns object: ``Store``
 
     """
@@ -42,6 +47,12 @@ class Store(Base):
     def get_package_db(self):
         """
         Searches the repository for maps matching criteria
+
+        >>> import os
+        >>> from xmm.store import Store
+        >>> package_store_file = os.path.expanduser('~/.xmm/library.json')
+        >>> store = Store(package_store_file=package_store_file)
+        >>> store.get_package_db()
 
         :returns: ``dict``
         """
@@ -71,6 +82,17 @@ class Store(Base):
             MapPackage to add
         :type package: ``MapPackage``
 
+        >>> import os
+        >>> from xmm.map import MapPackage
+        >>> from xmm.store import Store
+        >>> package_store_file = os.path.expanduser('~/.xmm/library.json')
+        >>> with open('my_map.json') as f:
+        >>>     data = f.read()
+        >>>     my_map = MapPackage(map_package_json=data)
+        >>> store = Store(package_store_file=package_store_file)
+        >>> store.add_package(my_map)
+
+
         :returns: False if fails
         """
         package_data = self.data
@@ -95,6 +117,16 @@ class Store(Base):
         :param package:
             MapPackage to remove
         :type package: ``MapPackage``
+
+        >>> import os
+        >>> from xmm.map import MapPackage
+        >>> from xmm.store import Store
+        >>> package_store_file = os.path.expanduser('~/.xmm/library.json')
+        >>> with open('my_map.json') as f:
+        >>>     data = f.read()
+        >>>     my_map = MapPackage(map_package_json=data)
+        >>> store = Store(package_store_file=package_store_file)
+        >>> store.remove_package(my_map)
 
         :returns: False if fails
         """
@@ -123,6 +155,7 @@ class Store(Base):
         :returns: False if fails
 
         >>> from xmm.server import LocalServer
+        >>> # Setup the store automatically with an instance of *LocalServer*
         >>> server = LocalServer()
         >>> server.library.store.export_packages(filename='test.json')
         """

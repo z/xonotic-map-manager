@@ -11,16 +11,82 @@ class MapPackage(Base):
     *MapPackage* contains top-level metadata about a pk3 file and list of *Bsp* objects inside this package
 
     :param map_package_json:
-        *JSON* as specified in the documentation
-    :type map_package_json: ``json``
+        A dict or *JSON* string that matches "specification" in the Developers section of the documentation.
+
+        See basic example below:
+
+        .. code-block:: json
+
+            {
+              "data": [
+                {
+                  "date": 1453749340,
+                  "filesize": 7856907,
+                  "bsp": {
+                    "vapor_alpha_2": {
+                      "radar": "gfx/vapor_alpha_2_mini.tga",
+                      "waypoints": "",
+                      "title": "Vapor",
+                      "description": "Such CTF. Many Vehicles. Wow.",
+                      "map": "maps/vapor_alpha_2.map",
+                      "entities": {
+                        "info_player_deathmatch": 4,
+                        "info_player_team1": 11,
+                        "info_player_team2": 11,
+                        "item_armor_big": 10,
+                        "item_armor_large": 4,
+                        "item_armor_medium": 16,
+                        "item_armor_small": 124,
+                        "item_bullets": 10,
+                        "item_cells": 14,
+                        "item_flag_team1": 1,
+                        "item_flag_team2": 1,
+                        "item_health_large": 6,
+                        "item_health_medium": 30,
+                        "item_health_mega": 2,
+                        "item_health_small": 100,
+                        "item_invincible": 1,
+                        "item_rockets": 20,
+                        "item_strength": 1,
+                        "weapon_crylink": 4,
+                        "weapon_devastator": 6,
+                        "weapon_electro": 2,
+                        "weapon_grenadelauncher": 6,
+                        "weapon_hagar": 4,
+                        "weapon_machinegun": 6,
+                        "weapon_vortex": 4
+                      },
+                      "mapinfo": "maps/vapor_alpha_2.mapinfo",
+                      "author": "-z-",
+                      "gametypes": [
+                        "ctf",
+                        "DM"
+                      ],
+                      "license": true,
+                      "mapshot": "maps/vapor_alpha_2.jpg"
+                    }
+                  },
+                  "shasum": "3df0143516f72269f465070373f165c8787964d5",
+                  "pk3": "map-vapor_alpha_2.pk3"
+                }
+              ]
+            }
+
+    :type map_package_json: ``string|dict``
 
     :returns object: ``MapPackage``
+
+    >>> from xmm.map import MapPackage
+    >>> with open('my_map.json') as f:
+    >>>     data = f.read()
+    >>>     my_map = MapPackage(map_package_json=data)
 
     """
     def __init__(self, map_package_json):
         super().__init__()
 
         if not isinstance(map_package_json, dict):
+            print(map_package_json)
             map_package = json.loads(map_package_json)
         else:
             map_package = map_package_json
