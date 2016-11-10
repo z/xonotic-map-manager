@@ -56,12 +56,31 @@ class MapPackage(Base):
         }
 
     def to_json(self):
+        """
+        :returns: A **JSON** encoded version of this object
+        """
         return json.dumps(self, cls=util.ObjectEncoder)
 
     # TODO: improve this function
-    def show_map_details(self, search_string="", detail=None, highlight=False):
+    def show_map_details(self, detail=None, search_string='', highlight=False):
         """
         Helper function for pretty printing details about a *MapPackage*
+
+        Convenience function to use the show_map_details helper
+
+        :param detail:
+            How much detail to show, [short, None, long]
+        :type detail: ``str``
+
+        :param search_string:
+            A string to highlight with ``highlight=True``
+        :type search_string: ``str``
+
+        :param highlight:
+            Whether to highlight the results
+        :type highlight: ``bool``
+
+        :returns: ``MapPackage``
         """
 
         bsps = self.bsp

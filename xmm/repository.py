@@ -1,8 +1,8 @@
 import json
 import os
 import re
-import time
 import urllib.request
+from urllib.error import URLError
 
 from xmm.map import MapPackage
 
@@ -202,13 +202,17 @@ class SourceRepository(Base):
         """
         Updates sources cache with latest maps from *Repository*
         """
-        print('Updating sources json...')
-        urllib.request.urlretrieve(self.api_data_url, self.api_data, util.reporthook)
-        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+        try:
+            print('Updating sources json...')
+            urllib.request.urlretrieve(self.api_data_url, self.api_data, util.reporthook)
+            print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+        except URLError as e:
+            self.logger.debug('Error updating repo date: {}'.format(e))
 
     def get_repo_data(self):
         """
         Gets the cached map list from *Repository*
+
         :returns: ``json``
         """
         if not self.repo_data:
