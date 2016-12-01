@@ -43,6 +43,52 @@ class SourceCollection(object):
         """
         self.sources.append(repository)
 
+    def search_all(self, bsp_name=False, gametype=False, author=False, title=False, pk3_name=False, shasum=False, detail=None, highlight=False):
+        """
+        Searches all *SourceRepository* objects in the *SourceCollection* for maps matching criteria
+
+        :param bsp_name:
+            Search by bsp name
+        :type bsp_name: ``str``
+
+        :param gametype:
+            Search by gametype
+        :type gametype: ``str``
+
+        :param author:
+            Search by author
+        :type author: ``str``
+
+        :param title:
+            Search by title
+        :type title: ``str``
+
+        :param pk3_name:
+            Search by pk3_name
+        :type pk3_name: ``str``
+
+        :param shasum:
+            Search by shasum
+        :type shasum: ``str``
+
+        :param detail:
+            How much detail in the results, [short, None, long]
+        :type detail: ``str``
+
+        :param highlight:
+            Whether to highlight the search string
+        :type highlight: ``bool``
+        """
+        for repo in self.sources:
+            repo.search_maps(bsp_name=bsp_name, gametype=gametype, author=author, title=title, pk3_name=pk3_name, shasum=shasum, detail=detail, highlight=highlight)
+
+    def update_all(self):
+        """
+        Update the data for all *SourceRepository* objects in the *SourceCollection*
+        """
+        for repo in self.sources:
+            repo.update_repo_data()
+
 
 class SourceRepository(Base):
     """
@@ -174,7 +220,7 @@ class SourceRepository(Base):
         criteria = list(set(criteria))
 
         if len(criteria) > 0:
-            print(bcolors.HEADER + 'Searching for packages with the following criteria:' + bcolors.ENDC)
+            print(bcolors.HEADER + 'Searching ' + self.name + ' repo for packages with the following criteria:' + bcolors.ENDC)
             for c in criteria:
                 print(bcolors.BOLD + str(c[0]) + bcolors.ENDC + ': ' + str(c[1]))
 
@@ -203,7 +249,7 @@ class SourceRepository(Base):
         Updates sources cache with latest maps from *Repository*
         """
         try:
-            print('Updating sources json...')
+            print('Updating ' + self.name + ' sources json...')
             urllib.request.urlretrieve(self.api_data_url, self.api_data, util.reporthook)
             print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
         except URLError as e:

@@ -34,11 +34,8 @@ def main():
         exit(0)
 
     # Use all source repositories
-    elif args.server:
-        server = LocalServer(server_name=args.server)
-    # Use only the default repository
     else:
-        server = LocalServer(server_name=args.server, source_name='default')
+        server = LocalServer(server_name=args.server)
 
     # Sort out defaults
     if 'long' in args and args.long:
@@ -54,9 +51,9 @@ def main():
 
     # Commands
     if args.command == 'search':
-        server.source_collection.sources[0].search_maps(bsp_name=args.string, gametype=args.gametype, author=args.author,
-                                                        title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
-                                                        highlight=highlight)
+        server.source_collection.search_all(bsp_name=args.string, gametype=args.gametype, author=args.author,
+                                            title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
+                                            highlight=highlight)
 
     if args.command == 'install':
         server.library.install_map(pk3_name=args.pk3)
@@ -88,7 +85,7 @@ def main():
         server.library.store.export_packages(filename=filename)
 
     if args.command == 'update':
-        server.source_collection.sources[0].update_repo_data()
+        server.source_collection.update_all()
 
     # Plugins
     for cmd, value in plugins.items():
