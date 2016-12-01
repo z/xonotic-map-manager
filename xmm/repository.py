@@ -12,11 +12,11 @@ from xmm.util import cprint
 from xmm import util
 
 
-class SourceCollection(object):
+class Collection(object):
     """
-    A *SourceCollection* is a collection of *SourceRepository* objects
+    A *Collection* is a collection of *Repository* objects
 
-    :returns object: *SourceCollection*
+    :returns object: *Collection*
     """
     def __init__(self):
         self.sources = []
@@ -35,29 +35,32 @@ class SourceCollection(object):
         """
         return json.dumps(self, cls=util.ObjectEncoder)
 
-    def use(self, name):
+    def get_repository(self, repository_name):
         """
-        :returns: A **SourceRepository** object or false if name not found
+        :param repository_name:
+        :type repository_name: ``str``
+
+        :returns: A **Repository** object or false if name not found
         """
         repo = False
         for source in self.sources:
-            if source.name == name:
+            if source.name == repository_name:
                 repo = source
 
         return repo
 
     def add_repository(self, repository):
         """
-        Add a *SourceRepository* to the *SourceCollection*
+        Add a *Repository* to the *Collection*
 
         :param repository:
-        :type repository: ``SourceRepository``
+        :type repository: ``Repository``
         """
         self.sources.append(repository)
 
     def search_all(self, bsp_name=False, gametype=False, author=False, title=False, pk3_name=False, shasum=False, detail=None, highlight=False):
         """
-        Searches all *SourceRepository* objects in the *SourceCollection* for maps matching criteria
+        Searches all *Repository* objects in the *Collection* for maps matching criteria
 
         :param bsp_name:
             Search by bsp name
@@ -96,19 +99,19 @@ class SourceCollection(object):
 
     def update_all(self):
         """
-        Update the data for all *SourceRepository* objects in the *SourceCollection*
+        Update the data for all *Repository* objects in the *Collection*
         """
         for repo in self.sources:
             repo.update_repo_data()
 
 
-class SourceRepository(Base):
+class Repository(Base):
     """
-    A *SourceRepository* contains a url which hosts content matching the
+    A *Repository* contains a url which hosts content matching the
     **JSON** format described in the documentation
 
     :param name:
-        A name for this *SourceRepository*
+        A name for this *Repository*
     :type name: ``str``
 
     :param download_url:
@@ -123,7 +126,7 @@ class SourceRepository(Base):
         Local cache fo the repo data.
     :type api_data_file: ``str``
 
-    :returns object: ``SourceRepository``
+    :returns object: ``Repository``
 
     """
     def __init__(self, name, download_url, api_data_url, api_data_file):

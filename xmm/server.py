@@ -3,15 +3,15 @@ import os
 
 from xmm.base import Base
 from xmm.library import Library
-from xmm.repository import SourceRepository
-from xmm.repository import SourceCollection
+from xmm.repository import Repository
+from xmm.repository import Collection
 from xmm.store import Store
 from xmm import util
 
 
 class ServerCollection(Base):
     """
-    A *ServerCollection* is a group of *LocalServer* objects
+    A *ServerCollection* is a group of *LocalServer* objects. Currently unused.
     """
     def __init__(self, servers):
         super().__init__()
@@ -24,6 +24,9 @@ class ServerCollection(Base):
         return self.servers
 
     def to_json(self):
+        """
+        :returns: A **JSON** encoded version of this object
+        """
         return json.dumps(self.servers, cls=util.ObjectEncoder)
 
 
@@ -44,7 +47,7 @@ class LocalServer(Base):
 
                 * ``Bsp``
 
-        * ``SourceCollection``
+        * ``Collection``
 
             * ``Repository``
 
@@ -72,31 +75,41 @@ class LocalServer(Base):
 
         store = Store(package_store_file=package_store_file)
 
-        self.source_collection = SourceCollection()
+        self.repositories = Collection()
 
         if source_name:
             one_repo = self.conf['sources'][source_name]
-            source_repository = SourceRepository(name=source_name, download_url=one_repo['download_url'],
-                                                 api_data_url=one_repo['api_data_url'], api_data_file=one_repo['api_data_file'])
-            self.source_collection.add_repository(source_repository)
+            repository = Repository(name=source_name,
+                                    download_url=one_repo['download_url'],
+                                    api_data_url=one_repo['api_data_url'],
+                                    api_data_file=one_repo['api_data_file']
+                                    )
+
+            self.repositories.add_repository(repository)
 
         else:
             for source_name in self.conf['sources']:
-                source_repository = SourceRepository(name=source_name, download_url=self.conf['sources'][source_name]['download_url'],
-                                                     api_data_url=self.conf['sources'][source_name]['api_data_url'], api_data_file=self.conf['sources'][source_name]['api_data_file'])
+                repository = Repository(name=source_name,
+                                        download_url=self.conf['sources'][source_name]['download_url'],
+                                        api_data_url=self.conf['sources'][source_name]['api_data_url'],
+                                        api_data_file=self.conf['sources'][source_name]['api_data_file']
+                                        )
 
-                self.source_collection.add_repository(source_repository)
+                self.repositories.add_repository(repository)
 
-        self.library = Library(store=store, source_collection=self.source_collection, map_dir=map_dir)
+        self.library = Library(store=store, repositories=self.repositories, map_dir=map_dir)
 
     def __repr__(self):
         return str(vars(self))
 
     def __json__(self):
         return {
-            'source_collection': self.source_collection,
+            'repositories': self.repositories,
             'library': self.library,
         }
 
     def to_json(self):
+        """
+        :returns: A **JSON** encoded version of this object
+        """
         return json.dumps(self, cls=util.ObjectEncoder)

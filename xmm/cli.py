@@ -51,13 +51,13 @@ def main():
 
     # Commands
     if args.command == 'search':
-        server.source_collection.search_all(bsp_name=args.string, gametype=args.gametype, author=args.author,
-                                            title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
-                                            highlight=highlight)
+        server.repositories.search_all(bsp_name=args.string, gametype=args.gametype, author=args.author,
+                                       title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
+                                       highlight=highlight)
 
     if args.command == 'install':
         if args.repository:
-            server.library.install_map(pk3_name=args.pk3, repository=args.repository)
+            server.library.install_map(pk3_name=args.pk3, repository_name=args.repository)
         else:
             server.library.install_map(pk3_name=args.pk3)
 
@@ -75,13 +75,13 @@ def main():
             server.library.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
         else:
             if args.repository:
-                repo = server.source_collection.use(args.repository)
+                repo = server.repositories.get_repository(args.repository)
                 if repo:
                     repo.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
                 else:
                     cprint("Repository doesn't exist in sources.json", style="FAIL")
             else:
-                server.source_collection.use('default').show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+                server.repositories.get_repository('default').show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
 
     if args.command == 'export':
 
@@ -95,7 +95,7 @@ def main():
         server.library.store.export_packages(filename=filename)
 
     if args.command == 'update':
-        server.source_collection.update_all()
+        server.repositories.update_all()
 
     # Plugins
     for cmd, value in plugins.items():

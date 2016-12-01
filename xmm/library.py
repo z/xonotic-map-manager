@@ -12,9 +12,9 @@ class Library(Base):
     """
     A *Library* is a collection of *MapPackage* objects and commands for managing maps in the *Library*
 
-    :param source_collection:
-        A *SourceCollection* object with *Repository* objects
-    :type source_collection: ``SourceCollection``
+    :param repositories:
+        A *Collection* object with *Repository* objects
+    :type repositories: ``Collection``
 
     :param store:
         A *Store* object for communicate with the data store for this *Library*
@@ -27,10 +27,10 @@ class Library(Base):
     :returns object: ``Library``
 
     """
-    def __init__(self, source_collection, store, map_dir):
+    def __init__(self, repositories, store, map_dir):
         super().__init__()
         self.maps = []
-        self.source_collection = source_collection
+        self.repositories = repositories
         self.store = store
         self.map_dir = os.path.expanduser(map_dir)
 
@@ -40,7 +40,7 @@ class Library(Base):
     def __json__(self):
         return {
             'maps': self.maps,
-            'source_collection': self.source_collection,
+            'repositories': self.repositories,
             'store': self.store,
             'map_dir': self.map_dir,
         }
@@ -63,14 +63,14 @@ class Library(Base):
 
     def get_repository_sources(self, server_name):
         """
-        Gets the *SourceCollection* from the *Library* of the specified *LocalServer* from ``self.source_collection``
+        Gets the *Collection* from the *Library* of the specified *LocalServer* from ``self.repositories``
         as cache, or from the ``sources.json`` targeted by ``servers.json`` if it is not already set.
 
         :param server_name:
             Server name
         :type server_name: ``str``
 
-        :returns: ``SourceCollection``
+        :returns: ``Collection``
         """
         if server_name:
             repo_sources = self.conf['servers'][server_name]['sources']
@@ -78,14 +78,14 @@ class Library(Base):
             with open(repo_sources) as f:
                 data = f.read()
                 sources = json.loads(data)
-                self.source_collection = sources
+                self.repositories = sources
         else:
-            repo_sources = self.source_collection
+            repo_sources = self.repositories
 
         return repo_sources
 
     # TODO: Rewrite this
-    def install_map(self, pk3_name, repository=None):
+    def install_map(self, pk3_name, repository_name=None):
         """
         Install a *MapPackage* from a *Repository*
 
@@ -107,15 +107,15 @@ class Library(Base):
         installed = False
         is_url = False
 
-        if repository:
-            repo = self.source_collection.use(repository)
+        if repository_name:
+            repo = self.repositories.get_repository(repository_name)
             if repo:
                 sources = [repo]
             else:
                 cprint("Repository does not exist!", style='FAIL')
                 raise SystemExit
         else:
-            sources = self.source_collection.sources
+            sources = self.repositories.sources
 
         if installed_packages:
             for m in installed_packages:
@@ -240,7 +240,7 @@ class Library(Base):
             How much detail to show, [short, None, long]
         :type detail: ``str``
 
-        :returns: ``SourceCollection``
+        :returns: ``Collection``
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer()

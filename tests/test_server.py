@@ -10,5 +10,5 @@ def test_server_init():
     assert hasattr(server, 'library')
     assert hasattr(server.library, 'store')
     assert hasattr(server.library, 'maps')
-    assert hasattr(server, 'source_collection')
-    assert hasattr(server.source_collection, 'sources')
+    assert hasattr(server, 'repositories')
+    assert hasattr(server.repositories, 'sources')

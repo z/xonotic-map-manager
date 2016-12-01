@@ -10,18 +10,34 @@ from datetime import datetime
 from shutil import copyfile
 
 
-def convert_size(num):
+def convert_size(number):
+    """
+    Convert and integer to a human-readable B/KB/MB/GB/TB string.
+
+    :param number:
+        integer to be converted to readable string
+    :type number: ``int``
+
+    :returns: `str`
+    """
     for x in ['B', 'KB', 'MB', 'GB']:
-        if num < 1024.0:
-            string = "%3.1d%s" % (num, x)
+        if number < 1024.0:
+            string = "%3.1d%s" % (number, x)
             return string.strip()
-        num /= 1024.0
-    string = "%3.1f%s" % (num, 'TB')
+        number /= 1024.0
+    string = "%3.1f%s" % (number, 'TB')
     return string.strip()
 
 
 def reporthook(count, block_size, total_size):
+    """
+    Pretty progress for urllib downloads.
 
+    >>> import urllib.request
+    >>> urllib.request.urlretrieve(url, filename, reporthook)
+
+    https://github.com/yahoo/caffe/blob/master/scripts/download_model_binary.py
+    """
     global start_time
 
     if count == 0:
@@ -70,7 +86,15 @@ def download_file(filename_with_path, url, use_curl=False, overwrite=False):
 
 
 def parse_config(config_file):
+    """
+    downloads a file from any URL
 
+    :param config_file:
+        filename with path to config file
+    :type config_file: ``str``
+
+    :returns: dict
+    """
     if not os.path.isfile(config_file):
         print("{}{} not found, please create one.{}".format(zcolors.WARNING, config_file, zcolors.ENDC))
         Exception('Config not found.')
@@ -129,14 +153,36 @@ def file_is_empty(filename):
     return os.stat(filename).st_size == 0
 
 
-def replace_last(s, old, new):
-    return s[::-1].replace(old[::-1], new[::-1], 1)[::-1]
+def replace_last(string, old, new):
+    """
+    Replace the last occurrence of a pattern in a string
+
+    :param string:
+        string
+    :type string: ``str``
+
+    :param old:
+        string to find
+    :type old: ``str``
+
+    :param new:
+        string to replace
+    :type new: ``str``
+
+    :returns: ``str``
+    """
+    return string[::-1].replace(old[::-1], new[::-1], 1)[::-1]
 
 
 def hash_file(filename):
     """
-    This function returns the SHA-1 hash
-    of the file passed into it
+    Returns the SHA-1 hash of the file passed into it
+
+    :param filename:
+        string filename
+    :type filename: ``str``
+
+    :returns: ``str``
     """
 
     # make a hash object
@@ -243,16 +289,25 @@ def cprint(string, style='INFO'):
     """
     Terminal formatting convenience function.
 
-    Options:
+    :param string:
+        A string to print.
+    :type string: ``str``
 
-        * HEADER
-        * INFO
-        * SUCCESS
-        * WARNING
-        * FAIL
-        * ENDC (end color)
-        * BOLD
-        * UNDERLINE
+    :param style:
+        A style to print.
+
+        Options:
+
+            * HEADER
+            * INFO
+            * SUCCESS
+            * WARNING
+            * FAIL
+            * ENDC (end color)
+            * BOLD
+            * UNDERLINE
+
+    :type style: ``str``
 
     >>> cprint("Success", style='SUCCESS')
 
