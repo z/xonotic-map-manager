@@ -2,7 +2,7 @@ import time
 import json
 
 from xmm.base import Base
-from xmm.util import bcolors
+from xmm.util import zcolors
 from xmm import util
 
 
@@ -126,7 +126,6 @@ class MapPackage(Base):
         """
         return json.dumps(self, cls=util.ObjectEncoder)
 
-    # TODO: improve this function
     def show_map_details(self, detail=None, search_string='', highlight=False):
         """
         Helper function for pretty printing details about a *MapPackage*
@@ -156,16 +155,16 @@ class MapPackage(Base):
         # Long view
         if detail == 'long':
             print('')
-            print('         pk3: {}{}{}'.format(bcolors.BOLD, str(self.pk3_file), bcolors.ENDC))
+            print('         pk3: {}{}{}'.format(zcolors.BOLD, str(self.pk3_file), zcolors.ENDC))
 
             for bsp in keys:
                 # Handle highlight
-                string_highlighted = '{}{}{}{}{}'.format(bcolors.ENDC, bcolors.OKGREEN, search_string, bcolors.ENDC, bcolors.OKBLUE)
+                string_highlighted = '{}{}{}{}{}'.format(zcolors.ENDC, zcolors.SUCCESS, search_string, zcolors.ENDC, zcolors.INFO)
                 bsp_highlighted = bsp.replace(search_string, string_highlighted)
                 if search_string and highlight:
-                    print('         bsp: {}{}{}'.format(bcolors.OKBLUE, bsp_highlighted, bcolors.ENDC))
+                    print('         bsp: {}{}{}'.format(zcolors.INFO, bsp_highlighted, zcolors.ENDC))
                 else:
-                    print('         bsp: {}'.format(bcolors.OKBLUE + bsp + bcolors.ENDC))
+                    print('         bsp: {}{}{}'.format(zcolors.INFO, bsp, zcolors.ENDC))
 
                 # bsp specific
                 print('       title:  {}'.format(str(self.bsp[bsp]['title'])))
@@ -184,17 +183,17 @@ class MapPackage(Base):
             print(str(self.pk3_file))
         # Default view
         else:
-            bsp_string = '\n{}{}{} ['.format(bcolors.BOLD, str(self.pk3_file), bcolors.ENDC)
+            bsp_string = '\n{}{}{} ['.format(zcolors.BOLD, str(self.pk3_file), zcolors.ENDC)
             for bsp in keys:
                 # Handle highlight
-                string_highlighted = '{}{}{}{}{}'.format(bcolors.ENDC, bcolors.OKGREEN, search_string, bcolors.ENDC, bcolors.OKBLUE)
+                string_highlighted = '{}{}{}{}{}'.format(zcolors.ENDC, zcolors.SUCCESS, search_string, zcolors.ENDC, zcolors.INFO)
                 bsp_highlighted = bsp.replace(search_string, string_highlighted)
                 if search_string and highlight:
-                    bsp_string += '{}{}{}, '.format(bcolors.OKBLUE, bsp_highlighted, bcolors.ENDC)
+                    bsp_string += '{}{}{}, '.format(zcolors.INFO, bsp_highlighted, zcolors.ENDC)
                 else:
-                    bsp_string += '{}{}{}, '.format(bcolors.OKBLUE, bsp, bcolors.ENDC)
+                    bsp_string += '{}{}{}, '.format(zcolors.INFO, bsp, zcolors.ENDC)
             bsp_string = util.replace_last(bsp_string, ', ', '')
-            bsp_string += ']'.format(bcolors.ENDC)
+            bsp_string += ']'.format(zcolors.ENDC)
             print(bsp_string)
             print('{}{}'.format(self.conf['default']['download_url'], str(self.pk3_file)))
 

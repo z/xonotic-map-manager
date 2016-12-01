@@ -1,7 +1,7 @@
 from xmm.plugins import pluginbase
-from xmm import util
+from xmm.util import zcolors
+from xmm.util import cprint
 
-bcolors = util.bcolors
 config = pluginbase.get_config()
 
 
@@ -15,10 +15,10 @@ def get_args():
 
 def run():
     print("Hello from a plugin!")
-    print(bcolors.HEADER + "I share the xmmc util module" + bcolors.ENDC)
-    print(bcolors.BOLD + "plugins can use these functions and classes" + bcolors.ENDC)
-    print(bcolors.OKBLUE + "It has tools for formatting." + bcolors.ENDC)
-    print(bcolors.FAIL + "oh noes! Something went wrong! (not really)" + bcolors.ENDC)
-    print(bcolors.WARNING + "It's okay! Don't Cry" + bcolors.ENDC)
-    print(bcolors.UNDERLINE + "Get Serious" + bcolors.ENDC)
-    print(bcolors.OKGREEN + "Look, I also have access to the config: " + config['servers_config'])
+    cprint("I share the xmm util module", style='HEADER')
+    cprint("plugins can use these functions and classes", style='BOLD')
+    cprint("I share the xmm util module", style='INFO')
+    cprint("oh noes! Something went wrong! (not really)", style='FAIL')
+    cprint("It's okay! Don't Cry", style='WARNING')
+    cprint("Get Serious", style='UNDERLINE')
+    print("{}Look, I also have access to the config: {}".format(zcolors.SUCCESS, config['servers_config']))

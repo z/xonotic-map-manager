@@ -73,9 +73,9 @@ Checkout the examples in the ``./xmmc/plugins`` directory.
 .. code-block:: python
 
     from xmm.plugins import pluginbase
-    from xmm import util
+    from xmm.util import zcolors
+    from xmm.util import cprint
 
-    bcolors = util.bcolors
     config = pluginbase.get_config()
 
 
@@ -89,8 +89,8 @@ Checkout the examples in the ``./xmmc/plugins`` directory.
 
     def run():
         print("Hello from a plugin!")
-        print("Look, I have access to the config: " + config['api_data'])
-        print(bcolors.BOLD + "and also utils" + bcolors.ENDC)
+        cprint("I share the xmm util module", style='INFO')
+        print("{}Look, I have access to the config: {}".format(zcolors.SUCCESS, config['api_data']))
 
 .. warning::
 

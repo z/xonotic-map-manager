@@ -3,7 +3,8 @@ import re
 import json
 
 from xmm.server import Base
-from xmm.util import bcolors
+from xmm.util import zcolors
+from xmm.util import cprint
 from xmm import util
 
 
@@ -106,7 +107,7 @@ class Library(Base):
         if installed_packages:
             for m in installed_packages:
                 if m.pk3_file == pk3_name:
-                    print(bcolors.FAIL + pk3_name + " already exists." + bcolors.ENDC)
+                    cprint("{} already exists.".format(pk3_name), style='WARNING')
                     install = util.query_yes_no('continue?', 'no')
                     if not install:
                         raise SystemExit
@@ -136,16 +137,16 @@ class Library(Base):
                 break
 
         if map_in_repo or is_url:
-            print('Installing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
+            cprint("Installing map: {}".format(pk3), style='BOLD')
             util.download_file(filename_with_path=pk3_with_path, url=url, use_curl=self.conf['default']['use_curl'], overwrite=True)
             installed = True
 
         if not map_in_repo:
             if installed:
-                print(bcolors.WARNING + 'package does not exist in the repository, ' +
-                                        'it won\'t be added to the local database.' + bcolors.ENDC)
+                cprint("package does not exist in the repository"
+                       "it won't be added to the local database.", style='WARNING')
             else:
-                print(bcolors.FAIL + 'package does not exist in the repository. cannot install.' + bcolors.ENDC)
+                cprint("package does not exist in the repository. cannot install.", style='FAIL')
                 Exception('package does not exist in the repository.')
 
     def remove_map(self, pk3_name):
@@ -165,7 +166,7 @@ class Library(Base):
         """
         map_dir = os.path.expanduser(self.map_dir)
 
-        print('Removing package: ' + bcolors.BOLD + pk3_name + bcolors.ENDC)
+        cprint("Removing package: {}".format(pk3_name), style='BOLD')
 
         if os.path.exists(map_dir):
             pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3_name)
@@ -178,13 +179,13 @@ class Library(Base):
 
             if os.path.exists(pk3_with_path):
                 os.remove(pk3_with_path)
-                print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+                cprint("Done.", style='INFO')
             else:
-                print(bcolors.FAIL + 'package does not exist.' + bcolors.ENDC)
+                cprint("package does not exist.", style='FAIL')
                 Exception('package does not exist.')
 
         else:
-            print(bcolors.FAIL + 'directory does not exist.' + bcolors.ENDC)
+            cprint("directory does not exist.", style='FAIL')
             Exception('directory does not exist.')
 
     def discover_maps(self, add=False):
@@ -240,7 +241,7 @@ class Library(Base):
                 m.show_map_details(detail=detail)
                 total += 1
 
-        print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
+        print("\n{}Total packages found:{} {}{}{}".format(zcolors.INFO, zcolors.ENDC, zcolors.BOLD, str(total), zcolors.ENDC))
 
     def show_map(self, pk3_name, detail=None, highlight=False):
         """
@@ -277,9 +278,9 @@ class Library(Base):
                     p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
                     found_map = p
                 else:
-                    print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.WARNING + " hash different from repositories" + bcolors.ENDC)
+                    print("\n{}{}{} {}hash different from repositories{}".format(zcolors.BOLD, pk3_name, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
 
         if not found_map and not hash_match:
-            print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.FAIL + ' package not currently installed' + bcolors.ENDC)
+            print("\n{}{}{} {}package not currently installed{}".format(zcolors.BOLD, pk3_name, zcolors.ENDC, zcolors.FAIL, zcolors.ENDC))
 
         return found_map

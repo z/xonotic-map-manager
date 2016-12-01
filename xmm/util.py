@@ -62,17 +62,17 @@ def download_file(filename_with_path, url, use_curl=False, overwrite=False):
         else:
             subprocess.call(['curl', '-o', filename_with_path, url])
 
-        print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+        print("{}Done.{}".format(zcolors.INFO, zcolors.ENDC))
 
     else:
-        print(bcolors.FAIL + 'file already exists, please remove first.' + bcolors.ENDC)
+        print("{}file already exists, please remove first.{}".format(zcolors.FAIL, zcolors.ENDC))
         return False
 
 
 def parse_config(config_file):
 
     if not os.path.isfile(config_file):
-        print(bcolors.WARNING + config_file + ' not found, please create one.' + bcolors.ENDC)
+        print("{}{} not found, please create one.{}".format(zcolors.WARNING, config_file, zcolors.ENDC))
         Exception('Config not found.')
 
     conf = configparser.ConfigParser()
@@ -196,17 +196,6 @@ def query_yes_no(question, default="yes"):
                              "(or 'y' or 'n').\n")
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
 # http://stackoverflow.com/a/24030569
 class ObjectEncoder(json.JSONEncoder):
     """
@@ -220,3 +209,19 @@ class ObjectEncoder(json.JSONEncoder):
             return obj.__json__()
 
         return json.JSONEncoder.default(self, obj)
+
+
+class zcolors:
+    HEADER = '\033[95m'
+    INFO = '\033[94m'
+    SUCCESS = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def cprint(string, style='INFO'):
+    color = getattr(zcolors, style)
+    print('{}{}{}'.format(color, string, zcolors.ENDC))

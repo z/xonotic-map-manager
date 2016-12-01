@@ -7,7 +7,8 @@ from urllib.error import URLError
 from xmm.map import MapPackage
 
 from xmm.base import Base
-from xmm.util import bcolors
+from xmm.util import zcolors
+from xmm.util import cprint
 from xmm import util
 
 
@@ -220,9 +221,9 @@ class SourceRepository(Base):
         criteria = list(set(criteria))
 
         if len(criteria) > 0:
-            print(bcolors.HEADER + 'Searching ' + self.name + ' repo for packages with the following criteria:' + bcolors.ENDC)
+            cprint("Searching {} repo for packages with the following criteria:".format(self.name), style='HEADER')
             for c in criteria:
-                print(bcolors.BOLD + str(c[0]) + bcolors.ENDC + ': ' + str(c[1]))
+                print("{}{}{}: {}".format(zcolors.BOLD, str(c[0]), zcolors.ENDC, str(c[1])))
 
         for m in fmaps_json:
             bsps = m.bsp
@@ -241,7 +242,7 @@ class SourceRepository(Base):
 
                     shown = True
 
-        print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
+        print("\n{}Total packages found:{} {}{}{}".format(zcolors.INFO, zcolors.ENDC, zcolors.BOLD, str(total), zcolors.ENDC))
 
     # remote data
     def update_repo_data(self):
@@ -249,9 +250,9 @@ class SourceRepository(Base):
         Updates sources cache with latest maps from *Repository*
         """
         try:
-            print('Updating ' + self.name + ' sources json...')
+            cprint("Updating {} sources json...".format(self.name), style='INFO')
             urllib.request.urlretrieve(self.api_data_url, self.api_data, util.reporthook)
-            print(bcolors.OKBLUE + 'Done.' + bcolors.ENDC)
+            cprint("Done.", style='INFO')
         except URLError as e:
             self.logger.debug('Error updating repo date: {}'.format(e))
 
@@ -266,7 +267,7 @@ class SourceRepository(Base):
             repo_data = []
 
             if not os.path.exists(self.api_data_file):
-                print(bcolors.WARNING + 'Could not find a repo file. Downloading one.' + bcolors.ENDC)
+                cprint("Could not find a repo file. Downloading one.".format(self.name), style='WARNING')
                 util.check_if_not_create(self.api_data_file, './resources/data/maps.json')
 
             with open(self.api_data_file) as f:
@@ -309,6 +310,6 @@ class SourceRepository(Base):
                 p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
 
         if not found_map:
-            print(bcolors.BOLD + pk3_name + bcolors.ENDC + bcolors.FAIL + ' package was not found in repository' + bcolors.ENDC)
+            cprint("package does not exist in the repository. cannot show.", style='FAIL')
 
         return found_map

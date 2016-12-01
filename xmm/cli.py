@@ -14,7 +14,7 @@ from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
 from xmm.logger import logger
 from xmm.config import conf
-from xmm.util import bcolors
+from xmm.util import cprint
 
 plugins = {}
 
@@ -80,7 +80,7 @@ def main():
 
         if not filename:
             filename = default_export_name
-            print(bcolors.WARNING + 'a name wasn\'t given. Exporting as: ' + filename + bcolors.ENDC)
+            cprint("a name wasn't given, exporting as: {}".format(filename), style='WARNING')
 
         server.library.store.export_packages(filename=filename)
 
