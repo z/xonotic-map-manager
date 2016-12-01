@@ -151,6 +151,7 @@ class MapPackage(Base):
         bsps = self.bsp
         keys = list(bsps)
         keys.sort()
+        search_string = str(search_string)
 
         # Long view
         if detail == 'long':
