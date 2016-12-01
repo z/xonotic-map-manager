@@ -1,4 +1,4 @@
-##  0.8.0 / 2016-11-xx
+##  0.8.0 / 2016-12-xx
 
 ### Added
 * Multi-repo support

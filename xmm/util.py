@@ -212,6 +212,23 @@ class ObjectEncoder(json.JSONEncoder):
 
 
 class zcolors:
+    """
+    Terminal formatting.
+
+    Options:
+
+        * HEADER
+        * INFO
+        * SUCCESS
+        * WARNING
+        * FAIL
+        * ENDC (end color)
+        * BOLD
+        * UNDERLINE
+
+    >>> "{}eggs{}: {}spam{}".format(zcolors.INFO, zcolors.ENDC, zcolors.UNDERLINE, zcolors.ENDC)
+
+    """
     HEADER = '\033[95m'
     INFO = '\033[94m'
     SUCCESS = '\033[92m'
@@ -223,5 +240,22 @@ class zcolors:
 
 
 def cprint(string, style='INFO'):
+    """
+    Terminal formatting convenience function.
+
+    Options:
+
+        * HEADER
+        * INFO
+        * SUCCESS
+        * WARNING
+        * FAIL
+        * ENDC (end color)
+        * BOLD
+        * UNDERLINE
+
+    >>> cprint("Success", style='SUCCESS')
+
+    """
     color = getattr(zcolors, style)
     print('{}{}{}'.format(color, string, zcolors.ENDC))
