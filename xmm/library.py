@@ -85,7 +85,7 @@ class Library(Base):
         return repo_sources
 
     # TODO: Rewrite this
-    def install_map(self, pk3_name):
+    def install_map(self, pk3_name, repository=None):
         """
         Install a *MapPackage* from a *Repository*
 
@@ -103,6 +103,19 @@ class Library(Base):
         map_dir = self.map_dir
         installed_packages = self.store.get_package_db()
         add_to_store = True
+        map_in_repo = False
+        installed = False
+        is_url = False
+
+        if repository:
+            repo = self.source_collection.use(repository)
+            if repo:
+                sources = [repo]
+            else:
+                cprint("Repository does not exist!", style='FAIL')
+                raise SystemExit
+        else:
+            sources = self.source_collection.sources
 
         if installed_packages:
             for m in installed_packages:
@@ -114,8 +127,6 @@ class Library(Base):
                     else:
                         add_to_store = False
 
-        installed = False
-        is_url = False
         if re.match('^(ht|f)tp(s)?://', pk3_name):
             url = pk3_name
             pk3 = os.path.basename(pk3_name)
@@ -126,8 +137,7 @@ class Library(Base):
 
         pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
-        map_in_repo = False
-        for repo in self.source_collection.sources:
+        for repo in sources:
             if not map_in_repo:
                 maps_json = repo.get_repo_data()
                 for m in maps_json:

@@ -56,7 +56,10 @@ def main():
                                             highlight=highlight)
 
     if args.command == 'install':
-        server.library.install_map(pk3_name=args.pk3)
+        if args.repository:
+            server.library.install_map(pk3_name=args.pk3, repository=args.repository)
+        else:
+            server.library.install_map(pk3_name=args.pk3)
 
     if args.command == 'remove':
         server.library.remove_map(pk3_name=args.pk3)
