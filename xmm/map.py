@@ -152,16 +152,17 @@ class MapPackage(Base):
         keys = list(bsps)
         keys.sort()
 
-        # little ugly here for a lot of pretty out
+        # Long view
         if detail == 'long':
             print('')
-            print('         pk3: ' + bcolors.BOLD + str(self.pk3_file) + bcolors.ENDC)
+            print('         pk3: {}{}{}'.format(bcolors.BOLD, str(self.pk3_file), bcolors.ENDC))
 
             for bsp in keys:
-                # Handle Highlight
+                # Handle highlight
+                string_highlighted = '{}{}{}{}{}'.format(bcolors.ENDC, bcolors.OKGREEN, search_string, bcolors.ENDC, bcolors.OKBLUE)
+                bsp_highlighted = bsp.replace(search_string, string_highlighted)
                 if search_string and highlight:
-                    print('         bsp: {}{}{}').format(bcolors.OKBLUE,
-                                                         bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE), bcolors.ENDC)
+                    print('         bsp: {}{}{}'.format(bcolors.OKBLUE, bsp_highlighted, bcolors.ENDC))
                 else:
                     print('         bsp: {}'.format(bcolors.OKBLUE + bsp + bcolors.ENDC))
 
@@ -177,22 +178,24 @@ class MapPackage(Base):
             print('        size: {}'.format(util.convert_size(self.filesize).strip()))
             print('          dl: {}'.format(self.conf['default']['download_url'] + self.pk3_file))
 
-        # Formatting
+        # Short detail view
         elif detail == 'short':
             print(str(self.pk3_file))
+        # Default view
         else:
-            bsp_string = '\n' + bcolors.BOLD + str(self.pk3_file) + bcolors.ENDC + ' ['
+            bsp_string = '\n{}{}{} ['.format(bcolors.BOLD, str(self.pk3_file), bcolors.ENDC)
             for bsp in keys:
+                # Handle highlight
+                string_highlighted = '{}{}{}{}{}'.format(bcolors.ENDC, bcolors.OKGREEN, search_string, bcolors.ENDC, bcolors.OKBLUE)
+                bsp_highlighted = bsp.replace(search_string, string_highlighted)
                 if search_string and highlight:
-                    bsp_string += bcolors.OKBLUE + \
-                        bsp.replace(search_string, bcolors.ENDC + bcolors.OKGREEN + search_string + bcolors.ENDC + bcolors.OKBLUE) \
-                        + bcolors.ENDC + ', '
+                    bsp_string += '{}{}{}, '.format(bcolors.OKBLUE, bsp_highlighted, bcolors.ENDC)
                 else:
-                    bsp_string += bcolors.OKBLUE + bsp + bcolors.ENDC + ', '
+                    bsp_string += '{}{}{}, '.format(bcolors.OKBLUE, bsp, bcolors.ENDC)
             bsp_string = util.replace_last(bsp_string, ', ', '')
-            bsp_string += bcolors.ENDC + ']'
+            bsp_string += ']'.format(bcolors.ENDC)
             print(bsp_string)
-            print(self.conf['default']['download_url'] + str(self.pk3_file))
+            print('{}{}'.format(self.conf['default']['download_url'], str(self.pk3_file)))
 
 
 class Bsp(object):
