@@ -36,7 +36,7 @@ def reporthook(count, block_size, total_size):
     sys.stdout.flush()
 
 
-def download_file(filename_with_path, url, use_curl=False):
+def download_file(filename_with_path, url, use_curl=False, overwrite=False):
     """
     downloads a file from any URL
 
@@ -50,9 +50,12 @@ def download_file(filename_with_path, url, use_curl=False):
 
     :param use_curl:
         Whether or not to use curl to download the file, default ``False``
+
+    :param overwrite:
+        Whether or not to overwrite the existing file, default ``False``
     :type use_curl: ``bool``
     """
-    if not os.path.exists(filename_with_path):
+    if not os.path.exists(filename_with_path) or overwrite:
 
         if not use_curl:
             urllib.request.urlretrieve(url, os.path.expanduser(filename_with_path), reporthook)

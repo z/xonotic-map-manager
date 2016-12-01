@@ -128,15 +128,16 @@ class Library(Base):
         maps_json = self.source_collection.sources[0].get_repo_data()
         map_in_repo = False
         for m in maps_json:
-            if m.pk3_file == pk3 and add_to_store:
-                self.store.add_package(m)
+            if m.pk3_file == pk3:
                 self.add_map_package(m)
                 map_in_repo = True
+                if add_to_store:
+                    self.store.add_package(m)
                 break
 
         if map_in_repo or is_url:
             print('Installing map: ' + bcolors.BOLD + pk3 + bcolors.ENDC)
-            util.download_file(filename_with_path=pk3_with_path, url=url, use_curl=self.conf['default']['use_curl'])
+            util.download_file(filename_with_path=pk3_with_path, url=url, use_curl=self.conf['default']['use_curl'], overwrite=True)
             installed = True
 
         if not map_in_repo:

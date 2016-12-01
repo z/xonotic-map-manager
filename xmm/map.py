@@ -86,7 +86,6 @@ class MapPackage(Base):
         super().__init__()
 
         if not isinstance(map_package_json, dict):
-            print(map_package_json)
             map_package = json.loads(map_package_json)
         else:
             map_package = map_package_json

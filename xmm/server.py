@@ -65,7 +65,6 @@ class LocalServer(Base):
         package_store_file = os.path.expanduser(self.conf['default']['library'])
 
         if server_name and server_name != 'default':
-            print(server_name)
             map_dir = self.conf['servers'][server_name]['target_dir']
             server_data = self.conf['servers']
             if server_name in server_data:
