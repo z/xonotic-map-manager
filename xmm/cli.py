@@ -68,7 +68,7 @@ def main():
         server.library.discover_maps(add=args.add)
 
     if args.command == 'list':
-        server.library.list_installed()
+        server.library.list_installed(detail=detail)
 
     if args.command == 'show':
         if args.local:
@@ -120,8 +120,8 @@ def parse_args():
     parser_search.add_argument('--short', '-s', help='show short format', action='store_true')
     parser_search.add_argument('--highlight', '-H', help='highlight search term in results', action='store_true')
 
-    parser_add = subparsers.add_parser('install', help='install a map from the repository, or specify a URL.')
-    parser_add.add_argument('pk3', nargs='?', help='use a pk3 name', type=str)
+    parser_install = subparsers.add_parser('install', help='install a map from the repository, or specify a URL.')
+    parser_install.add_argument('pk3', nargs='?', help='use a pk3 name of map package, or specify a URL of a pk3.', type=str)
 
     parser_remove = subparsers.add_parser('remove', help='remove based on pk3 name')
     parser_remove.add_argument('pk3', nargs='?', help='pk3', type=str)

@@ -218,9 +218,13 @@ class Library(Base):
                         self.store.add_package(map_found)
 
     # local data
-    def list_installed(self):
+    def list_installed(self, detail=None):
         """
         List maps currently tracked by the *Library*
+
+        :param detail:
+            How much detail to show, [short, None, long]
+        :type detail: ``str``
 
         :returns: ``SourceCollection``
 
@@ -233,7 +237,7 @@ class Library(Base):
         total = 0
         if packages:
             for m in packages:
-                m.show_map_details()
+                m.show_map_details(detail=detail)
                 total += 1
 
         print('\n' + bcolors.OKBLUE + 'Total packages found:' + bcolors.ENDC + ' ' + bcolors.BOLD + str(total) + bcolors.ENDC)
