@@ -35,6 +35,17 @@ class SourceCollection(object):
         """
         return json.dumps(self, cls=util.ObjectEncoder)
 
+    def use(self, name):
+        """
+        :returns: A **SourceRepository** object or false if name not found
+        """
+        repo = False
+        for source in self.sources:
+            if source.name == name:
+                repo = source
+
+        return repo
+
     def add_repository(self, repository):
         """
         Add a *SourceRepository* to the *SourceCollection*

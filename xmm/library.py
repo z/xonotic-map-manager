@@ -126,15 +126,18 @@ class Library(Base):
 
         pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
-        maps_json = self.source_collection.sources[0].get_repo_data()
         map_in_repo = False
-        for m in maps_json:
-            if m.pk3_file == pk3:
-                self.add_map_package(m)
-                map_in_repo = True
-                if add_to_store:
-                    self.store.add_package(m)
-                break
+        for repo in self.source_collection.sources:
+            if not map_in_repo:
+                maps_json = repo.get_repo_data()
+                for m in maps_json:
+                    if m.pk3_file == pk3:
+                        self.add_map_package(m)
+                        map_in_repo = True
+                        cprint("Found in: {}".format(repo.name))
+                        if add_to_store:
+                            self.store.add_package(m)
+                        break
 
         if map_in_repo or is_url:
             cprint("Installing map: {}".format(pk3), style='BOLD')
@@ -171,9 +174,9 @@ class Library(Base):
         if os.path.exists(map_dir):
             pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3_name)
 
-            repo_data = self.source_collection.sources[0].get_repo_data()
+            installed_packages = self.store.get_package_db()
 
-            for m in repo_data:
+            for m in installed_packages:
                 if m.pk3_file == pk3_name:
                     self.store.remove_package(m)
 

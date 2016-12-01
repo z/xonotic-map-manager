@@ -6,7 +6,7 @@ Basic Usage
 
 CLI help docs for ``xmm``::
 
-    usage: xmm [-h] [-s [SERVER]] [-T [TARGET]]
+    usage: xmm [-h] [-s [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
                {search,install,remove,discover,list,show,export,update,hello} ...
 
     Xonotic Map Manager is a tool to help manage Xonotic maps
@@ -18,7 +18,7 @@ CLI help docs for ``xmm``::
         remove              remove based on pk3 name
         discover            discover packages in a target directory
         list                list locally installed packages
-        show                show details of locally installed package
+        show                show details of remote or locally installed packages
         export              export locally managed packages to a file
         update              update sources json
         hello               hello is an example plugin
@@ -29,6 +29,8 @@ CLI help docs for ``xmm``::
                             target server as defined in servers.json
       -T [TARGET], --target [TARGET]
                             target directory
+      -R [REPOSITORY], --repository [REPOSITORY]
+                            repository to use (defaults to all available)
 
 
 Searching

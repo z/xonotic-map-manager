@@ -71,7 +71,14 @@ def main():
         if args.local:
             server.library.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
         else:
-            server.source_collection.sources[0].show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+            if args.repository:
+                repo = server.source_collection.use(args.repository)
+                if repo:
+                    repo.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+                else:
+                    cprint("Repository doesn't exist in sources.json", style="FAIL")
+            else:
+                server.source_collection.use('default').show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
 
     if args.command == 'export':
 
@@ -102,6 +109,7 @@ def parse_args():
 
     parser.add_argument("-s", '--server', nargs='?', help="target server as defined in servers.json", type=str)
     parser.add_argument("-T", '--target', nargs='?', help="target directory", type=str)
+    parser.add_argument("-R", '--repository', nargs='?', help="repository to use (defaults to all available)", type=str)
 
     subparsers = parser.add_subparsers(dest='command')
     subparsers.required = True
