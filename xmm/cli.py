@@ -10,11 +10,13 @@ import os
 from xmm.server import LocalServer
 from xmm import util
 
+from xmm.exceptions import *
 from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
 from xmm.logger import logger
 from xmm.config import conf
 from xmm.util import cprint
+from xmm.util import zcolors
 
 plugins = {}
 
@@ -56,23 +58,50 @@ def main():
                                        highlight=highlight)
 
     if args.command == 'install':
-        if args.repository:
+
+        cprint("Installing map: {}".format(args.pk3), style='BOLD')
+
+        try:
             server.library.install_map(pk3_name=args.pk3, repository_name=args.repository)
-        else:
-            server.library.install_map(pk3_name=args.pk3)
+        except SystemExit:
+            cprint("Canceled.", style='INFO')
+        except PackageMetadataWarning:
+            cprint("package does not exist in the repository it won't be tracked (xmm list).", style='WARNING')
+        except RepositoryLookupError:
+            cprint("Repository does not exist!", style='FAIL')
+        except PackageLookupError:
+            cprint("package does not exist in the repository. cannot install.", style='FAIL')
 
     if args.command == 'remove':
-        server.library.remove_map(pk3_name=args.pk3)
+
+        cprint("Removing package: {}".format(args.pk3), style='BOLD')
+
+        try:
+            server.library.remove_map(pk3_name=args.pk3)
+            cprint("Done.", style='INFO')
+        except FileNotFoundError:
+            cprint("package does not exist or is not tracked. try removing with full path if not tracked.", style='FAIL')
+        except NotADirectoryError:
+            cprint("directory does not exist.", style='FAIL')
 
     if args.command == 'discover':
         server.library.discover_maps(add=args.add)
 
     if args.command == 'list':
-        server.library.list_installed(detail=detail)
+        try:
+            total = server.library.list_installed(detail=detail)
+            print("\n{}Total packages found:{} {}{}{}".format(zcolors.INFO, zcolors.ENDC, zcolors.BOLD, str(total), zcolors.ENDC))
+        except Exception:
+            cprint("Failed.", style='FAIL')
 
     if args.command == 'show':
         if args.local:
-            server.library.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+            try:
+                server.library.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+            except HashMismatchError:
+                print("\n{}{}{} {}hash different from repositories{}".format(zcolors.BOLD, args.pk3, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
+            except PackageNotTrackedWarning:
+                print("\n{}{}{} {}package not currently tracked{}".format(zcolors.BOLD, args.pk3, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
         else:
             if args.repository:
                 repo = server.repositories.get_repository(args.repository)
@@ -112,7 +141,7 @@ def parse_args():
 
     parser.add_argument("-s", '--server', nargs='?', help="target server as defined in servers.json", type=str)
     parser.add_argument("-T", '--target', nargs='?', help="target directory", type=str)
-    parser.add_argument("-R", '--repository', nargs='?', help="repository to use (defaults to all available)", type=str)
+    parser.add_argument("-R", '--repository', nargs='?', help="repository to use (defaults to all available)", type=str, default=None)
 
     subparsers = parser.add_subparsers(dest='command')
     subparsers.required = True

@@ -2,6 +2,11 @@ import os
 import re
 import json
 
+from xmm.exceptions import PackageMetadataWarning
+from xmm.exceptions import PackageNotTrackedWarning
+from xmm.exceptions import PackageLookupError
+from xmm.exceptions import RepositoryLookupError
+from xmm.exceptions import HashMismatchError
 from xmm.server import Base
 from xmm.util import zcolors
 from xmm.util import cprint
@@ -95,6 +100,10 @@ class Library(Base):
             URL-only maps will not include rich metadata available to maps installed via the repo.
         :type pk3_name: ``str``
 
+        :param repository_name:
+            A name of a repository in the repository *Collection*
+        :type repository_name: ``str``
+
         >>> from xmm.server import LocalServer
         >>> server = LocalServer(server_name='myserver1')
         >>> server.library.install_map(pk3_name='dance.pk3')
@@ -104,6 +113,7 @@ class Library(Base):
         installed_packages = self.store.get_package_db()
         add_to_store = True
         map_in_repo = False
+        overwrite = False
         installed = False
         is_url = False
 
@@ -112,8 +122,7 @@ class Library(Base):
             if repo:
                 sources = [repo]
             else:
-                cprint("Repository does not exist!", style='FAIL')
-                raise SystemExit
+                raise RepositoryLookupError
         else:
             sources = self.repositories.sources
 
@@ -131,6 +140,7 @@ class Library(Base):
             url = pk3_name
             pk3 = os.path.basename(pk3_name)
             is_url = True
+            overwrite = False
         else:
             pk3 = pk3_name
             url = self.conf['default']['download_url'] + pk3
@@ -150,17 +160,14 @@ class Library(Base):
                         break
 
         if map_in_repo or is_url:
-            cprint("Installing map: {}".format(pk3), style='BOLD')
-            util.download_file(filename_with_path=pk3_with_path, url=url, use_curl=self.conf['default']['use_curl'], overwrite=True)
+            util.download_file(filename_with_path=pk3_with_path, url=url, use_curl=self.conf['default']['use_curl'], overwrite=overwrite)
             installed = True
 
         if not map_in_repo:
             if installed:
-                cprint("package does not exist in the repository"
-                       "it won't be added to the local database.", style='WARNING')
+                raise PackageMetadataWarning
             else:
-                cprint("package does not exist in the repository. cannot install.", style='FAIL')
-                Exception('package does not exist in the repository.')
+                raise PackageLookupError
 
     def remove_map(self, pk3_name):
         """
@@ -179,8 +186,6 @@ class Library(Base):
         """
         map_dir = os.path.expanduser(self.map_dir)
 
-        cprint("Removing package: {}".format(pk3_name), style='BOLD')
-
         if os.path.exists(map_dir):
             pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3_name)
 
@@ -192,14 +197,11 @@ class Library(Base):
 
             if os.path.exists(pk3_with_path):
                 os.remove(pk3_with_path)
-                cprint("Done.", style='INFO')
             else:
-                cprint("package does not exist.", style='FAIL')
-                Exception('package does not exist.')
+                raise FileNotFoundError
 
         else:
-            cprint("directory does not exist.", style='FAIL')
-            Exception('directory does not exist.')
+            raise NotADirectoryError
 
     def discover_maps(self, add=False):
         """
@@ -219,7 +221,11 @@ class Library(Base):
         for pk3_file in os.listdir(map_dir):
             if pk3_file.endswith('.pk3'):
                 shasum = util.hash_file(os.path.join(map_dir, pk3_file))
-                map_found = self.show_map(pk3_file, 'all')
+                try:
+                    map_found = self.show_map(pk3_file, 'all')
+                except PackageNotTrackedWarning:
+                    print("\n{}{}{} {}package not currently tracked{}".format(zcolors.BOLD, pk3_file, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
+                    pass
 
                 if map_found and add:
                     map_installed = False
@@ -240,7 +246,7 @@ class Library(Base):
             How much detail to show, [short, None, long]
         :type detail: ``str``
 
-        :returns: ``Collection``
+        :returns: ``int`` total count
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer()
@@ -254,7 +260,7 @@ class Library(Base):
                 m.show_map_details(detail=detail)
                 total += 1
 
-        print("\n{}Total packages found:{} {}{}{}".format(zcolors.INFO, zcolors.ENDC, zcolors.BOLD, str(total), zcolors.ENDC))
+        return total
 
     def show_map(self, pk3_name, detail=None, highlight=False):
         """
@@ -291,9 +297,9 @@ class Library(Base):
                     p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
                     found_map = p
                 else:
-                    print("\n{}{}{} {}hash different from repositories{}".format(zcolors.BOLD, pk3_name, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
+                    raise HashMismatchError
 
         if not found_map and not hash_match:
-            print("\n{}{}{} {}package not currently installed{}".format(zcolors.BOLD, pk3_name, zcolors.ENDC, zcolors.FAIL, zcolors.ENDC))
+            raise PackageNotTrackedWarning
 
         return found_map
