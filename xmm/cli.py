@@ -61,7 +61,7 @@ def main():
                                        title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
                                        highlight=highlight)
 
-    if args.command == 'install':
+    elif args.command == 'install':
 
         cprint("Installing map: {}".format(args.pk3), style='BOLD')
 
@@ -76,7 +76,7 @@ def main():
         except PackageLookupError:
             cprint("package does not exist in the repository. cannot install.", style='FAIL')
 
-    if args.command == 'remove':
+    elif args.command == 'remove':
 
         cprint("Removing package: {}".format(args.pk3), style='BOLD')
 
@@ -88,7 +88,7 @@ def main():
         except NotADirectoryError:
             cprint("directory does not exist.", style='FAIL')
 
-    if args.command == 'discover':
+    elif args.command == 'discover':
 
         if args.repository:
 
@@ -105,7 +105,7 @@ def main():
         else:
             server.library.discover_maps(add=args.add)
 
-    if args.command == 'list':
+    elif args.command == 'list':
 
         try:
             total = server.library.list_installed(detail=detail)
@@ -113,7 +113,7 @@ def main():
         except Exception:
             cprint("Failed.", style='FAIL')
 
-    if args.command == 'show':
+    elif args.command == 'show':
 
         # Use local package store for lookup
         if args.local:
@@ -141,12 +141,17 @@ def main():
             else:
 
                 try:
-                    # TODO: all repositories
-                    server.repositories.get_repository('default').show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+
+                    for repo in server.repositories.sources:
+                        cprint("Using repo: {}".format(repo.name), style='BOLD')
+                        map_found = repo.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+                        if map_found:
+                            break
+
                 except PackageLookupError:
                     cprint("Map was not found in repository", style="FAIL")
 
-    if args.command == 'export':
+    elif args.command == 'export':
 
         default_export_name = 'xmm-export.json'
         filename = args.file
@@ -157,7 +162,7 @@ def main():
 
         server.library.store.export_packages(filename=filename)
 
-    if args.command == 'update':
+    elif args.command == 'update':
         server.repositories.update_all()
 
     # Plugins
