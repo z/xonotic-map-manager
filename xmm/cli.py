@@ -89,9 +89,24 @@ def main():
             cprint("directory does not exist.", style='FAIL')
 
     if args.command == 'discover':
-        server.library.discover_maps(add=args.add)
+
+        if args.repository:
+
+            cprint("Using repo: {}".format(args.repository), style='BOLD')
+
+            try:
+                repo = server.repositories.get_repository(args.repository)
+            except RepositoryLookupError:
+                cprint("Repository doesn't exist in sources.json", style="FAIL")
+                raise SystemExit
+
+            server.library.discover_maps(add=args.add, repository_name=args.repository)
+
+        else:
+            server.library.discover_maps(add=args.add)
 
     if args.command == 'list':
+
         try:
             total = server.library.list_installed(detail=detail)
             print("\n{}Total packages found:{} {}{}{}".format(zcolors.INFO, zcolors.ENDC, zcolors.BOLD, str(total), zcolors.ENDC))
@@ -99,22 +114,34 @@ def main():
             cprint("Failed.", style='FAIL')
 
     if args.command == 'show':
+
+        # Use local package store for lookup
         if args.local:
+
             try:
                 server.library.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
             except HashMismatchError:
                 print("\n{}{}{} {}hash different from repositories{}".format(zcolors.BOLD, args.pk3, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
             except PackageNotTrackedWarning:
                 print("\n{}{}{} {}package not currently tracked{}".format(zcolors.BOLD, args.pk3, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
+
+        # Use repositories for lookup
         else:
+
             if args.repository:
-                repo = server.repositories.get_repository(args.repository)
-                if repo:
-                    repo.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
-                else:
-                    cprint("Repository doesn't exist in sources.json", style="FAIL")
-            else:
+
                 try:
+                    repo = server.repositories.get_repository(args.repository)
+                except RepositoryLookupError:
+                    cprint("Repository doesn't exist in sources.json", style="FAIL")
+                    raise SystemExit
+
+                repo.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+
+            else:
+
+                try:
+                    # TODO: all repositories
                     server.repositories.get_repository('default').show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
                 except PackageLookupError:
                     cprint("Map was not found in repository", style="FAIL")

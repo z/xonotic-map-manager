@@ -203,13 +203,17 @@ class Library(Base):
         else:
             raise NotADirectoryError
 
-    def discover_maps(self, add=False):
+    def discover_maps(self, add=False, repository_name=None):
         """
         Searches the *Server*'s map_dir for map packages known by the *Repository*
 
         :param add:
             Whether to add the discovered maps or not
         :type add: ``bool``
+
+        :param repository_name:
+            A name of a repository in the repository *Collection*
+        :type repository_name: ``str``
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer()
@@ -218,13 +222,28 @@ class Library(Base):
         map_dir = os.path.expanduser(self.map_dir)
         local_maps = self.store.get_package_db()
 
+        if repository_name:
+            repo = self.repositories.get_repository(repository_name)
+            if repo:
+                sources = [repo]
+            else:
+                raise RepositoryLookupError
+        else:
+            sources = self.repositories.sources
+
         for pk3_file in os.listdir(map_dir):
+
             map_found = False
             hash_match = False
+
             if pk3_file.endswith('.pk3'):
                 shasum = util.hash_file(os.path.join(map_dir, pk3_file))
+
                 try:
-                    map_found = self.repositories.get_repository('default').show_map(pk3_file, 'all')
+                    for repo in sources:
+                        map_found = repo.show_map(pk3_file)
+                        if map_found:
+                            break
                 except PackageLookupError:
                     pass
 

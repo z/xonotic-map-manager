@@ -7,6 +7,7 @@ from urllib.error import URLError
 from xmm.map import MapPackage
 
 from xmm.exceptions import PackageLookupError
+from xmm.exceptions import RepositoryLookupError
 from xmm.base import Base
 from xmm.util import zcolors
 from xmm.util import cprint
@@ -47,6 +48,9 @@ class Collection(object):
         for source in self.sources:
             if source.name == repository_name:
                 repo = source
+
+        if not repo:
+            raise RepositoryLookupError
 
         return repo
 
@@ -269,7 +273,7 @@ class Repository(Base):
             urllib.request.urlretrieve(self.api_data_url, self.api_data, util.reporthook)
             cprint("Done.", style='INFO')
         except URLError as e:
-            self.logger.debug('Error updating repo date: {}'.format(e))
+            self.logger.debug('Error updating repo data: {}'.format(e))
 
     def get_repo_data(self):
         """
