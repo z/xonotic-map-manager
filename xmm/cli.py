@@ -8,15 +8,19 @@ import argparse
 import os
 
 from xmm.server import LocalServer
-from xmm import util
 
-from xmm.exceptions import *
+from xmm.exceptions import PackageMetadataWarning
+from xmm.exceptions import PackageNotTrackedWarning
+from xmm.exceptions import PackageLookupError
+from xmm.exceptions import RepositoryLookupError
+from xmm.exceptions import HashMismatchError
 from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
 from xmm.logger import logger
 from xmm.config import conf
 from xmm.util import cprint
 from xmm.util import zcolors
+from xmm import util
 
 plugins = {}
 
