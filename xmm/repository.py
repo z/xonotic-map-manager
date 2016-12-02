@@ -6,6 +6,7 @@ from urllib.error import URLError
 
 from xmm.map import MapPackage
 
+from xmm.exceptions import PackageLookupError
 from xmm.base import Base
 from xmm.util import zcolors
 from xmm.util import cprint
@@ -320,10 +321,10 @@ class Repository(Base):
 
         for p in packages:
             if p.pk3_file == pk3_name:
-                found_map = True
                 p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
+                found_map = p
 
         if not found_map:
-            cprint("package does not exist in the repository. cannot show.", style='FAIL')
+            raise PackageLookupError
 
         return found_map

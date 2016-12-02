@@ -114,7 +114,10 @@ def main():
                 else:
                     cprint("Repository doesn't exist in sources.json", style="FAIL")
             else:
-                server.repositories.get_repository('default').show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+                try:
+                    server.repositories.get_repository('default').show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
+                except PackageLookupError:
+                    cprint("Map was not found in repository", style="FAIL")
 
     if args.command == 'export':
 

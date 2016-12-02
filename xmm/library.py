@@ -216,26 +216,33 @@ class Library(Base):
         >>> server.library.discover_maps(add=False)
         """
         map_dir = os.path.expanduser(self.map_dir)
-        packages = self.store.get_package_db()
+        local_maps = self.store.get_package_db()
 
         for pk3_file in os.listdir(map_dir):
+            map_found = False
+            hash_match = False
             if pk3_file.endswith('.pk3'):
                 shasum = util.hash_file(os.path.join(map_dir, pk3_file))
                 try:
-                    map_found = self.show_map(pk3_file, 'all')
-                except PackageNotTrackedWarning:
-                    print("\n{}{}{} {}package not currently tracked{}".format(zcolors.BOLD, pk3_file, zcolors.ENDC, zcolors.WARNING, zcolors.ENDC))
+                    map_found = self.repositories.get_repository('default').show_map(pk3_file, 'all')
+                except PackageLookupError:
                     pass
 
-                if map_found and add:
-                    map_installed = False
-                    if packages:
-                        for p in packages:
-                            if p['pk3'] == pk3_file and p['shasum'] == shasum:
-                                map_installed = True
+                if map_found:
 
-                    if not map_installed:
-                        self.store.add_package(map_found)
+                    if map_found.shasum == shasum:
+                        hash_match = True
+                    else:
+                        cprint("{} hash does not match repository's".format(pk3_file), style='WARNING')
+
+                    if hash_match and add:
+                        map_already_installed = False
+                        for m in local_maps:
+                            if m.pk3_file == pk3_file and m.shasum == shasum:
+                                map_already_installed = True
+
+                        if not map_already_installed:
+                            self.store.add_package(map_found)
 
     # local data
     def list_installed(self, detail=None):
