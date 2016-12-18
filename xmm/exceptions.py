@@ -21,7 +21,7 @@ class PackageLookupError(LookupError):
 
 class PackageMetadataWarning(Warning):
     """
-    Raise when Package installs from a URL and has not metadata associated with it.
+    Raise when Package installs from a URL and has no metadata associated with it.
     """
 
 

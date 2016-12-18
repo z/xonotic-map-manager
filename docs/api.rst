@@ -37,6 +37,11 @@ Utility
 .. automodule:: xmm.util
     :members:
 
+Exceptions
+----------
+
+.. automodule:: xmm.exceptions
+    :members:
 
 * :ref:`genindex`
 * :ref:`modindex`

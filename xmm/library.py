@@ -89,7 +89,6 @@ class Library(Base):
 
         return repo_sources
 
-    # TODO: Rewrite this
     def install_map(self, pk3_name, repository_name=None):
         """
         Install a *MapPackage* from a *Repository*
