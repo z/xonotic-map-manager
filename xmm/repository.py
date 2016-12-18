@@ -15,13 +15,14 @@ from xmm.util import cprint
 from xmm import util
 
 
-class Collection(object):
+class Collection(Base):
     """
     A *Collection* is a collection of *Repository* objects
 
     :returns object: *Collection*
     """
     def __init__(self):
+        super().__init__()
         self.sources = []
 
     def __repr__(self):
@@ -45,6 +46,8 @@ class Collection(object):
 
         :returns: A **Repository** object or false if name not found
         """
+        self.logger.info("Getting repository: {}".format(repository_name))
+
         repo = False
         for source in self.sources:
             if source.name == repository_name:
@@ -100,6 +103,9 @@ class Collection(object):
             Whether to highlight the search string
         :type highlight: ``bool``
         """
+
+        self.logger.info("Searching all repositories.")
+
         for repo in self.sources:
             repo.search_maps(bsp_name=bsp_name, gametype=gametype, author=author, title=title, pk3_name=pk3_name, shasum=shasum, detail=detail, highlight=highlight)
 
@@ -107,7 +113,11 @@ class Collection(object):
         """
         Update the data for all *Repository* objects in the *Collection*
         """
+
+        self.logger.info("Updating all sources.")
+
         for repo in self.sources:
+            self.logger.debug("Updating source: {}".format(repo.name))
             repo.update_repo_data()
 
 
@@ -197,6 +207,9 @@ class Repository(Base):
             Whether to highlight the search string
         :type highlight: ``bool``
         """
+
+        self.logger.info("Searching maps.")
+
         maps_json = self.get_repo_data()
         fmaps_json = []
         criteria = []
@@ -273,6 +286,7 @@ class Repository(Base):
         """
         try:
             cprint("Updating {} sources json...".format(self.name), style='INFO')
+            self.logger.info("Updating {} sources json...".format(self.name))
             util.download_file(self.api_data_file, url=self.api_data_url, use_curl=self.conf['default']['use_curl'], overwrite=True)
         except URLError as e:
             self.logger.debug('Error updating repo data: {}'.format(e))
@@ -284,12 +298,16 @@ class Repository(Base):
 
         :returns: ``json``
         """
+
+        self.logger.debug("getting repo data")
+
         if not self.repo_data:
 
             repo_data = []
 
             if not os.path.exists(self.api_data_file):
                 cprint("Could not find a repo file. Downloading one.".format(self.name), style='WARNING')
+                self.logger.info("Could not find a repo file. Downloading one.".format(self.name))
                 self.update_repo_data()
 
             with open(self.api_data_file) as f:
@@ -322,6 +340,8 @@ class Repository(Base):
 
         :returns: ``MapPackage``
         """
+
+        self.logger.debug("Showing map with helper")
 
         packages = self.get_repo_data()
         found_map = False

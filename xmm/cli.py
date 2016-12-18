@@ -5,9 +5,11 @@
 
 import argcomplete
 import argparse
+import logging
 import os
 
 from xmm import __version__
+from xmm.config import conf
 
 from xmm.server import LocalServer
 
@@ -20,13 +22,14 @@ from xmm.exceptions import RepositoryUpdateError
 from xmm.exceptions import ServerLookupError
 from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
-from xmm.logger import logger
-from xmm.config import conf
+from xmm.logger import ClassPrefixAdapter
 from xmm.util import cprint
 from xmm.util import zcolors
 from xmm import util
 
 plugins = {}
+
+cli_logger = ClassPrefixAdapter(prefix='cli', logger=logging.getLogger(__name__))
 
 
 def main():
@@ -39,19 +42,36 @@ def main():
     if args.target:
         if args.command != 'install':
             cprint("This flag only works with 'install' sub-command.", style='FAIL')
+
         target_dir = args.target
+        cli_logger.info("Installing to target directory: {}".format(target_dir))
+
         if not os.path.exists(target_dir):
+            cli_logger.error("Target directory does not exist: {}.".format(target_dir))
             cprint("Target directory does not exist.", style='FAIL')
             raise SystemExit
+
         filename_with_path = os.path.join(target_dir, args.pk3)
         url_with_file = '{}/{}'.format(conf['default']['download_url'], args.pk3)
-        util.download_file(filename_with_path=filename_with_path, url=url_with_file, use_curl=conf['default']['use_curl'])
+
+        success = util.download_file(filename_with_path=filename_with_path, url=url_with_file, use_curl=conf['default']['use_curl'])
+
+        if not success:
+            cli_logger.warning("{} already exists, not installing.".format(args.pk3))
+
         exit(0)
 
     # Use all source repositories
     else:
         try:
             server = LocalServer(server_name=args.server)
+        except NotADirectoryError as e:
+            create_directory = util.query_yes_no("Directory '{}' does not exist, would you like to create it?".format(e))
+            if create_directory:
+                server = LocalServer(server_name=args.server, make_dirs=True)
+            else:
+                cprint("Canceled.", style='INFO')
+                raise SystemExit
         except ServerLookupError as e:
             cprint("server '{}' does not exist in ~/.xmm/servers.json".format(e), style='FAIL')
 
@@ -262,7 +282,7 @@ def parse_args():
 
     # Handle plugins
     for i in pluginloader.get_plugins():
-        logger.debug("Loading plugin: " + i["name"])
+        cli_logger.debug("Loading plugin: " + i["name"])
         command = i['name']
         plugin = pluginloader.load_plugin(i)
         plugin_args = [plugin.get_args()]

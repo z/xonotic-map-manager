@@ -126,7 +126,7 @@ class MapPackage(Base):
         """
         return json.dumps(self, cls=util.ObjectEncoder)
 
-    def show_map_details(self, detail=None, search_string='', highlight=False, pad_top=False):
+    def show_map_details(self, detail=None, search_string='', highlight=False):
         """
         Helper function for pretty printing details about a *MapPackage*
 
@@ -146,6 +146,8 @@ class MapPackage(Base):
 
         :returns: ``MapPackage``
         """
+
+        self.logger.debug('Showing details for map: {}'.format(self.pk3_file))
 
         bsps = self.bsp
         keys = list(bsps)

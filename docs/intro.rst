@@ -12,7 +12,7 @@ Use it like ``apt``::
     xmm install eggandscrambled.pk3
     xmm list
 
-If you get stuck, try using a ``xmm -h``, or reference the Usage page.
+If you get stuck, try using a ``xmm -h``, or reference the :ref:`Usage` page.
 
 By default, the unofficial, general purpose Xonotic map repository, `xonotic.co`_, is enabled. Advanced users can add additional repositories and/or host their own.
 

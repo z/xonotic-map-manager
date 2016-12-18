@@ -115,6 +115,8 @@ class Library(Base):
         >>> server.library.install_map(pk3_name='vinegar_v3.pk3')
         >>> print(server.library.maps)
         """
+        self.logger.info('Installing map: {}.'.format(pk3_name))
+
         map_dir = self.map_dir
         installed_packages = self.store.get_package_db()
         map_found_in_repo = False
@@ -138,15 +140,18 @@ class Library(Base):
             for m in installed_packages:
                 if m.pk3_file == pk3_name:
                     cprint("{} already exists.".format(pk3_name), style='WARNING')
+                    self.logger.warning("{} already exists.".format(pk3_name))
                     install = util.query_yes_no('continue?', 'no')
                     if not install:
                         raise SystemExit
                     else:
+                        self.logger.info("overwriting {}.".format(pk3_name))
                         overwrite = True
                         add_to_store = False
                     break
 
         if re.match('^(ht|f)tp(s)?://', pk3_name):
+            self.logger.info("{} downloading from non-repository link.".format(pk3_name))
             url = pk3_name
             pk3 = os.path.basename(pk3_name)
             is_url = True
@@ -177,8 +182,10 @@ class Library(Base):
 
         if not map_found_in_repo:
             if installed:
+                self.logger.warning("{} was not installed through a repository and has no metadata.".format(pk3_name))
                 raise PackageMetadataWarning
             else:
+                self.logger.error("Unable to find package: {}".format(pk3_name))
                 raise PackageLookupError
 
     def remove_map(self, pk3_name):
@@ -196,6 +203,9 @@ class Library(Base):
         >>> server.library.remove_map(pk3_name='vinegar_v3.pk3')
         >>> print(server.library.maps)
         """
+
+        self.logger.info("Removing map: {}".format(pk3_name))
+
         map_dir = os.path.expanduser(self.map_dir)
         pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3_name)
 
@@ -226,6 +236,9 @@ class Library(Base):
         >>> server = LocalServer()
         >>> server.library.discover_maps(add=False)
         """
+
+        self.logger.debug("discovering maps")
+
         map_dir = os.path.expanduser(self.map_dir)
         local_maps = self.store.get_package_db()
 
@@ -234,11 +247,13 @@ class Library(Base):
             if repo:
                 sources = [repo]
             else:
+                self.logger.error("Unable to find repository in sources: {}".format(repo))
                 raise RepositoryLookupError
         else:
             sources = self.repositories.sources
 
         if not os.path.exists(map_dir):
+            self.logger.error("{} does not exists.".format(map_dir))
             raise NotADirectoryError(map_dir)
 
         for pk3_file in os.listdir(map_dir):
@@ -262,15 +277,18 @@ class Library(Base):
                     if map_found.shasum == shasum:
                         hash_match = True
                     else:
+                        self.logger.warning("{} hash does not match repository's".format(shasum))
                         cprint("{} hash does not match repository's".format(pk3_file), style='WARNING')
 
                     if hash_match and add:
                         map_already_installed = False
                         for m in local_maps:
                             if m.pk3_file == pk3_file and m.shasum == shasum:
+                                self.logger.info("map already installed, not installing: {}".format(pk3_file))
                                 map_already_installed = True
 
                         if not map_already_installed:
+                            self.logger.info("installing map: {}".format(pk3_file))
                             self.store.add_package(map_found)
 
     # local data
@@ -288,6 +306,9 @@ class Library(Base):
         >>> server = LocalServer()
         >>> server.library.list_installed()
         """
+
+        self.logger.debug("listing maps")
+
         packages = self.store.data
 
         total = 0
@@ -320,6 +341,8 @@ class Library(Base):
         >>> server = LocalServer()
         >>> server.library.show_map('vinegar_v3.pk3', detail='long')
         """
+        self.logger.debug("showing map: {}".format(pk3_name))
+
         packages = self.store.get_package_db()
 
         found_map = False
@@ -333,9 +356,11 @@ class Library(Base):
                     p.show_map_details(search_string=pk3_name, detail=detail, highlight=highlight)
                     found_map = p
                 else:
+                    self.logger.warning("Hash for this map does not match repository's: {}".format(pk3_name))
                     raise HashMismatchError
 
         if not found_map and not hash_match:
+            self.logger.warning("Map is not being tracked in the library: {}.".format(pk3_name))
             raise PackageNotTrackedWarning
 
         return found_map

@@ -2,10 +2,10 @@ import json
 import os
 
 from xmm.base import Base
+from xmm.exceptions import ServerLookupError
 from xmm.library import Library
 from xmm.repository import Repository
 from xmm.repository import Collection
-from xmm.exceptions import ServerLookupError
 from xmm.store import Store
 from xmm import util
 
@@ -52,6 +52,19 @@ class LocalServer(Base):
 
             * ``Repository``
 
+
+    :param server_name:
+        Used to reference the server by name
+    :type server_name: ``str``
+
+    :param source_name:
+        If specified, the server will be associated with this one source
+    :type source_name: ``str``
+
+    :param make_dirs:
+        If directories aren't found that are required by xmm on server init, optionally create them
+    :type make_dirs: ``bool``
+
     :returns object: ``LocalServer``
         Commands are available off ``self.library``.
 
@@ -62,8 +75,10 @@ class LocalServer(Base):
     >>> print(server)
     """
 
-    def __init__(self, server_name='default', source_name=None):
+    def __init__(self, server_name='default', source_name=None, make_dirs=False):
         super().__init__()
+
+        self.logger.info('initializing LocalServer: {}'.format(server_name))
 
         map_dir = self.conf['default']['target_dir']
 
@@ -73,19 +88,25 @@ class LocalServer(Base):
             try:
                 map_dir = self.conf['servers'][server_name]['target_dir']
             except KeyError:
+                self.logger.error('Server not found: {}'.format(server_name))
                 raise ServerLookupError(server_name)
             server_data = self.conf['servers']
             if server_name in server_data:
                 package_store_file = os.path.expanduser(server_data[server_name]['library'])
 
         if not os.path.exists(map_dir):
-            raise NotADirectoryError(map_dir)
+            if make_dirs:
+                os.makedirs(map_dir)
+            else:
+                self.logger.error('Directory not found: {}'.format(map_dir))
+                raise NotADirectoryError(map_dir)
 
         store = Store(package_store_file=package_store_file)
 
         self.repositories = Collection()
 
         if source_name:
+            self.logger.info('Using source: {}'.format(source_name))
             one_repo = self.conf['sources'][source_name]
             repository = Repository(name=source_name,
                                     download_url=one_repo['download_url'],
@@ -96,7 +117,9 @@ class LocalServer(Base):
             self.repositories.add_repository(repository)
 
         else:
+            self.logger.info('Using multiple sources'.format(source_name))
             for source_name in self.conf['sources']:
+                self.logger.info('Using source: {}'.format(source_name))
                 repository = Repository(name=source_name,
                                         download_url=self.conf['sources'][source_name]['download_url'],
                                         api_data_url=self.conf['sources'][source_name]['api_data_url'],

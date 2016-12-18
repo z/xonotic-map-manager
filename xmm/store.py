@@ -10,9 +10,9 @@ class Store(Base):
     """
     *Store* is for interacting with the datastore for a *Library*
 
-    :param server_name:
-        Positional arguments
-    :type server_name: ``tuple``
+    :param package_store_file:
+        The file where the data is stored
+    :type package_store_file: ``str``
 
     >>> import os
     >>> from xmm.store import Store
@@ -30,6 +30,9 @@ class Store(Base):
 
         self.data_file = package_store_file
         self.data = self.get_package_db()
+
+    def __repr__(self):
+        return str(vars(self))
 
     def __json__(self):
         return {
@@ -55,6 +58,9 @@ class Store(Base):
 
         :returns: ``dict``
         """
+
+        self.logger.debug('Getting package db')
+
         package_data = []
         repo_data = []
 
@@ -94,6 +100,15 @@ class Store(Base):
 
         :returns: False if fails
         """
+
+        self.logger.info('Adding package: pk3={pk3}, filesize={filesize}, date={date}, shasum={shasum}'
+                         .format(pk3=package.pk3_file,
+                                 filesize=util.convert_size(package.filesize),
+                                 date=package.date,
+                                 shasum=package.shasum,
+                                 )
+                         )
+
         package_data = self.data
         package_data.append(package)
 
@@ -129,6 +144,15 @@ class Store(Base):
 
         :returns: False if fails
         """
+
+        self.logger.info('Removing package: pk3={pk3}, filesize={filesize}, date={date}, shasum={shasum}'
+                         .format(pk3=package.pk3_file,
+                                 filesize=util.convert_size(package.filesize),
+                                 date=package.date,
+                                 shasum=package.shasum,
+                                 )
+                         )
+
         package_store = []
 
         if not util.file_is_empty(self.data_file):
@@ -158,6 +182,7 @@ class Store(Base):
         >>> server = LocalServer()
         >>> server.library.store.export_packages(filename='test.json')
         """
+
         default_export_name = 'xmm-export.json'
 
         data_out = []
@@ -166,6 +191,8 @@ class Store(Base):
 
         if not filename:
             filename = default_export_name
+
+        self.logger.info('exporting maps as: {}'.format(filename))
 
         try:
             with open(filename, 'w') as f:
