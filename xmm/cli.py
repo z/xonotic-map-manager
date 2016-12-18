@@ -13,6 +13,7 @@ from xmm.exceptions import PackageMetadataWarning
 from xmm.exceptions import PackageNotTrackedWarning
 from xmm.exceptions import PackageLookupError
 from xmm.exceptions import RepositoryLookupError
+from xmm.exceptions import RepositoryUpdateError
 from xmm.exceptions import HashMismatchError
 from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
@@ -57,9 +58,13 @@ def main():
 
     # Commands
     if args.command == 'search':
-        server.repositories.search_all(bsp_name=args.string, gametype=args.gametype, author=args.author,
-                                       title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
-                                       highlight=highlight)
+
+        try:
+            server.repositories.search_all(bsp_name=args.string, gametype=args.gametype, author=args.author,
+                                           title=args.title, pk3_name=args.pk3, shasum=args.shasum, detail=detail,
+                                           highlight=highlight)
+        except Exception:
+            cprint('Failed.', style='FAIL')
 
     elif args.command == 'install':
 
@@ -163,7 +168,11 @@ def main():
         server.library.store.export_packages(filename=filename)
 
     elif args.command == 'update':
-        server.repositories.update_all()
+
+        try:
+            server.repositories.update_all()
+        except RepositoryUpdateError:
+            cprint('One or more repositories have failed to update.', style='FAIL')
 
     # Plugins
     for cmd, value in plugins.items():

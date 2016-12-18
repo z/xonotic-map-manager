@@ -8,6 +8,7 @@ from xmm.map import MapPackage
 
 from xmm.exceptions import PackageLookupError
 from xmm.exceptions import RepositoryLookupError
+from xmm.exceptions import RepositoryUpdateError
 from xmm.base import Base
 from xmm.util import zcolors
 from xmm.util import cprint
@@ -274,6 +275,7 @@ class Repository(Base):
             cprint("Done.", style='INFO')
         except URLError as e:
             self.logger.debug('Error updating repo data: {}'.format(e))
+            raise RepositoryUpdateError
 
     def get_repo_data(self):
         """

@@ -1,6 +1,15 @@
+from urllib.error import URLError
+
+
 class RepositoryLookupError(LookupError):
     """
     Raise when Repository lookup fails
+    """
+
+
+class RepositoryUpdateError(URLError):
+    """
+    Raise when Repository update fails
     """
 
 
