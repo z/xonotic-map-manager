@@ -116,6 +116,9 @@ class Library(Base):
         installed = False
         is_url = False
 
+        if not os.path.exists(map_dir):
+            raise NotADirectoryError(map_dir)
+
         if repository_name:
             repo = self.repositories.get_repository(repository_name)
             if repo:
@@ -133,6 +136,7 @@ class Library(Base):
                     if not install:
                         raise SystemExit
                     else:
+                        overwrite = True
                         add_to_store = False
 
         if re.match('^(ht|f)tp(s)?://', pk3_name):
@@ -197,10 +201,10 @@ class Library(Base):
             if os.path.exists(pk3_with_path):
                 os.remove(pk3_with_path)
             else:
-                raise FileNotFoundError
+                raise FileNotFoundError(pk3_with_path)
 
         else:
-            raise NotADirectoryError
+            raise NotADirectoryError(map_dir)
 
     def discover_maps(self, add=False, repository_name=None):
         """
@@ -231,7 +235,7 @@ class Library(Base):
             sources = self.repositories.sources
 
         if not os.path.exists(map_dir):
-            raise NotADirectoryError
+            raise NotADirectoryError(map_dir)
 
         for pk3_file in os.listdir(map_dir):
 

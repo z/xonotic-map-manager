@@ -80,6 +80,8 @@ def main():
             server.library.install_map(pk3_name=args.pk3, repository_name=args.repository)
         except SystemExit:
             cprint("Canceled.", style='INFO')
+        except NotADirectoryError as e:
+            cprint("package directory does not exist: {}".format(e), style='FAIL')
         except PackageMetadataWarning:
             cprint("package does not exist in the repository it won't be tracked (xmm list).", style='WARNING')
         except RepositoryLookupError:
@@ -99,9 +101,9 @@ def main():
             server.library.remove_map(pk3_name=args.pk3)
             cprint("Done.", style='INFO')
         except FileNotFoundError:
-            cprint("package does not exist or is not tracked. try removing with full path if not tracked.", style='FAIL')
-        except NotADirectoryError:
-            cprint("package directory does not exist.", style='FAIL')
+            cprint("package does not exist or is not tracked. try removing using full path if not tracked.", style='FAIL')
+        except NotADirectoryError as e:
+            cprint("package directory does not exist: {}".format(e), style='FAIL')
 
     elif args.command == 'discover':
 
@@ -118,8 +120,8 @@ def main():
 
         try:
             server.library.discover_maps(add=args.add, repository_name=repository_name)
-        except NotADirectoryError:
-            cprint("package directory does not exist.", style='FAIL')
+        except NotADirectoryError as e:
+            cprint("package directory does not exist: {}".format(e), style='FAIL')
 
     elif args.command == 'list':
 
@@ -134,6 +136,9 @@ def main():
         if not args.pk3:
             cprint("package name not specified", style='FAIL')
             raise SystemExit
+
+        if not detail:
+            detail = 'long'
 
         # Use local package store for lookup
         if args.local:
