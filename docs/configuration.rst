@@ -1,3 +1,5 @@
+.. _configuration:
+
 Configuration
 =============
 
@@ -6,7 +8,7 @@ The defaults should work out of the box, if you want to make changes, edit the `
 .. code-block:: ini
 
     # This file is read from ~/.xmm.cfg, make sure that's where you are editing it
-    [default]
+    [xmm]
 
     # Where should xmm manage maps?
     target_dir = ~/.xonotic/data/

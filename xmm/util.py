@@ -102,7 +102,7 @@ def parse_config(config_file):
     conf = configparser.ConfigParser()
     conf.read(config_file)
 
-    return conf['default']
+    return conf['xmm']
 
 
 def check_if_not_create(file, template):

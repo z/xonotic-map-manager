@@ -11,3 +11,4 @@
 
 ### Changed
 * Complete overhaul of code base exposing a Python API
+* No longer using pickle, storing data in *JSON*

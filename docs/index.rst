@@ -40,6 +40,7 @@ A command-line package manager for the xonotic-map-repository project.
    installation
    configuration
    usage
+   upgrading
    developers
    api
    tests
