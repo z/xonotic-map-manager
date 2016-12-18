@@ -3,6 +3,9 @@
 Configuration
 =============
 
+Core
+----
+
 The defaults should work out of the box, if you want to make changes, edit the ``~/.xmm.ini`` file.
 
 .. code-block:: ini
@@ -26,6 +29,9 @@ The defaults should work out of the box, if you want to make changes, edit the `
 
     # configuration of repositories
     sources_config = ~/.xmm/sources.json
+
+Logging
+-------
 
 Logging can be configured in ``~/.xmm/xmm.logging.ini``, again, the defaults should be sufficient.
 
@@ -63,6 +69,9 @@ Logging can be configured in ``~/.xmm/xmm.logging.ini``, again, the defaults sho
     class = logging.Formatter
 
 
+Multi-Server
+------------
+
 **xmm** can facilitate the management of multiple servers with ``~/.xmm/servers.json`` which defines the configure of settings, example below:
 
 .. code-block:: json
@@ -79,6 +88,9 @@ Logging can be configured in ``~/.xmm/xmm.logging.ini``, again, the defaults sho
         "sources": "~/.xmm/myserver2/sources.json"
       }
     }
+
+Multi-repo
+----------
 
 **xmm** can use multiple repositories, edit the ``~/.xmm/sources.json`` file to configure them, example below:
 
