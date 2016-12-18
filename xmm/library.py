@@ -94,7 +94,7 @@ class Library(Base):
         Install a *MapPackage* from a *Repository*
 
         :param pk3_name:
-            A pk3 name such as ``dance.pk3``, to install from the repository.'
+            A pk3 name such as ``vinegar_v3.pk3``, to install from the repository.'
             Optionally prefixed with a URL to install map not in the repository.
             URL-only maps will not include rich metadata available to maps installed via the repo.
         :type pk3_name: ``str``
@@ -105,7 +105,7 @@ class Library(Base):
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer(server_name='myserver1')
-        >>> server.library.install_map(pk3_name='dance.pk3')
+        >>> server.library.install_map(pk3_name='vinegar_v3.pk3')
         >>> print(server.library.maps)
         """
         map_dir = self.map_dir
@@ -180,14 +180,14 @@ class Library(Base):
         Removes a map from the *Library*
 
         :param pk3_name:
-            The name of a pk3, such as ``dance.pk3``
+            The name of a pk3, such as ``vinegar_v3.pk3``
         :type pk3_name: ``str``
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer(server_name='myserver1')
-        >>> server.library.install_map(pk3_name='dance.pk3')
+        >>> server.library.install_map(pk3_name='vinegar_v3.pk3')
         >>> print(server.library.maps)
-        >>> server.library.remove_map(pk3_name='dance.pk3')
+        >>> server.library.remove_map(pk3_name='vinegar_v3.pk3')
         >>> print(server.library.maps)
         """
         map_dir = os.path.expanduser(self.map_dir)
@@ -302,7 +302,7 @@ class Library(Base):
         Convenience function to use the show_map_details helper
 
         :param pk3_name:
-            The name of a pk3, such as ``dance.pk3``
+            The name of a pk3, such as ``vinegar_v3.pk3``
         :type pk3_name: ``str``
 
         :param detail:
@@ -317,7 +317,7 @@ class Library(Base):
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer()
-        >>> server.library.show_map('dance.pk3', detail='long')
+        >>> server.library.show_map('vinegar_v3.pk3', detail='long')
         """
         packages = self.store.get_package_db()
 

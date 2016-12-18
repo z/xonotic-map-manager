@@ -9,7 +9,7 @@ Xonotic Map Manager is the command-line package manager component of the `xonoti
 Use it like ``apt``::
 
     xmm update
-    xmm install dance2.pk3
+    xmm install eggandscrambled.pk3
     xmm list
 
 If you get stuck, try using a ``xmm -h``, or reference the Usage page.

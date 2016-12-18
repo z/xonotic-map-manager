@@ -309,7 +309,7 @@ class Repository(Base):
         Convenience function to use the show_map_details helper
 
         :param pk3_name:
-            The name of a pk3, such as ``dance.pk3``
+            The name of a pk3, such as ``vinegar_v3.pk3``
         :type pk3_name: ``str``
 
         :param detail:
