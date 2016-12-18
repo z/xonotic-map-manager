@@ -5,6 +5,7 @@ from xmm.base import Base
 from xmm.library import Library
 from xmm.repository import Repository
 from xmm.repository import Collection
+from xmm.exceptions import ServerLookupError
 from xmm.store import Store
 from xmm import util
 
@@ -68,7 +69,10 @@ class LocalServer(Base):
         package_store_file = os.path.expanduser(self.conf['default']['library'])
 
         if server_name and server_name != 'default':
-            map_dir = self.conf['servers'][server_name]['target_dir']
+            try:
+                map_dir = self.conf['servers'][server_name]['target_dir']
+            except KeyError:
+                raise ServerLookupError(server_name)
             server_data = self.conf['servers']
             if server_name in server_data:
                 package_store_file = os.path.expanduser(server_data[server_name]['library'])

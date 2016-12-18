@@ -11,12 +11,13 @@ from xmm import __version__
 
 from xmm.server import LocalServer
 
+from xmm.exceptions import HashMismatchError
 from xmm.exceptions import PackageMetadataWarning
 from xmm.exceptions import PackageNotTrackedWarning
 from xmm.exceptions import PackageLookupError
 from xmm.exceptions import RepositoryLookupError
 from xmm.exceptions import RepositoryUpdateError
-from xmm.exceptions import HashMismatchError
+from xmm.exceptions import ServerLookupError
 from xmm.plugins import pluginbase
 from xmm.plugins import pluginloader
 from xmm.logger import logger
@@ -36,7 +37,12 @@ def main():
 
     # Just install
     if args.target:
+        if args.command != 'install':
+            cprint("This flag only works with 'install' sub-command.", style='FAIL')
         target_dir = args.target
+        if not os.path.exists(target_dir):
+            cprint("Target directory does not exist.", style='FAIL')
+            raise SystemExit
         filename_with_path = os.path.join(target_dir, args.pk3)
         url_with_file = '{}/{}'.format(conf['default']['download_url'], args.pk3)
         util.download_file(filename_with_path=filename_with_path, url=url_with_file, use_curl=conf['default']['use_curl'])
@@ -44,7 +50,10 @@ def main():
 
     # Use all source repositories
     else:
-        server = LocalServer(server_name=args.server)
+        try:
+            server = LocalServer(server_name=args.server)
+        except ServerLookupError as e:
+            cprint("server '{}' does not exist in ~/.xmm/servers.json".format(e), style='FAIL')
 
     # Sort out defaults
     if 'long' in args and args.long:
@@ -166,13 +175,11 @@ def main():
             else:
 
                 try:
-
                     for repo in server.repositories.sources:
                         cprint("Using repo '{}'".format(repo.name), style='HEADER')
                         map_found = repo.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
                         if map_found:
                             break
-
                 except PackageLookupError:
                     cprint("Map was not found in repository", style="FAIL")
 

@@ -1,15 +1,9 @@
 from urllib.error import URLError
 
 
-class RepositoryLookupError(LookupError):
+class HashMismatchError(ValueError):
     """
-    Raise when Repository lookup fails
-    """
-
-
-class RepositoryUpdateError(URLError):
-    """
-    Raise when Repository update fails
+    Raise when a file hash mismatches
     """
 
 
@@ -31,7 +25,19 @@ class PackageNotTrackedWarning(Warning):
     """
 
 
-class HashMismatchError(ValueError):
+class RepositoryLookupError(LookupError):
     """
-    Raise when a file hash mismatches
+    Raise when Repository lookup fails
+    """
+
+
+class RepositoryUpdateError(URLError):
+    """
+    Raise when Repository update fails
+    """
+
+
+class ServerLookupError(LookupError):
+    """
+    Raise when Server lookup fails
     """
