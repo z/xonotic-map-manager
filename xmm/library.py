@@ -8,7 +8,6 @@ from xmm.exceptions import PackageLookupError
 from xmm.exceptions import RepositoryLookupError
 from xmm.exceptions import HashMismatchError
 from xmm.server import Base
-from xmm.util import zcolors
 from xmm.util import cprint
 from xmm import util
 
@@ -89,7 +88,7 @@ class Library(Base):
 
         return repo_sources
 
-    def install_map(self, pk3_name, repository_name=None):
+    def install_map(self, pk3_name, repository_name=None, overwrite=False, add_to_store=True):
         """
         Install a *MapPackage* from a *Repository*
 
@@ -103,6 +102,14 @@ class Library(Base):
             A name of a repository in the repository *Collection*
         :type repository_name: ``str``
 
+        :param overwrite:
+            Whether to overwrite the file on the file system
+        :type overwrite: ``bool``
+
+        :param add_to_store:
+            Whether to add the map to the store (tracked)
+        :type add_to_store: ``bool``
+
         >>> from xmm.server import LocalServer
         >>> server = LocalServer(server_name='myserver1')
         >>> server.library.install_map(pk3_name='vinegar_v3.pk3')
@@ -110,10 +117,8 @@ class Library(Base):
         """
         map_dir = self.map_dir
         installed_packages = self.store.get_package_db()
-        add_to_store = True
         map_found_in_repo = False
         found_map = None
-        overwrite = False
         installed = False
         is_url = False
 
@@ -129,16 +134,18 @@ class Library(Base):
         else:
             sources = self.repositories.sources
 
-        if installed_packages:
+        if installed_packages and not overwrite:
             for m in installed_packages:
                 if m.pk3_file == pk3_name:
                     cprint("{} already exists.".format(pk3_name), style='WARNING')
                     install = util.query_yes_no('continue?', 'no')
+                    print(install)
                     if not install:
                         raise SystemExit
                     else:
                         overwrite = True
                         add_to_store = False
+                    break
 
         if re.match('^(ht|f)tp(s)?://', pk3_name):
             url = pk3_name
@@ -177,7 +184,7 @@ class Library(Base):
 
     def remove_map(self, pk3_name):
         """
-        Removes a map from the *Library*
+        Removes a map from the *Library* and the package from the file system
 
         :param pk3_name:
             The name of a pk3, such as ``vinegar_v3.pk3``
@@ -185,29 +192,24 @@ class Library(Base):
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer(server_name='myserver1')
-        >>> server.library.install_map(pk3_name='vinegar_v3.pk3')
+        >>> server.library.install_map_package(pk3_name='vinegar_v3.pk3')
         >>> print(server.library.maps)
         >>> server.library.remove_map(pk3_name='vinegar_v3.pk3')
         >>> print(server.library.maps)
         """
         map_dir = os.path.expanduser(self.map_dir)
+        pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3_name)
 
-        if os.path.exists(map_dir):
-            pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3_name)
+        installed_packages = self.store.get_package_db()
 
-            installed_packages = self.store.get_package_db()
+        for m in installed_packages:
+            if m.pk3_file == pk3_name:
+                self.store.remove_package(m)
 
-            for m in installed_packages:
-                if m.pk3_file == pk3_name:
-                    self.store.remove_package(m)
-
-            if os.path.exists(pk3_with_path):
-                os.remove(pk3_with_path)
-            else:
-                raise FileNotFoundError(pk3_with_path)
-
+        if os.path.exists(pk3_with_path):
+            os.remove(pk3_with_path)
         else:
-            raise NotADirectoryError(map_dir)
+            raise FileNotFoundError(pk3_with_path)
 
     def discover_maps(self, add=False, repository_name=None):
         """

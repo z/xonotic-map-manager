@@ -9,7 +9,7 @@ store = Store(package_store_file=package_store_file)
 
 
 def test_map_init():
-    with open('{}/data/my_map.json'.format(root_dir)) as f:
+    with open('{}/data/map.json'.format(root_dir)) as f:
         data = f.read()
         my_map = MapPackage(map_package_json=data)
     assert my_map.pk3_file == 'map-vapor_alpha_2.pk3'

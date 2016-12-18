@@ -31,7 +31,7 @@ def test_store_get_package_db():
 def test_store_add_package():
     test_library_file = os.path.join('{}/data/new.json'.format(root_dir))
     store = Store(package_store_file=test_library_file)
-    with open('{}/data/my_map.json'.format(root_dir)) as f:
+    with open('{}/data/map.json'.format(root_dir)) as f:
         data = f.read()
         my_map = MapPackage(map_package_json=data)
     store.add_package(my_map)
@@ -45,7 +45,7 @@ def test_store_remove_package():
     test_library_file = os.path.join('{}/data/new.json'.format(root_dir))
     store = Store(package_store_file=test_library_file)
     assert len(store.get_package_db()) == 2
-    with open('{}/data/my_map.json'.format(root_dir)) as f:
+    with open('{}/data/map.json'.format(root_dir)) as f:
         data = f.read()
         my_map = MapPackage(map_package_json=data)
     store.remove_package(my_map)

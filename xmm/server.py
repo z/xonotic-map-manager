@@ -66,6 +66,7 @@ class LocalServer(Base):
         super().__init__()
 
         map_dir = self.conf['default']['target_dir']
+
         package_store_file = os.path.expanduser(self.conf['default']['library'])
 
         if server_name and server_name != 'default':
@@ -76,6 +77,9 @@ class LocalServer(Base):
             server_data = self.conf['servers']
             if server_name in server_data:
                 package_store_file = os.path.expanduser(server_data[server_name]['library'])
+
+        if not os.path.exists(map_dir):
+            raise NotADirectoryError(map_dir)
 
         store = Store(package_store_file=package_store_file)
 
