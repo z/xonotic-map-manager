@@ -91,24 +91,25 @@ def main():
         except FileNotFoundError:
             cprint("package does not exist or is not tracked. try removing with full path if not tracked.", style='FAIL')
         except NotADirectoryError:
-            cprint("directory does not exist.", style='FAIL')
+            cprint("package directory does not exist.", style='FAIL')
 
     elif args.command == 'discover':
 
+        repository_name = None
+
         if args.repository:
-
+            repository_name = args.repository
             cprint("Using repo: {}".format(args.repository), style='BOLD')
-
             try:
-                repo = server.repositories.get_repository(args.repository)
+                repo = server.repositories.get_repository(repository_name)
             except RepositoryLookupError:
                 cprint("Repository doesn't exist in sources.json", style="FAIL")
                 raise SystemExit
 
-            server.library.discover_maps(add=args.add, repository_name=args.repository)
-
-        else:
-            server.library.discover_maps(add=args.add)
+        try:
+            server.library.discover_maps(add=args.add, repository_name=repository_name)
+        except NotADirectoryError:
+            cprint("package directory does not exist.", style='FAIL')
 
     elif args.command == 'list':
 

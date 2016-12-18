@@ -230,6 +230,9 @@ class Library(Base):
         else:
             sources = self.repositories.sources
 
+        if not os.path.exists(map_dir):
+            raise NotADirectoryError
+
         for pk3_file in os.listdir(map_dir):
 
             map_found = False
