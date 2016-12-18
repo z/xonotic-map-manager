@@ -7,7 +7,7 @@ from xmm.exceptions import PackageNotTrackedWarning
 from xmm.exceptions import PackageLookupError
 from xmm.exceptions import RepositoryLookupError
 from xmm.exceptions import HashMismatchError
-from xmm.server import Base
+from xmm.base import Base
 from xmm.util import cprint
 from xmm import util
 
@@ -139,7 +139,6 @@ class Library(Base):
                 if m.pk3_file == pk3_name:
                     cprint("{} already exists.".format(pk3_name), style='WARNING')
                     install = util.query_yes_no('continue?', 'no')
-                    print(install)
                     if not install:
                         raise SystemExit
                     else:

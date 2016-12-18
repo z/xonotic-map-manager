@@ -44,11 +44,17 @@ def test_store_remove_package():
     copyfile('{}/data/library.json'.format(root_dir), '{}/data/new.json'.format(root_dir))
     test_library_file = os.path.join('{}/data/new.json'.format(root_dir))
     store = Store(package_store_file=test_library_file)
-    assert len(store.get_package_db()) == 2
+
+    # direct attribute
+    assert len(store.data) == 1
     with open('{}/data/map.json'.format(root_dir)) as f:
         data = f.read()
         my_map = MapPackage(map_package_json=data)
+    store.add_package(my_map)
+    assert len(store.data) == 2
     store.remove_package(my_map)
+
+    # via helper
     assert len(store.get_package_db()) == 1
     assert store.get_package_db()[0].pk3_file == 'dance.pk3'
     os.remove(test_library_file)
