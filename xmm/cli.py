@@ -70,6 +70,10 @@ def main():
 
     elif args.command == 'install':
 
+        if not args.pk3:
+            cprint("package name not specified", style='FAIL')
+            raise SystemExit
+
         cprint("Installing map: {}".format(args.pk3), style='BOLD')
 
         try:
@@ -84,6 +88,10 @@ def main():
             cprint("package does not exist in the repository. cannot install.", style='FAIL')
 
     elif args.command == 'remove':
+
+        if not args.pk3:
+            cprint("package name not specified", style='FAIL')
+            raise SystemExit
 
         cprint("Removing package: {}".format(args.pk3), style='BOLD')
 
@@ -122,6 +130,10 @@ def main():
             cprint("Failed.", style='FAIL')
 
     elif args.command == 'show':
+
+        if not args.pk3:
+            cprint("package name not specified", style='FAIL')
+            raise SystemExit
 
         # Use local package store for lookup
         if args.local:

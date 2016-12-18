@@ -271,8 +271,7 @@ class Repository(Base):
         """
         try:
             cprint("Updating {} sources json...".format(self.name), style='INFO')
-            urllib.request.urlretrieve(self.api_data_url, self.api_data, util.reporthook)
-            cprint("Done.", style='INFO')
+            util.download_file(self.api_data_file, url=self.api_data_url, use_curl=self.conf['default']['use_curl'], overwrite=True)
         except URLError as e:
             self.logger.debug('Error updating repo data: {}'.format(e))
             raise RepositoryUpdateError
@@ -289,7 +288,7 @@ class Repository(Base):
 
             if not os.path.exists(self.api_data_file):
                 cprint("Could not find a repo file. Downloading one.".format(self.name), style='WARNING')
-                util.check_if_not_create(self.api_data_file, './resources/data/maps.json')
+                self.update_repo_data()
 
             with open(self.api_data_file) as f:
                 data = f.read()
