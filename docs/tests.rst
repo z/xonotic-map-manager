@@ -1,7 +1,7 @@
 Tests
 =====
 
-Unit tests can be run with ``py.test`` and coverage tests with ``tox``.::
+Unit tests can be run with ``py.test`` and coverage tests with ``tox``::
 
    make tests
    make tests-coverage

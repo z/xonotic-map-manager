@@ -315,7 +315,7 @@ xmm can facilitate the management of multiple servers with a ``~/.xmm/servers.js
 
 An example is available in ``./config/example.servers.json``
 
-To use these servers, use the ``-s`` flag to target the server.::
+To use these servers, use the ``-s`` flag to target the server::
 
 
     xmm -s myserver1 install dance.pk3
@@ -326,11 +326,13 @@ To use these servers, use the ``-s`` flag to target the server.::
 Targeting Directories
 ~~~~~~~~~~~~~~~~~~~~~
 
-Sometimes you may want to install a package to an arbitrary directory.::
+Sometimes you may want to install a package to an arbitrary directory::
 
     xmm -T /path/to/directory/ install dance.pk3
 
-This install will not be tracked in the library.
+.. note::
+
+    This install will not be tracked in the library.
 
 
 * :ref:`genindex`
