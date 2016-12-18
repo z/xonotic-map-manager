@@ -3,11 +3,11 @@
 Configuration
 =============
 
-The defaults should work out of the box, if you want to make changes, edit the ``~/.xmm.cfg`` file.
+The defaults should work out of the box, if you want to make changes, edit the ``~/.xmm.ini`` file.
 
 .. code-block:: ini
 
-    # This file is read from ~/.xmm.cfg, make sure that's where you are editing it
+    # This file is read from ~/.xmm.ini, make sure that's where you are editing it
     [xmm]
 
     # Where should xmm manage maps?
@@ -26,6 +26,41 @@ The defaults should work out of the box, if you want to make changes, edit the `
 
     # configuration of repositories
     sources_config = ~/.xmm/sources.json
+
+Logging can be configured in ``~/.xmm/xmm.logging.ini``, again, the defaults should be sufficient.
+
+.. code-block:: ini
+
+    # ~/.xmm/xmm.logging.ini
+    [loggers]
+    keys = root
+
+    [logger_root]
+    level    = DEBUG
+    handlers = stream, debug
+
+    [handlers]
+    keys = stream, debug
+
+    [handler_stream]
+    class = StreamHandler
+    args = (sys.stdout,)
+    level = ERROR
+    formatter = generic
+
+    [handler_debug]
+    class = handlers.RotatingFileHandler
+    formatter = generic
+    level = DEBUG
+    args = ('%(log_filename)s', 'a', 50000000, 5)
+
+    [formatters]
+    keys = generic
+
+    [formatter_generic]
+    format = %(asctime)s %(levelname)-5.5s [%(name)s] [%(threadName)s] %(message)s
+    datefmt = %Y-%m-%d %H:%M:%S
+    class = logging.Formatter
 
 
 **xmm** can facilitate the management of multiple servers with ``~/.xmm/servers.json`` which defines the configure of settings, example below:

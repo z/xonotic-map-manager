@@ -93,7 +93,7 @@ def parse_config(config_file):
         filename with path to config file
     :type config_file: ``str``
 
-    :returns: dict
+    :returns: ``dict``
     """
     if not os.path.isfile(config_file):
         print("{}{} not found, please create one.{}".format(zcolors.WARNING, config_file, zcolors.ENDC))

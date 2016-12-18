@@ -27,7 +27,7 @@ def test_convert_size():
 
 
 def test_parse_config():
-    _conf = parse_config(os.path.expanduser('~/.xmm.cfg'))
+    _conf = parse_config(os.path.expanduser('~/.xmm.ini'))
     assert 'target_dir' in _conf
 
 

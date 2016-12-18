@@ -4,9 +4,11 @@ Upgrading
 0.7.0 -> 0.8.0
 --------------
 
-**Configuration Updates**
+Configuration Updates
+^^^^^^^^^^^^^^^^^^^^^
 
-`xmm.cfg`
+xmm.cfg -> xmm.ini
+""""""""""""""""""
 
 * Renamed section: ``[default]`` to ``[xmm]``
 
@@ -21,7 +23,8 @@ Upgrading
 
     * ``servers_config`` with default ``~/.xmm/servers.json``
 
-`servers.json`
+servers.json
+""""""""""""
 
 The ``package_db`` key has been dropped, ``library`` and ``sources`` have been added.
 
@@ -43,7 +46,8 @@ Pickle is no longer used for serialization, data is now stored as JSON:
     }
 
 
-`sources.json`
+sources.json
+""""""""""""
 
 This is a new feature that enables support for more than one repository:
 
@@ -59,7 +63,15 @@ This is a new feature that enables support for more than one repository:
 
 For more information please see the :ref:`configuration` page.
 
-**Migrating Your Library**
+xmm.logging.ini *[NEW]*
+"""""""""""""""""""""""
+
+Logging is now configurable through ``~/.xmm/xmm.logging.ini``.
+
+For more information please see the :ref:`configuration` page.
+
+Migrating Your Library
+^^^^^^^^^^^^^^^^^^^^^^
 
 The easiest way to migrate your library is with::
 

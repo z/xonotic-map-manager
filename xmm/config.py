@@ -1,11 +1,15 @@
 import xmm.util as util
 import json
+import logging.config
 import os
 
-config_file = '.xmm.cfg'
+config_file = '.xmm.ini'
+logging_config_file = 'xmm.logging.ini'
 config_file_with_path = os.path.expanduser(os.path.join('~', config_file))
+logging_config_file_with_path = os.path.expanduser(os.path.join('~/.xmm/', logging_config_file))
 
-util.check_if_not_create(config_file_with_path, 'config/xmm.cfg')
+util.check_if_not_create(config_file_with_path, 'config/xmm.ini')
+util.check_if_not_create(logging_config_file_with_path, 'config/xmm.logging.ini')
 
 config = util.parse_config(config_file_with_path)
 
@@ -46,3 +50,7 @@ with open(conf['servers_config']) as f:
 # Make sure needed dirs exist
 for server in conf['servers']:
     os.makedirs(os.path.expanduser(conf['servers'][server]['target_dir']), exist_ok=True)
+
+logging.config.fileConfig(logging_config_file_with_path, defaults={
+    'log_filename': os.path.expanduser('~/.xmm/xmm.log')
+})
