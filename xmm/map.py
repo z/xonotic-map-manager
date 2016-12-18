@@ -126,7 +126,7 @@ class MapPackage(Base):
         """
         return json.dumps(self, cls=util.ObjectEncoder)
 
-    def show_map_details(self, detail=None, search_string='', highlight=False):
+    def show_map_details(self, detail=None, search_string='', highlight=False, pad_top=False):
         """
         Helper function for pretty printing details about a *MapPackage*
 

@@ -241,9 +241,11 @@ class Repository(Base):
         criteria = list(set(criteria))
 
         if len(criteria) > 0:
-            cprint("Searching {} repo for packages with the following criteria:".format(self.name), style='HEADER')
+            cprint("Using repo '{}'".format(self.name), style="HEADER")
+            cprint("Searching for packages with the following criteria:", style='INFO')
             for c in criteria:
                 print("{}{}{}: {}".format(zcolors.BOLD, str(c[0]), zcolors.ENDC, str(c[1])))
+            print('---')
 
         for m in fmaps_json:
             bsps = m.bsp
@@ -261,8 +263,8 @@ class Repository(Base):
                         m.show_map_details(detail=detail, highlight=highlight)
 
                     shown = True
-
-        print("\n{}Total packages found:{} {}{}{}".format(zcolors.INFO, zcolors.ENDC, zcolors.BOLD, str(total), zcolors.ENDC))
+        print('---')
+        print("{}Total packages found:{} {}{}{}".format(zcolors.INFO, zcolors.ENDC, zcolors.BOLD, str(total), zcolors.ENDC))
 
     # remote data
     def update_repo_data(self):

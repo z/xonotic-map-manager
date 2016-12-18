@@ -111,7 +111,7 @@ def main():
 
         if args.repository:
             repository_name = args.repository
-            cprint("Using repo: {}".format(args.repository), style='BOLD')
+            cprint("Using repo '{}'".format(args.repository), style='HEADER')
             try:
                 repo = server.repositories.get_repository(repository_name)
             except RepositoryLookupError:
@@ -168,7 +168,7 @@ def main():
                 try:
 
                     for repo in server.repositories.sources:
-                        cprint("Using repo: {}".format(repo.name), style='BOLD')
+                        cprint("Using repo '{}'".format(repo.name), style='HEADER')
                         map_found = repo.show_map(pk3_name=args.pk3, detail=detail, highlight=highlight)
                         if map_found:
                             break
