@@ -111,7 +111,8 @@ class Library(Base):
         map_dir = self.map_dir
         installed_packages = self.store.get_package_db()
         add_to_store = True
-        map_in_repo = False
+        map_found_in_repo = False
+        found_map = None
         overwrite = False
         installed = False
         is_url = False
@@ -151,22 +152,24 @@ class Library(Base):
         pk3_with_path = os.path.join(os.path.dirname(map_dir), pk3)
 
         for repo in sources:
-            if not map_in_repo:
+            if not map_found_in_repo:
                 maps_json = repo.get_repo_data()
                 for m in maps_json:
                     if m.pk3_file == pk3:
-                        self.add_map_package(m)
-                        map_in_repo = True
+                        found_map = m
+                        self.add_map_package(found_map)
+                        map_found_in_repo = True
                         cprint("Found in: {}".format(repo.name))
-                        if add_to_store:
-                            self.store.add_package(m)
                         break
 
-        if map_in_repo or is_url:
+        if map_found_in_repo or is_url:
             util.download_file(filename_with_path=pk3_with_path, url=url, use_curl=self.conf['default']['use_curl'], overwrite=overwrite)
             installed = True
 
-        if not map_in_repo:
+        if installed and add_to_store and found_map:
+            self.store.add_package(found_map)
+
+        if not map_found_in_repo:
             if installed:
                 raise PackageMetadataWarning
             else:
