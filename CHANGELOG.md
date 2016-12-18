@@ -7,6 +7,7 @@
 * arg completion for bash and zsh via argcomplete
 * `-L` flag on the `xmm show` subcommand to explicitly indicate showing map details from a locally installed map. Otherwise, the source_collection cache is used for all information. 
 * `-R` flag to specify a single repository if using many
+* `--version` flag
 
 ### Changed
 * Complete overhaul of code base exposing a Python API

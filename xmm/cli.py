@@ -7,6 +7,8 @@ import argcomplete
 import argparse
 import os
 
+from xmm import __version__
+
 from xmm.server import LocalServer
 
 from xmm.exceptions import PackageMetadataWarning
@@ -188,6 +190,7 @@ def parse_args():
 
     parser = argparse.ArgumentParser(description='Xonotic Map Manager is a tool to help manage Xonotic maps')
 
+    parser.add_argument('--version', action='version', version='%(prog)s {0}'.format(__version__))
     parser.add_argument("-s", '--server', nargs='?', help="target server as defined in servers.json", type=str)
     parser.add_argument("-T", '--target', nargs='?', help="target directory", type=str)
     parser.add_argument("-R", '--repository', nargs='?', help="repository to use (defaults to all available)", type=str, default=None)

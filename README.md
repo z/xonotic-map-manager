@@ -49,6 +49,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --version             show program's version number and exit
   -s [SERVER], --server [SERVER]
                         target server as defined in servers.json
   -T [TARGET], --target [TARGET]
