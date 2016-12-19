@@ -23,6 +23,7 @@ CLI help docs for ``xmm``::
         show                show details of remote or locally installed packages
         export              export locally managed packages to a file
         update              update sources json
+        extract-hashes      extract the shasum hashes from maps.json
         hello               hello is an example plugin
 
     optional arguments:
@@ -275,7 +276,7 @@ detailed::
 Export
 ~~~~~~
 
-You can export your maplist to a map-repo repository friend json format::
+You can export your maplist to a map-repo repository friendly json format::
 
     % xmm export test.json
     % cat test.json
@@ -290,6 +291,21 @@ Get the latest list of maps from the repository::
     xmm update
     Updating sources json.
     ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
+
+
+Extract Hashes
+~~~~~~~~~~~~~~
+
+You can extract the shasums from a repository's maps.json::
+
+    % xmm extract-hashes test.shasums
+    % head -n5 test.shasums
+      3509e4551d4c2893b786656fcb19d6d9adf478fa 'gladiators'pit.pk3
+      ab0860f2678f77a6b572b19abc6767a7e908256b 'own'arama.pk3
+      754c7c07f7180d72b7ea2f9a80eb25fcace7ae1a (s)example_jumps_b1_ut.pk3
+      1a4ee77fcf0adda01ad71828ff4bfeaf52637c2c (s)extreme_jumps_a1_ut.pk3
+      02e8e9aee201b65aee62c9352862b3be65f79832 (s)m3_goals_test1_ut.pk3
+
 
 Advanced Usage
 --------------

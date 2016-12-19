@@ -221,6 +221,17 @@ def main():
         except RepositoryUpdateError:
             cprint('One or more repositories have failed to update.', style='FAIL')
 
+    elif args.command == 'extract-hashes':
+
+        default_export_name = 'maps.json.shasums'
+        filename = args.file
+
+        if not filename:
+            filename = default_export_name
+            cprint("a name wasn't given, exporting as: {}".format(filename), style='WARNING')
+
+        server.library.repositories.get_repository('default').export_hash_index(filename=filename)
+
     # Plugins
     for cmd, value in plugins.items():
         if args.command == cmd:
@@ -279,6 +290,9 @@ def parse_args():
     parser_export.add_argument('file', nargs='?', help='file name to export to', type=str)
 
     parser_update = subparsers.add_parser('update', help='update sources json')
+
+    parser_extract_hashes = subparsers.add_parser('extract-hashes', help='extract the shasum hashes from maps.json')
+    parser_extract_hashes.add_argument('file', nargs='?', help='file name to export to', type=str)
 
     # Handle plugins
     for i in pluginloader.get_plugins():

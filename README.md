@@ -54,6 +54,7 @@ positional arguments:
     show                show details of remote or locally installed packages
     export              export locally managed packages to a file
     update              update sources json
+    extract-hashes      extract the shasum hashes from maps.json
     hello               hello is an example plugin
 
 optional arguments:

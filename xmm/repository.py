@@ -322,6 +322,29 @@ class Repository(Base):
 
         return self.repo_data
 
+    def export_hash_index(self, filename='maps.json.shasums'):
+        """
+        :param filename:
+            Name for the exported json file, default ``xmm-export.json``
+        :type filename: ``str``
+
+        :returns: False if fails
+        """
+
+        self.logger.info("exporting shasums to file: {}".format(filename))
+
+        maps_json = self.get_repo_data()
+        lines = []
+        for m in maps_json:
+            lines.append("{} {}".format(m.shasum, m.pk3_file))
+
+        try:
+            with open(filename, 'w') as f:
+                f.write('\n'.join(lines))
+        except EnvironmentError as e:
+            self.logger.error(e)
+            return False
+
     def show_map(self, pk3_name, detail=None, highlight=False):
         """
         Convenience function to use the show_map_details helper
