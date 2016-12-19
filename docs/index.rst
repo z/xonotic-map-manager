@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Xonotic Map Manager's documentation!
-===============================================
+Xonotic Map Manager's documentation
+===================================
 
 A command-line package manager for the xonotic-map-repository project.
 
-.. image:: _static/xmm.png
+.. image:: _static/xmm.gif
 
 .. image:: https://travis-ci.org/z/xonotic-map-manager.svg?branch=develop
     :target: https://travis-ci.org/z/xonotic-map-manager
