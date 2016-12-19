@@ -6,7 +6,7 @@ A command-line package manager for the [xonotic-map-repository](https://github.c
 
 Used with the unofficial Xonotic map repository, [xonotic.co](http://xonotic.co), by default.
 
-[![asciicast](./resources/images/xmm.gif)
+[![asciicast](./resources/images/xmm.gif)](https://asciinema.org/a/962s6jhs1gw7b7ytmjyukrhd9)
 
 The JSON provides rich metadata about map packages which makes it easier
 to discern differences between them.
