@@ -6,12 +6,20 @@ Requirements
 
 * Python 3
 
+Debian/Ubuntu
+^^^^^^^^^^^^^
+
+If you do not already have **pip** and **setuptools** for Python3::
+
+    sudo apt install python3-pip python3-setuptools
+
+
 Install
 -------
 
 Install using pip::
 
-    pip install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm
+    pip3 install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm --user
 
 Install manually with setuptools::
 

@@ -12,11 +12,20 @@ The JSON provides rich metadata about map packages which makes it easier
 to discern differences between them.
 
 For information about what data is available check [JSON Structure](#JSON-structure).
+## Requirements
+
+### Debian/Ubuntu
+
+If you do not already have **pip** and **setuptools** for Python 3:
+
+```
+sudo apt install python3-pip python3-setuptools
+```
 
 ## Installation
 
 ```
-pip install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm
+pip3 install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm --user
 ```
 
 or for development:
