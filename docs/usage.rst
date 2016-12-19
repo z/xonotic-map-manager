@@ -153,7 +153,6 @@ You cannot remove a map that doesn't exist::
     map does not exist.
 
 
-
 Discover
 ~~~~~~~~
 
@@ -171,21 +170,18 @@ A summary of discovered packages::
     dance.pk3 [dance]
     http://dl.xonotic.co/dance.pk3
 
-
     snowdance_xon.pk3 [snowdance2]
     http://dl.xonotic.co/snowdance_xon.pk3
-
 
     dance-fixed.pk3 [dance-fixed]
     http://dl.xonotic.co/dance-fixed.pk3
 
-
     got_wood-on-xctf3.pk3 [got_wood]
     http://dl.xonotic.co/got_wood-on-xctf3.pk3
 
-
-    map-ctf-mikectf3_nex_r3_fix.pk3 [mIKEctf3_nex_r3]
-    http://dl.xonotic.co/map-ctf-mikectf3_nex_r3_fix.pk3
+    cupolaarena-xon.pk3 [cupolaarena_xon]
+    http://dl.xonotic.co/cupolaarena-xon.pk3
+    cupolaarena-xon.pk3 hash does not match repository's
 
     map-vapor_alpha_2.pk3 hash different from repositories
 
@@ -339,6 +335,30 @@ To use these servers, use the ``-s`` flag to target the server::
     xmm -s myserver1 install dance.pk3
     xmm -s myserver1 list
     xmm -s myserver1 remove dance.pk3
+
+
+Multi-repository support
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**xmm** can use multiple repositories, edit the ``~/.xmm/sources.json`` file to configure them, example below:
+
+.. code-block:: json
+
+    {
+      "default": {
+        "download_url": "http://dl.xonotic.co/",
+        "api_data_file": "~/.xmm/maps.json",
+        "api_data_url": "http://xonotic.co/resources/data/maps.json"
+      }
+    }
+
+An example is available in ``./config/example.sources.json``
+
+To use these servers, use the ``-R`` flag to target the server::
+
+    xmm -R myrepo install dance.pk3
+    xmm -R myrepo list
+    xmm -R myrepo remove dance.pk3
 
 
 Targeting Directories

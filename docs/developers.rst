@@ -96,6 +96,33 @@ Checkout the examples in the ``./xmmc/plugins`` directory.
 
     This plugin system needs to be revisited and will likely change by the next minor release.
 
+Debugging
+---------
+
+The default logging configuration comes with two file handlers, info and debug, which info enabled by default.
+
+To enable debug, in `~/.xmm/xmm.logging.ini` change:
+
+.. code-block:: ini
+
+    [logger_root]
+    level    = NOTSET
+    handlers = stream, info
+
+    [handlers]
+    keys = stream, info
+
+To:
+
+.. code-block:: ini
+
+    [logger_root]
+    level    = NOTSET
+    handlers = stream, debug
+
+    [handlers]
+    keys = stream, debug
+
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`

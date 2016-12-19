@@ -42,11 +42,11 @@ Logging can be configured in ``~/.xmm/xmm.logging.ini``, again, the defaults sho
     keys = root
 
     [logger_root]
-    level    = DEBUG
-    handlers = stream, debug
+    level    = NOTSET
+    handlers = stream, info
 
     [handlers]
-    keys = stream, debug
+    keys = stream, info
 
     [handler_stream]
     class = StreamHandler
@@ -60,6 +60,12 @@ Logging can be configured in ``~/.xmm/xmm.logging.ini``, again, the defaults sho
     level = DEBUG
     args = ('%(log_filename)s', 'a', 50000000, 5)
 
+    [handler_info]
+    class = handlers.RotatingFileHandler
+    formatter = generic
+    level = INFO
+    args = ('%(log_filename)s', 'a', 50000000, 5)
+
     [formatters]
     keys = generic
 
@@ -68,6 +74,7 @@ Logging can be configured in ``~/.xmm/xmm.logging.ini``, again, the defaults sho
     datefmt = %Y-%m-%d %H:%M:%S
     class = logging.Formatter
 
+.. _multi-server:
 
 Multi-Server
 ------------
@@ -88,6 +95,8 @@ Multi-Server
         "sources": "~/.xmm/myserver2/sources.json"
       }
     }
+
+.. _multi-repository:
 
 Multi-repo
 ----------

@@ -6,7 +6,7 @@
 Xonotic Map Manager's documentation
 ===================================
 
-A command-line package manager for the xonotic-map-repository project.
+A command-line package manager for the `xonotic-map-repository`_ project.
 
 .. image:: _static/xmm.gif
 
@@ -19,17 +19,18 @@ A command-line package manager for the xonotic-map-repository project.
 
 * Discovery and optional addition of your existing maps to XMM's library
 
-* Multi-`repository`_  support
-
 * Repository-less install of map packages from a URL
 
-* Multi-server support (track different maps per server)
+* :ref:`Multi-server` support (track different maps per server)
+
+* :ref:`Multi-repository`  support
 
 * Plugin system
 
-* Developer API, use xmm as a module
+* Developer :ref:`API`, use xmm as a module
 
 .. _repository: https://github.com/z/xonotic-map-repository
+.. _xonotic-map-repository: https://www.github.com/z/xonotic-map-repository
 
 **Get Started**
 

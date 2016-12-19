@@ -46,8 +46,8 @@ Pickle is no longer used for serialization, data is now stored as JSON:
     }
 
 
-sources.json
-""""""""""""
+sources.json *[NEW]*
+""""""""""""""""""""
 
 This is a new feature that enables support for more than one repository:
 
