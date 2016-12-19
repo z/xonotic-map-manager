@@ -72,6 +72,10 @@ optional arguments:
 
 Documentation is hosted on [readthedocs.io](http://xonotic-map-manager.readthedocs.io/en/latest).
 
+## Contributing
+
+Contributions to this project are welcome, please read [CONTRIBUTING.md](https://github.com/z/xonotic-map-manager/blob/develop/CONTRIBUTING.md).
+
 ## License
 
 Copyright (c) 2016 Tyler Mulligan (z@xnz.me) and contributors.
