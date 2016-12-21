@@ -149,7 +149,7 @@ def main():
                 raise SystemExit
 
         try:
-            server.library.discover_maps(add=args.add, repository_name=repository_name)
+            server.library.discover_maps(add=args.add, repository_name=repository_name, detail=detail)
         except NotADirectoryError as e:
             cprint("package directory does not exist: {}".format(e), style='FAIL')
 

@@ -220,7 +220,7 @@ class Library(Base):
         else:
             raise FileNotFoundError(pk3_with_path)
 
-    def discover_maps(self, add=False, repository_name=None):
+    def discover_maps(self, add=False, repository_name=None, detail=None):
         """
         Searches the *Server*'s map_dir for map packages known by the *Repository*
 
@@ -231,6 +231,14 @@ class Library(Base):
         :param repository_name:
             A name of a repository in the repository *Collection*
         :type repository_name: ``str``
+
+        :param detail:
+            How much detail to show, [short, None, long]
+        :type detail: ``str``
+
+        :param highlight:
+            Whether to highlight the results
+        :type highlight: ``bool``
 
         >>> from xmm.server import LocalServer
         >>> server = LocalServer()
@@ -264,7 +272,7 @@ class Library(Base):
 
                 try:
                     for repo in sources:
-                        map_found = repo.show_map(pk3_file)
+                        map_found = repo.show_map(pk3_file, detail=detail)
                         if map_found:
                             break
                 except PackageLookupError:
