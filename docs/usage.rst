@@ -9,12 +9,13 @@ Basic Usage
 CLI help docs for ``xmm``::
 
     usage: xmm [-h] [--version] [-S [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
-               {search,install,remove,discover,list,show,export,update,hello} ...
+               {search,install,remove,discover,list,show,export,servers,repos,update,hello}
+               ...
 
     Xonotic Map Manager is a tool to help manage Xonotic maps
 
     positional arguments:
-      {search,install,remove,discover,list,show,export,update,hello}
+      {search,install,remove,discover,list,show,export,servers,repos,update,hello}
         search              search for maps based on bsp names
         install             install a map from the repository, or specify a URL.
         remove              remove based on pk3 name
@@ -22,6 +23,8 @@ CLI help docs for ``xmm``::
         list                list locally installed packages
         show                show details of remote or locally installed packages
         export              export locally managed packages to a file
+        servers             subcommands on servers described in servers.json
+        repos               subcommands on repos described in sources.json
         update              update sources json
         hello               hello is an example plugin
 
@@ -34,6 +37,7 @@ CLI help docs for ``xmm``::
                             target directory
       -R [REPOSITORY], --repository [REPOSITORY]
                             repository to use (defaults to all available)
+
 
 
 Searching
@@ -304,6 +308,26 @@ Or a list of pk3s and their respective shasums::
     abc9e153c37784563e4e3c2669cc88af05649399 ons-reborn_vehicles.pk3
 
 
+Servers
+~~~~~~~
+
+List servers with ``xmm servers list``::
+
+    xmm servers list
+    myserver2
+    myserver1
+
+
+Repos
+~~~~~
+
+List repositories with ``xmm repos list``::
+
+    xmm repos list
+    default
+    gpl_only
+
+
 Update
 ~~~~~~
 
@@ -313,6 +337,7 @@ Get the latest list of maps from the repository::
     Updating sources json.
     ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 
+Advanced Usage
 --------------
 
 Multi-server support

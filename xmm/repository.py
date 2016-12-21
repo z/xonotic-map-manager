@@ -47,6 +47,13 @@ class Collection(Base):
         """
         return json.dumps(self, cls=util.ObjectEncoder)
 
+    def list_repositories(self):
+        """
+        Prints a list of servers
+        """
+        for repo in self.conf['sources']:
+            print(repo)
+
     def get_repository(self, repository_name):
         """
         :param repository_name:

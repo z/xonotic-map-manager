@@ -8,7 +8,9 @@
 * `-L` flag on the `xmm show` subcommand to explicitly indicate showing map details from a locally installed map. Otherwise, the source_collection cache is used for all information. 
 * `-R` flag to specify a single repository if using many
 * `--version` flag
-* `extract-hashes` subcommand to output a quick index of shasums from repo JSON (#7)
+* `export` command supports two more formats, shasums, maplist (bsps), or repo JSON (#7)
+* `servers` command added with subcommand `list`
+* `repos` command added with subcommand `list`
 * User-configurable Logging
 
 ### Changed

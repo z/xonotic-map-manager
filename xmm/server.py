@@ -10,6 +10,7 @@ from xmm.store import Store
 from xmm import util
 
 
+# TODO: fleet management
 class ServerCollection(Base):
     """
     A *ServerCollection* is a group of *LocalServer* objects. Currently unused.
@@ -29,6 +30,13 @@ class ServerCollection(Base):
         :returns: A **JSON** encoded version of this object
         """
         return json.dumps(self.servers, cls=util.ObjectEncoder)
+
+    def list_servers(self):
+        """
+        Prints a list of servers
+        """
+        for server in self.conf['servers']:
+            print(server)
 
 
 class LocalServer(Base):

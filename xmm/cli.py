@@ -12,6 +12,7 @@ from xmm import __version__
 from xmm.config import conf
 
 from xmm.server import LocalServer
+from xmm.server import ServerCollection
 
 from xmm.exceptions import HashMismatchError
 from xmm.exceptions import PackageMetadataWarning
@@ -265,6 +266,18 @@ def main():
                 else:
                     server.library.repositories.export_all_hash_index(filename=args.filename)
 
+    elif args.command == 'servers':
+
+        servers = ServerCollection(servers=[])
+
+        if args.subcommand == 'list':
+            servers.list_servers()
+
+    elif args.command == 'repos':
+
+        if args.subcommand == 'list':
+            server.repositories.list_repositories()
+
     elif args.command == 'update':
 
         try:
@@ -329,6 +342,12 @@ def parse_args():
     parser_export.add_argument('subcommand', choices=['local', 'repos'], help='what context to export?', default='local', type=str)
     parser_export.add_argument('filename', nargs='?', help='filename to export to', type=str)
     parser_export.add_argument('--format', '-f', choices=['json', 'shasums', 'maplist'], default='json')
+
+    parser_servers = subparsers.add_parser('servers', help='subcommands on servers described in servers.json')
+    parser_servers.add_argument('subcommand', choices=['list'], help='list all servers in servers.json', type=str)
+
+    parser_servers = subparsers.add_parser('repos', help='subcommands on repos described in sources.json')
+    parser_servers.add_argument('subcommand', choices=['list'], help='list all servers in sources.json', type=str)
 
     parser_update = subparsers.add_parser('update', help='update sources json')
 
