@@ -21,7 +21,11 @@ Install using pip::
 
     pip3 install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm --user
 
-Install manually with setuptools::
+If you get an error trying to run ``xmm``, you probably need ``$HOME/.local/bin`` in your path, put the following in your ``~/.bashrc`` or ``~/.zshrc`` etc::
+
+    export PATH=$PATH:$HOME/.local/bin
+
+Alternatively, install the development version manually with setuptools::
 
    git clone https://github.com:z/xonotic-map-manager.git
    cd xonotic-map-manager
