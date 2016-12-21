@@ -80,7 +80,7 @@ class LocalServer(Base):
 
         self.logger.info('initializing LocalServer: {}'.format(server_name))
 
-        map_dir = self.conf['default']['target_dir']
+        self.map_dir = os.path.expanduser(self.conf['default']['target_dir'])
 
         package_store_file = os.path.expanduser(self.conf['default']['library'])
 
@@ -94,12 +94,12 @@ class LocalServer(Base):
             if server_name in server_data:
                 package_store_file = os.path.expanduser(server_data[server_name]['library'])
 
-        if not os.path.exists(map_dir):
+        if not os.path.exists(self.map_dir):
             if make_dirs:
-                os.makedirs(map_dir)
+                os.makedirs(self.map_dir)
             else:
-                self.logger.error('Directory not found: {}'.format(map_dir))
-                raise NotADirectoryError(map_dir)
+                self.logger.error('Directory not found: {}'.format(self.map_dir))
+                raise NotADirectoryError(self.map_dir)
 
         store = Store(package_store_file=package_store_file)
 
@@ -128,7 +128,7 @@ class LocalServer(Base):
 
                 self.repositories.add_repository(repository)
 
-        self.library = Library(store=store, repositories=self.repositories, map_dir=map_dir)
+        self.library = Library(store=store, repositories=self.repositories, map_dir=self.map_dir)
 
     def __repr__(self):
         return str(vars(self))
