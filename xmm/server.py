@@ -80,7 +80,7 @@ class LocalServer(Base):
 
         self.logger.info('initializing LocalServer: {}'.format(server_name))
 
-        self.map_dir = os.path.expanduser(self.conf['default']['target_dir'])
+        map_dir = self.conf['default']['target_dir']
 
         package_store_file = os.path.expanduser(self.conf['default']['library'])
 
@@ -93,6 +93,8 @@ class LocalServer(Base):
             server_data = self.conf['servers']
             if server_name in server_data:
                 package_store_file = os.path.expanduser(server_data[server_name]['library'])
+
+        self.map_dir = os.path.expanduser(map_dir)
 
         if not os.path.exists(self.map_dir):
             if make_dirs:

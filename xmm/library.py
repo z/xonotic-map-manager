@@ -238,8 +238,6 @@ class Library(Base):
         """
 
         self.logger.debug("discovering maps")
-
-        map_dir = os.path.expanduser(self.map_dir)
         local_maps = self.store.get_package_db()
 
         if repository_name:
@@ -252,17 +250,17 @@ class Library(Base):
         else:
             sources = self.repositories.sources
 
-        if not os.path.exists(map_dir):
-            self.logger.error("{} does not exists.".format(map_dir))
-            raise NotADirectoryError(map_dir)
+        if not os.path.exists(self.map_dir):
+            self.logger.error("{} does not exists.".format(self.map_dir))
+            raise NotADirectoryError(self.map_dir)
 
-        for pk3_file in os.listdir(map_dir):
+        for pk3_file in os.listdir(self.map_dir):
 
             map_found = False
             hash_match = False
 
             if pk3_file.endswith('.pk3'):
-                shasum = util.hash_file(os.path.join(map_dir, pk3_file))
+                shasum = util.hash_file(os.path.join(self.map_dir, pk3_file))
 
                 try:
                     for repo in sources:
