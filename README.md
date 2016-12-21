@@ -39,7 +39,7 @@ python3 setup.py develop
 ## Usage
 
 ```
-usage: xmm [-h] [--version] [-s [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
+usage: xmm [-h] [--version] [-S [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
            {search,install,remove,discover,list,show,export,update,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
@@ -59,7 +59,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
-  -s [SERVER], --server [SERVER]
+  -S [SERVER], --server [SERVER]
                         target server as defined in servers.json
   -T [TARGET], --target [TARGET]
                         target directory

@@ -8,7 +8,7 @@ Basic Usage
 
 CLI help docs for ``xmm``::
 
-    usage: xmm [-h] [--version] [-s [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
+    usage: xmm [-h] [--version] [-S [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
                {search,install,remove,discover,list,show,export,update,hello} ...
 
     Xonotic Map Manager is a tool to help manage Xonotic maps
@@ -28,7 +28,7 @@ CLI help docs for ``xmm``::
     optional arguments:
       -h, --help            show this help message and exit
       --version             show program's version number and exit
-      -s [SERVER], --server [SERVER]
+      -S [SERVER], --server [SERVER]
                             target server as defined in servers.json
       -T [TARGET], --target [TARGET]
                             target directory
@@ -42,29 +42,38 @@ Searching
 by bsp name::
 
     xmm search snowdance
-    Searching for: snowdance
-    snowdance2
+    Searching for packages with the following criteria:
+    bsp: snowdance
+    ---
+
+    snowdance2.pk3 [snowdance2]
     http://dl.xonotic.co/snowdance2.pk3
-    snowdance2
+
+    snowdance_xon.pk3 [snowdance2]
     http://dl.xonotic.co/snowdance_xon.pk3
+    ---
+    Total packages found: 2
 
 
 with pk3 name and detailed results::
 
-    xmm search -p bloodrage_v2.pk3 --long
+    xmm search --pk3 bloodrage_v2.pk3 --long
+    Using repo 'default'
     Searching for packages with the following criteria:
     pk3: bloodrage_v2.pk3
+    ---
 
              pk3: bloodrage_v2.pk3
              bsp: bloodrage_v2
-           title: Bloodrage
-     description: Small, brutal and violent 1on1 map
-          author: Cortez and FruitieX
+           title:  Bloodrage
+     description:  Small, brutal and violent 1on1 map
+          author:  Cortez and FruitieX
           shasum: 488b05976e73456bf6f9833e353f72d3a8d0cbce
+          shasum: bloodrage_v2.pk3
             date: 2009-10-17
             size: 1MB
               dl: http://dl.xonotic.co/bloodrage_v2.pk3
-
+    ---
     Total packages found: 1
 
 
@@ -82,14 +91,11 @@ Inline help is available on all sub-commands::
 
     optional arguments:
       -h, --help            show this help message and exit
-      --gametype [GAMETYPE], -g [GAMETYPE]
+      --gametype [GAMETYPE]
                             filter by gametype
-      --pk3 [PK3], -p [PK3]
-                            filter by pk3 name
-      --title [TITLE], -t [TITLE]
-                            filter by title
-      --author [AUTHOR], -a [AUTHOR]
-                            filter by author
+      --pk3 [PK3]           filter by pk3 name
+      --title [TITLE]       filter by title
+      --author [AUTHOR]     filter by author
       --shasum [SHASUM]     filter by shasum
       --long, -l            show long format
       --short, -s           show short format
@@ -102,22 +108,21 @@ Installing from the repository
 Installing a new pk3::
 
     xmm install snowdance_xon.pk3
-    Installing map from repository: snowdance_xon.pk3
+    Installing map: snowdance_xon.pk3
     ...100%, 5 MB, 2438 KB/s, 2 seconds passed. Done.
 
-
-You cannot overwrite an existing pk3::
+You will be prompted to overwrite an existing pk3::
 
     xmm install snowdance_xon.pk3
-    Installing map from repository: snowdance_xon.pk3
-    package already exists, please remove first.
-
+    Installing map: snowdance_xon.pk3
+    snowdance_xon.pk3 already exists.
+    continue? [y/N] N
+    Canceled.
 
 You cannot install a pk3 that doesn't existent in the repo::
 
-    xmm install fake.pk3
-    Installing map from repository: fake.pk3
-    package does not exist in the repository.
+    Installing map: fake.pk3
+    package does not exist in the repository. cannot install.
 
 Example below is also showing the use of curl instead of python's urllib if you prefer::
 
@@ -128,10 +133,9 @@ Example below is also showing the use of curl instead of python's urllib if you 
     100 5530k  100 5530k    0     0   205k      0  0:00:26  0:00:26 --:--:--  179k
     Done.
 
-
 You can install from any URL (buy lack detailed meta information about maps)::
 
-    xmm install http://somerepo.org/snowdance2.pk3
+    xmm install http://somerepo.org/some-other-map.pk3
     Adding map: http://somerepo.org/snowdance2.pk3
     ...100%, 5 MB, 2438 KB/s, 2 seconds passed. Done.
 
@@ -148,9 +152,8 @@ Remove a map::
 You cannot remove a map that doesn't exist::
 
     xmm remove snowdance2.pk3
-    Removing map: snowdance2.pk3
-    map does not exist.
-
+    Removing package: snowdance_xon.pk3
+    package does not exist or is not tracked. try removing using full path if not tracked.
 
 Discover
 ~~~~~~~~
@@ -159,34 +162,34 @@ You can pulled additional meta information about pk3s and verify their shasums a
 
 A summary of discovered packages::
 
-    xmm -s myserver1 discover
+    xmm -S myserver1 discover
 
-    map-ctf-moonstone_nex_r3.pk3 [moonstone_nex_r3]
-    http://dl.xonotic.co/map-ctf-moonstone_nex_r3.pk3
+    sxb1_testing_6.pk3 [sxb1_-1, sxb1_-2, sxb1_-3, sxb1_1-1, sxb1_1-2, sxb1_1-3, sxb1_1-4, sxb1_2-1, sxb1_2-2, sxb1_2-3, sxb1_2-4, sxb1_3-1, sxb1_3-2, sxb1_3-3, sxb1_3-4, sxb1_4-1, sxb1_4-2, sxb1_4-3, sxb1_4-4, sxb1_5-1, sxb1_5-2, sxb1_5-3, sxb1_5-4, sxb1_6-1, sxb1_6-2, sxb1_6-3, sxb1_6-4, sxb1_7-1, sxb1_7-2, sxb1_7-3, sxb1_7-4, sxb1_8-1, sxb1_8-2, sxb1_8-3, sxb1_8-4]
+    http://dl.xonotic.co/sxb1_testing_6.pk3
 
-    map-ctf-mIKEctf1_nex_r1.pk3 package was not found in repository
+    bloodprisonctf.pk3 [bloodprisonctf]
+    http://dl.xonotic.co/bloodprisonctf.pk3
+    bloodprisonctf.pk3 hash does not match repository's
 
-    dance.pk3 [dance]
-    http://dl.xonotic.co/dance.pk3
+    gasoline_02.pk3 [gasoline_02, gasoline_3teams_02, gasoline_4teams_02, gasoline_noteams_02]
+    http://dl.xonotic.co/gasoline_02.pk3
 
-    snowdance_xon.pk3 [snowdance2]
-    http://dl.xonotic.co/snowdance_xon.pk3
+    testie3.pk3 [testie3]
+    http://dl.xonotic.co/testie3.pk3
 
-    dance-fixed.pk3 [dance-fixed]
-    http://dl.xonotic.co/dance-fixed.pk3
+    map-derail_v1r5.pk3 [derail_v1r5]
+    http://dl.xonotic.co/map-derail_v1r5.pk3
+    map-derail_v1r5.pk3 hash does not match repository's
 
-    got_wood-on-xctf3.pk3 [got_wood]
-    http://dl.xonotic.co/got_wood-on-xctf3.pk3
+    disarray_v1r2.pk3 [disarray_v1r2]
+    http://dl.xonotic.co/disarray_v1r2.pk3
 
-    cupolaarena-xon.pk3 [cupolaarena_xon]
-    http://dl.xonotic.co/cupolaarena-xon.pk3
-    cupolaarena-xon.pk3 hash does not match repository's
-
-    map-vapor_alpha_2.pk3 hash different from repositories
+    eggandscrambled.pk3 [eggandscrambled]
+    http://dl.xonotic.co/eggandscrambled.pk3
 
 Add discovered maps::
 
-    xmm -s myserver1 discover --add
+    xmm -S myserver1 discover --add
 
 List Map Packages
 ~~~~~~~~~~~~~~~~~
@@ -301,7 +304,6 @@ Or a list of pk3s and their respective shasums::
     abc9e153c37784563e4e3c2669cc88af05649399 ons-reborn_vehicles.pk3
 
 
-
 Update
 ~~~~~~
 
@@ -310,7 +312,6 @@ Get the latest list of maps from the repository::
     xmm update
     Updating sources json.
     ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
-
 
 --------------
 
@@ -337,12 +338,12 @@ xmm can facilitate the management of multiple servers with a ``~/.xmm/servers.js
 
 An example is available in ``./config/example.servers.json``
 
-To use these servers, use the ``-s`` flag to target the server::
+To use these servers, use the ``-S`` flag to target the server::
 
 
-    xmm -s myserver1 install dance.pk3
-    xmm -s myserver1 list
-    xmm -s myserver1 remove dance.pk3
+    xmm -S myserver1 install dance.pk3
+    xmm -S myserver1 list
+    xmm -S myserver1 remove dance.pk3
 
 
 Multi-repository support

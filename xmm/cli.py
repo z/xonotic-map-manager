@@ -208,7 +208,7 @@ def main():
         repository_name = None
 
         if args.server and args.repository:
-            cprint("'-R' and '-s' flags are mutually exclusive on this command.", style="FAIL")
+            cprint("'-R' and '-S' flags are mutually exclusive on this command.", style="FAIL")
             raise SystemExit
 
         if args.repository:
@@ -274,7 +274,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Xonotic Map Manager is a tool to help manage Xonotic maps')
 
     parser.add_argument('--version', action='version', version='%(prog)s {0}'.format(__version__))
-    parser.add_argument("-s", '--server', nargs='?', help="target server as defined in servers.json", type=str)
+    parser.add_argument("-S", '--server', nargs='?', help="target server as defined in servers.json", type=str)
     parser.add_argument("-T", '--target', nargs='?', help="target directory", type=str)
     parser.add_argument("-R", '--repository', nargs='?', help="repository to use (defaults to all available)", type=str, default=None)
 
