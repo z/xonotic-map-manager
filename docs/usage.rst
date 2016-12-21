@@ -8,7 +8,7 @@ Basic Usage
 
 CLI help docs for ``xmm``::
 
-    usage: xmm [-h] [-s [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
+    usage: xmm [-h] [--version] [-s [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
                {search,install,remove,discover,list,show,export,update,hello} ...
 
     Xonotic Map Manager is a tool to help manage Xonotic maps
@@ -23,7 +23,6 @@ CLI help docs for ``xmm``::
         show                show details of remote or locally installed packages
         export              export locally managed packages to a file
         update              update sources json
-        extract-hashes      extract the shasum hashes from maps.json
         hello               hello is an example plugin
 
     optional arguments:
@@ -272,11 +271,35 @@ detailed::
 Export
 ~~~~~~
 
-You can export your maplist to a map-repo repository friendly json format::
+You can export local maps from your library, or maps from a repository in different formats::
 
-    % xmm export test.json
+    usage: xmm export [-h] [--format {json,shasums}] {local,repos} [filename]
+
+    positional arguments:
+      {local,repos}         what context to export?
+      filename              filename to export to
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --format {json,shasums}, -f {json,shasums}
+
+For example, export a maplist to a map-repo-friendly json format::
+
+    % xmm export local test.json -f json
     % cat test.json
     [{"mapinfo": ["maps/dance.mapinfo"], "date": 1205715512, "title": "<TITLE>", "radar": [], "waypoints": [], "gametypes": ["ctf", "dm", "lms", "arena"], "mapshot": ["maps/dance.jpg"], "description": "<DESCRIPTION>", "shasum": "ef00d43838430b2d1673f03bbe1440eef100ece6", "filesize": 7468410, "pk3": "dance.pk3", "map": ["maps/dance.map"], "author": "<AUTHOR>", "license": false, "bsp": {"dance": {"entities": {"item_cells": 14, "item_bullets": 14, "info_player_team1": 10, "item_rockets": 16, "info_player_team2": 11, "item_invincible": 1, "weapon_hagar": 2, "item_flag_team1": 1, "weapon_electro": 2, "item_health_medium": 14, "item_health_small": 20, "weapon_machinegun": 2, "item_strength": 1, "weapon_vortex": 3, "item_armor_small": 19, "weapon_devastator": 2, "item_flag_team2": 1, "weapon_grenadelauncher": 2}}}}]%
+
+Or a list of pk3s and their respective shasums::
+
+    xmm export repos -f shasums
+    tail all-repos-maps.json.shasums
+    d88957aeff231471453f41e8ab2dad326b1875b2 acrossanocean12.pk3
+    e3059ee1979985151fade8b0d317422dc71ec9bb cloisterctf_vehicles.pk3
+    3f15789118762f469c9179f8f799747dced948cb dastower_vehicles.pk3
+    5af57ca19b69560cd9b00f67cbbb7ee4526bc8ac duster_mod_01.pk3
+    e06724125a3438a23bad4f0d3ec3b6a5ce89666a greatwall_remix_vehicles.pk3
+    abc9e153c37784563e4e3c2669cc88af05649399 ons-reborn_vehicles.pk3
+
 
 
 Update
@@ -289,21 +312,6 @@ Get the latest list of maps from the repository::
     ...100%, 7 MB, 2559 KB/s, 3 seconds passed. Done.
 
 
-Extract Hashes
-~~~~~~~~~~~~~~
-
-You can extract the shasums from a repository's maps.json::
-
-    % xmm extract-hashes test.shasums
-    % head -n5 test.shasums
-      3509e4551d4c2893b786656fcb19d6d9adf478fa 'gladiators'pit.pk3
-      ab0860f2678f77a6b572b19abc6767a7e908256b 'own'arama.pk3
-      754c7c07f7180d72b7ea2f9a80eb25fcace7ae1a (s)example_jumps_b1_ut.pk3
-      1a4ee77fcf0adda01ad71828ff4bfeaf52637c2c (s)extreme_jumps_a1_ut.pk3
-      02e8e9aee201b65aee62c9352862b3be65f79832 (s)m3_goals_test1_ut.pk3
-
-
-Advanced Usage
 --------------
 
 Multi-server support

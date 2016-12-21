@@ -164,7 +164,7 @@ class Library(Base):
 
         for repo in sources:
             if not map_found_in_repo:
-                maps_json = repo.get_repo_data()
+                maps_json = repo.get_packages()
                 for m in maps_json:
                     if m.pk3_file == pk3:
                         found_map = m

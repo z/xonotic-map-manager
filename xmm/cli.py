@@ -205,14 +205,53 @@ def main():
 
     elif args.command == 'export':
 
-        default_export_name = 'xmm-export.json'
-        filename = args.file
+        repository_name = None
 
-        if not filename:
-            filename = default_export_name
-            cprint("a name wasn't given, exporting as: {}".format(filename), style='WARNING')
+        if args.server and args.repository:
+            cprint("'-R' and '-s' flags are mutually exclusive on this command.", style="FAIL")
+            raise SystemExit
 
-        server.library.store.export_packages(filename=filename)
+        if args.repository:
+            cprint("Using repo '{}'".format(args.repository), style='HEADER')
+            repository_name = args.repository
+
+        if args.format == 'json':
+
+            if args.subcommand == 'local':
+
+                server.library.store.export_packages(filename=args.filename)
+
+            elif args.subcommand == 'repos':
+
+                if repository_name:
+                    try:
+                        server.library.repositories.get_repository(repository_name).export_packages(filename=args.filename)
+                    except RepositoryLookupError:
+                        cprint("Repository doesn't exist in sources.json", style="FAIL")
+                        raise SystemExit
+                else:
+                    server.library.repositories.export_packages(filename=args.filename)
+
+        elif args.format == 'shasums':
+
+            if args.subcommand == 'local':
+
+                if not repository_name:
+                    server.library.store.export_hash_index(filename=args.filename)
+                else:
+                    # TODO: limit export by repository name
+                    cprint('this combination is not yet possible')
+
+            elif args.subcommand == 'repos':
+
+                if repository_name:
+                    try:
+                        server.library.repositories.get_repository(repository_name).export_hash_index(filename=args.filename)
+                    except RepositoryLookupError:
+                        cprint("Repository doesn't exist in sources.json", style="FAIL")
+                        raise SystemExit
+                else:
+                    server.library.repositories.export_hash_index(filename=args.filename)
 
     elif args.command == 'update':
 
@@ -220,17 +259,6 @@ def main():
             server.repositories.update_all()
         except RepositoryUpdateError:
             cprint('One or more repositories have failed to update.', style='FAIL')
-
-    elif args.command == 'extract-hashes':
-
-        default_export_name = 'maps.json.shasums'
-        filename = args.file
-
-        if not filename:
-            filename = default_export_name
-            cprint("a name wasn't given, exporting as: {}".format(filename), style='WARNING')
-
-        server.library.repositories.get_repository('default').export_hash_index(filename=filename)
 
     # Plugins
     for cmd, value in plugins.items():
@@ -255,10 +283,10 @@ def parse_args():
 
     parser_search = subparsers.add_parser('search', help='search for maps based on bsp names')
     parser_search.add_argument('string', nargs='?', help='bsp name found in a package, works on packages with many bsps', type=str)
-    parser_search.add_argument('--gametype', '-g', nargs='?', help='filter by gametype', type=str)
-    parser_search.add_argument('--pk3', '-p', nargs='?', help='filter by pk3 name', type=str)
-    parser_search.add_argument('--title', '-t', nargs='?', help='filter by title', type=str)
-    parser_search.add_argument('--author', '-a', nargs='?', help='filter by author', type=str)
+    parser_search.add_argument('--gametype', nargs='?', help='filter by gametype', type=str)
+    parser_search.add_argument('--pk3', nargs='?', help='filter by pk3 name', type=str)
+    parser_search.add_argument('--title', nargs='?', help='filter by title', type=str)
+    parser_search.add_argument('--author', nargs='?', help='filter by author', type=str)
     parser_search.add_argument('--shasum', nargs='?', help='filter by shasum', type=str)
     parser_search.add_argument('--long', '-l', help='show long format', action='store_true')
     parser_search.add_argument('--short', '-s', help='show short format', action='store_true')
@@ -286,13 +314,11 @@ def parse_args():
     parser_show.add_argument('--short', '-s', help='show short format', action='store_true')
 
     parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
-    parser_export.add_argument('--type', '-t', nargs='?', help='type to export: db, flat', type=str)
-    parser_export.add_argument('file', nargs='?', help='file name to export to', type=str)
+    parser_export.add_argument('subcommand', choices=['local', 'repos'], help='what context to export?', default='local', type=str)
+    parser_export.add_argument('filename', nargs='?', help='filename to export to', type=str)
+    parser_export.add_argument('--format', '-f', choices=['json', 'shasums'], default='json')
 
     parser_update = subparsers.add_parser('update', help='update sources json')
-
-    parser_extract_hashes = subparsers.add_parser('extract-hashes', help='extract the shasum hashes from maps.json')
-    parser_extract_hashes.add_argument('file', nargs='?', help='file name to export to', type=str)
 
     # Handle plugins
     for i in pluginloader.get_plugins():

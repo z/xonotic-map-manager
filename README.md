@@ -39,7 +39,7 @@ python3 setup.py develop
 ## Usage
 
 ```
-usage: xmm [-h] [-s [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
+usage: xmm [-h] [--version] [-s [SERVER]] [-T [TARGET]] [-R [REPOSITORY]]
            {search,install,remove,discover,list,show,export,update,hello} ...
 
 Xonotic Map Manager is a tool to help manage Xonotic maps
@@ -54,7 +54,6 @@ positional arguments:
     show                show details of remote or locally installed packages
     export              export locally managed packages to a file
     update              update sources json
-    extract-hashes      extract the shasum hashes from maps.json
     hello               hello is an example plugin
 
 optional arguments:

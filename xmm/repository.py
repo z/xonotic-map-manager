@@ -120,6 +120,58 @@ class Collection(Base):
             self.logger.debug("Updating source: {}".format(repo.name))
             repo.update_repo_data()
 
+    def export_hash_index(self, filename=None):
+        """
+        :param filename:
+            Name for the exported json file, default ``all-repos-maps.json.shasums``
+        :type filename: ``str``
+
+        :returns: False if fails
+        """
+        if not filename:
+            filename = 'all-repos-maps.json.shasums'
+
+        self.logger.info("exporting shasums from all sources to file: {}".format(filename))
+
+        data = []
+        for repo in self.sources:
+            lines = repo.get_hash_index()
+            data.extend(lines)
+
+        if data:
+            try:
+                with open(filename, 'w') as f:
+                    f.write('\n'.join(data))
+            except EnvironmentError as e:
+                self.logger.error(e)
+                return False
+
+    def export_packages(self, filename=None):
+        """
+        :param filename:
+            Name for the exported json file, default ``maps.json``
+        :type filename: ``str``
+
+        :returns: False if fails
+        """
+        if not filename:
+            filename = 'all-repos-maps.json'
+
+        self.logger.info("exporting maps as: {}".format(filename))
+
+        data = []
+        for repo in self.sources:
+            lines = repo.get_packages()
+            data.extend(lines)
+
+        if data:
+            try:
+                with open(filename, 'w') as f:
+                    f.write(json.dumps(data, cls=util.ObjectEncoder))
+            except EnvironmentError as e:
+                self.logger.error(e)
+                return False
+
 
 class Repository(Base):
     """
@@ -210,7 +262,7 @@ class Repository(Base):
 
         self.logger.info("Searching maps.")
 
-        maps_json = self.get_repo_data()
+        maps_json = self.get_packages()
         fmaps_json = []
         criteria = []
 
@@ -292,9 +344,9 @@ class Repository(Base):
             self.logger.debug('Error updating repo data: {}'.format(e))
             raise RepositoryUpdateError
 
-    def get_repo_data(self):
+    def get_packages(self):
         """
-        Gets the cached map list from *Repository*
+        Gets the cached map list from *Repository* or reads from file if cache not available
 
         :returns: ``json``
         """
@@ -322,28 +374,64 @@ class Repository(Base):
 
         return self.repo_data
 
-    def export_hash_index(self, filename='maps.json.shasums'):
+    def export_packages(self, filename=None):
         """
         :param filename:
-            Name for the exported json file, default ``xmm-export.json``
+            Name for the exported json file, default ``maps.json``
         :type filename: ``str``
 
         :returns: False if fails
         """
+        if not filename:
+            filename = 'xmm-export.maps.json'
 
-        self.logger.info("exporting shasums to file: {}".format(filename))
+        self.logger.info("exporting maps as: {}".format(filename))
 
-        maps_json = self.get_repo_data()
+        data = self.get_packages()
+
+        if data:
+            try:
+                with open(filename, 'w') as f:
+                    f.write(json.dumps(data, cls=util.ObjectEncoder))
+            except EnvironmentError as e:
+                self.logger.error(e)
+                return False
+
+    def get_hash_index(self):
+        """
+        Gets a list of all pk3s and their shasums
+
+        :returns: False if fails
+        """
+        maps_json = self.get_packages()
         lines = []
         for m in maps_json:
             lines.append("{} {}".format(m.shasum, m.pk3_file))
 
-        try:
-            with open(filename, 'w') as f:
-                f.write('\n'.join(lines))
-        except EnvironmentError as e:
-            self.logger.error(e)
-            return False
+        return lines
+
+    def export_hash_index(self, filename=None):
+        """
+        :param filename:
+            Name for the exported json file, default ``maps.json.shasums``
+        :type filename: ``str``
+
+        :returns: False if fails
+        """
+        if not filename:
+            filename = 'xmm-export.maps.shasums'
+
+        self.logger.info("exporting shasums to file: {}".format(filename))
+
+        lines = self.get_hash_index()
+
+        if lines:
+            try:
+                with open(filename, 'w') as f:
+                    f.write('\n'.join(lines))
+            except EnvironmentError as e:
+                self.logger.error(e)
+                return False
 
     def show_map(self, pk3_name, detail=None, highlight=False):
         """
@@ -366,7 +454,7 @@ class Repository(Base):
 
         self.logger.debug("Showing map with helper")
 
-        packages = self.get_repo_data()
+        packages = self.get_packages()
         found_map = False
 
         for p in packages:

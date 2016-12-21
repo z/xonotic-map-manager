@@ -182,15 +182,12 @@ class Store(Base):
         >>> server = LocalServer()
         >>> server.library.store.export_packages(filename='test.json')
         """
-
-        default_export_name = 'xmm-export.json'
+        if not filename:
+            filename = 'xmm-export.maps.json'
 
         data_out = []
         for m in self.data:
             data_out.append(json.loads(m.to_json()))
-
-        if not filename:
-            filename = default_export_name
 
         self.logger.info('exporting maps as: {}'.format(filename))
 
@@ -200,3 +197,28 @@ class Store(Base):
         except EnvironmentError as e:
             self.logger.error(e)
             return False
+
+    def export_hash_index(self, filename=None):
+        """
+        :param filename:
+            Name for the exported json file, default ``maps.json.shasums``
+        :type filename: ``str``
+
+        :returns: False if fails
+        """
+        if not filename:
+            filename = 'xmm-export.maps.shasums'
+
+        self.logger.info("exporting shasums from all sources to file: {}".format(filename))
+
+        data_out = []
+        for m in self.data:
+            data_out.append("{} {}".format(m.shasum, m.pk3_file))
+
+        if data_out:
+            try:
+                with open(filename, 'w') as f:
+                    f.write('\n'.join(data_out))
+            except EnvironmentError as e:
+                self.logger.error(e)
+                return False
