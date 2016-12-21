@@ -33,7 +33,7 @@ class Library(Base):
     """
     def __init__(self, repositories, store, map_dir):
         super().__init__()
-        self.maps = []
+        self.maps = store.get_package_db()
         self.repositories = repositories
         self.store = store
         self.map_dir = os.path.expanduser(map_dir)
@@ -364,3 +364,97 @@ class Library(Base):
             raise PackageNotTrackedWarning
 
         return found_map
+
+    def export_map_packages(self, filename=None):
+        """
+        Exports all *MapPackage* objects from the *Library* *Store*
+
+        :param filename:
+            Name for the exported json file, default ``xmm-export.json``
+        :type filename: ``str``
+
+        :returns: False if fails
+
+        >>> from xmm.server import LocalServer
+        >>> # Setup the store automatically with an instance of *LocalServer*
+        >>> server = LocalServer()
+        >>> server.library.export_packages(filename='test.maps.json')
+        """
+        if not filename:
+            filename = 'xmm-export.maps.json'
+
+        data_out = []
+        for m in self.maps:
+            data_out.append(json.loads(m.to_json()))
+
+        self.logger.info('exporting maps as: {}'.format(filename))
+
+        try:
+            with open(filename, 'w') as f:
+                f.write(json.dumps(data_out))
+        except EnvironmentError as e:
+            self.logger.error(e)
+            return False
+
+    def export_hash_index(self, filename=None):
+        """
+        :param filename:
+            Name for the exported json file, default ``maps.json.shasums``
+        :type filename: ``str``
+
+        :returns: False if fails
+
+        >>> from xmm.server import LocalServer
+        >>> # Setup the store automatically with an instance of *LocalServer*
+        >>> server = LocalServer()
+        >>> server.library.export_hash_index(filename='test.maps.shasums')
+        """
+        if not filename:
+            filename = 'xmm-export.maps.shasums'
+
+        self.logger.info("exporting shasums from all sources to file: {}".format(filename))
+
+        data_out = []
+        for m in self.maps:
+            data_out.append("{} {}".format(m.shasum, m.pk3_file))
+
+        if data_out:
+            try:
+                with open(filename, 'w') as f:
+                    f.write('\n'.join(data_out))
+            except EnvironmentError as e:
+                self.logger.error(e)
+                return False
+
+    def export_maplist(self, filename=None):
+        """
+        :param filename:
+            Name for the exported text file, default ``xmm-export.maps.txt``
+        :type filename: ``str``
+
+        :returns: False if fails
+
+        >>> from xmm.server import LocalServer
+        >>> # Setup the store automatically with an instance of *LocalServer*
+        >>> server = LocalServer()
+        >>> server.library.export_hash_index(filename='test.maps.txt')
+        """
+        if not filename:
+            filename = 'xmm-export.maps.txt'
+
+        self.logger.info("exporting maplist to file: {}".format(filename))
+
+        data = []
+        for m in self.maps:
+            bsps = m.bsp
+            bsp_names = list(bsps)
+            bsp_names.sort()
+            data.extend(bsp_names)
+
+        if data:
+            try:
+                with open(filename, 'w') as f:
+                    f.write('\n'.join(data))
+            except EnvironmentError as e:
+                self.logger.error(e)
+                return False

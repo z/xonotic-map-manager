@@ -20,6 +20,14 @@ class Collection(Base):
     A *Collection* is a collection of *Repository* objects
 
     :returns object: *Collection*
+
+    >>> from xmm.repository import Collection
+    >>> from xmm.repository import Repository
+    >>> repositories = Collection()
+    >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+    >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+    >>> repositories.add_repository(repository)
+
     """
     def __init__(self):
         super().__init__()
@@ -45,6 +53,14 @@ class Collection(Base):
         :type repository_name: ``str``
 
         :returns: A **Repository** object or false if name not found
+
+        >>> from xmm.repository import Collection
+        >>> from xmm.repository import Repository
+        >>> repositories = Collection()
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repositories.add_repository(repository)
+        >>> print(repositories.get_repository('default'))
         """
         self.logger.info("Getting repository: {}".format(repository_name))
 
@@ -64,6 +80,14 @@ class Collection(Base):
 
         :param repository:
         :type repository: ``Repository``
+
+        >>> from xmm.repository import Collection
+        >>> from xmm.repository import Repository
+        >>> repositories = Collection()
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repositories.add_repository(repository)
+        >>> print(repositories.get_repository('default'))
         """
         self.sources.append(repository)
 
@@ -102,6 +126,14 @@ class Collection(Base):
         :param highlight:
             Whether to highlight the search string
         :type highlight: ``bool``
+
+        >>> from xmm.repository import Collection
+        >>> from xmm.repository import Repository
+        >>> repositories = Collection()
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repositories.add_repository(repository)
+        >>> print(repositories.search_all(bsp_name='vinegar_v3'))
         """
 
         self.logger.info("Searching all repositories.")
@@ -112,6 +144,13 @@ class Collection(Base):
     def update_all(self):
         """
         Update the data for all *Repository* objects in the *Collection*
+
+        >>> from xmm.repository import Collection
+        >>> from xmm.repository import Repository
+        >>> repositories = Collection()
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repositories.update_all()
         """
 
         self.logger.info("Updating all sources.")
@@ -120,13 +159,20 @@ class Collection(Base):
             self.logger.debug("Updating source: {}".format(repo.name))
             repo.update_repo_data()
 
-    def export_hash_index(self, filename=None):
+    def export_all_hash_index(self, filename=None):
         """
         :param filename:
             Name for the exported json file, default ``all-repos-maps.json.shasums``
         :type filename: ``str``
 
         :returns: False if fails
+
+        >>> from xmm.repository import Collection
+        >>> from xmm.repository import Repository
+        >>> repositories = Collection()
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repositories.export_all_hash_index()
         """
         if not filename:
             filename = 'all-repos-maps.json.shasums'
@@ -146,13 +192,20 @@ class Collection(Base):
                 self.logger.error(e)
                 return False
 
-    def export_packages(self, filename=None):
+    def export_all_packages(self, filename=None):
         """
         :param filename:
             Name for the exported json file, default ``maps.json``
         :type filename: ``str``
 
         :returns: False if fails
+
+        >>> from xmm.repository import Collection
+        >>> from xmm.repository import Repository
+        >>> repositories = Collection()
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repositories.export_all_packages()
         """
         if not filename:
             filename = 'all-repos-maps.json'
@@ -196,6 +249,10 @@ class Repository(Base):
 
     :returns object: ``Repository``
 
+
+    >>> from xmm.repository import Repository
+    >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+    >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
     """
     def __init__(self, name, download_url, api_data_url, api_data_file):
         super().__init__()
@@ -258,6 +315,11 @@ class Repository(Base):
         :param highlight:
             Whether to highlight the search string
         :type highlight: ``bool``
+
+        >>> from xmm.repository import Repository
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repository.search_maps(bsp_name='dance' gametype='ctf')
         """
 
         self.logger.info("Searching maps.")
@@ -335,6 +397,11 @@ class Repository(Base):
     def update_repo_data(self):
         """
         Updates sources cache with latest maps from *Repository*
+
+        >>> from xmm.repository import Repository
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repository.update_repo_data()
         """
         try:
             cprint("Updating {} sources json...".format(self.name), style='INFO')
@@ -349,6 +416,11 @@ class Repository(Base):
         Gets the cached map list from *Repository* or reads from file if cache not available
 
         :returns: ``json``
+
+        >>> from xmm.repository import Repository
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> print(repository.get_packages())
         """
 
         self.logger.debug("getting repo data")
@@ -381,6 +453,11 @@ class Repository(Base):
         :type filename: ``str``
 
         :returns: False if fails
+
+        >>> from xmm.repository import Repository
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repository.export_packages('test.json')
         """
         if not filename:
             filename = 'xmm-export.maps.json'
@@ -402,6 +479,11 @@ class Repository(Base):
         Gets a list of all pk3s and their shasums
 
         :returns: False if fails
+
+        >>> from xmm.repository import Repository
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> print(repository.get_hash_index())
         """
         maps_json = self.get_packages()
         lines = []
@@ -417,6 +499,11 @@ class Repository(Base):
         :type filename: ``str``
 
         :returns: False if fails
+
+        >>> from xmm.repository import Repository
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repository.export_hash_index('test.shasums')
         """
         if not filename:
             filename = 'xmm-export.maps.shasums'
@@ -450,6 +537,11 @@ class Repository(Base):
         :type highlight: ``bool``
 
         :returns: ``MapPackage``
+
+        >>> from xmm.repository import Repository
+        >>> repository = Repository(name='default', download_url='http://dl.repo.url/',
+        >>>                         api_data_url='http://api.repo.url/maps.json', api_data_file='~/.xmm/maps.json')
+        >>> repository.show_map(pk3_name='vinegar_v3.pk3')
         """
 
         self.logger.debug("Showing map with helper")

@@ -219,7 +219,7 @@ def main():
 
             if args.subcommand == 'local':
 
-                server.library.store.export_packages(filename=args.filename)
+                server.library.export_map_packages(filename=args.filename)
 
             elif args.subcommand == 'repos':
 
@@ -230,14 +230,26 @@ def main():
                         cprint("Repository doesn't exist in sources.json", style="FAIL")
                         raise SystemExit
                 else:
-                    server.library.repositories.export_packages(filename=args.filename)
+                    server.library.repositories.export_all_packages(filename=args.filename)
+
+        if args.format == 'maplist':
+
+            if args.subcommand == 'local':
+
+                server.library.export_maplist(filename=args.filename)
+
+            elif args.subcommand == 'repos':
+
+                # TODO: implement
+                print('sorry exporting bsp names from repos is not supported yet')
+                exit(0)
 
         elif args.format == 'shasums':
 
             if args.subcommand == 'local':
 
                 if not repository_name:
-                    server.library.store.export_hash_index(filename=args.filename)
+                    server.library.export_hash_index(filename=args.filename)
                 else:
                     # TODO: limit export by repository name
                     cprint('this combination is not yet possible')
@@ -251,7 +263,7 @@ def main():
                         cprint("Repository doesn't exist in sources.json", style="FAIL")
                         raise SystemExit
                 else:
-                    server.library.repositories.export_hash_index(filename=args.filename)
+                    server.library.repositories.export_all_hash_index(filename=args.filename)
 
     elif args.command == 'update':
 
@@ -316,7 +328,7 @@ def parse_args():
     parser_export = subparsers.add_parser('export', help='export locally managed packages to a file')
     parser_export.add_argument('subcommand', choices=['local', 'repos'], help='what context to export?', default='local', type=str)
     parser_export.add_argument('filename', nargs='?', help='filename to export to', type=str)
-    parser_export.add_argument('--format', '-f', choices=['json', 'shasums'], default='json')
+    parser_export.add_argument('--format', '-f', choices=['json', 'shasums', 'maplist'], default='json')
 
     parser_update = subparsers.add_parser('update', help='update sources json')
 
