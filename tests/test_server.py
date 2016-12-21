@@ -23,29 +23,39 @@ def test_server_init():
 
 def test_server_add_map_package():
     server = LocalServer()
+
     with open('{}/data/map.json'.format(root_dir)) as f:
         data = f.read()
         my_map = MapPackage(map_package_json=data)
+
     server.library.add_map_package(package=my_map)
-    assert server.library.maps[0].pk3_file == 'map-vapor_alpha_2.pk3'
+
+    for m in server.library.maps:
+        if m.pk3_file == 'map-vapor_alpha_2.pk3':
+            assert True
 
 
 def test_server_remove_map():
     server = LocalServer()
-    assert len(server.library.maps) == 0
-    with open('{}/data/map.json'.format(root_dir)) as f:
-        data = f.read()
-        my_map = MapPackage(map_package_json=data)
-    server.library.add_map_package(package=my_map)
-    assert len(server.library.maps) == 1
-    assert server.library.maps[0].pk3_file == 'map-vapor_alpha_2.pk3'
+
+    for m in server.library.maps:
+        if m.pk3_file == 'map-vapor_alpha_2.pk3':
+            assert True
+
     with pytest.raises(FileNotFoundError):
         server.library.remove_map(pk3_name='map-vapor_alpha_2.pk3')
-        assert len(server.library.maps) == 0
+        server.library.remove_map(pk3_name='map-vapor_alpha_2.pk3')
+        for m in server.library.maps:
+            if m.pk3_file == 'map-vapor_alpha_2.pk3':
+                assert False
 
 
 def test_server_install_map():
     server = LocalServer()
     server.library.install_map(pk3_name='vinegar_v3.pk3', overwrite=True, add_to_store=False)
-    assert server.library.maps[0].pk3_file == 'vinegar_v3.pk3'
+
+    for m in server.library.maps:
+        if m.pk3_file == 'map-vapor_alpha_2.pk3':
+            assert True
+
     server.library.remove_map(pk3_name='vinegar_v3.pk3')

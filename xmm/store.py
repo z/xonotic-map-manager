@@ -166,3 +166,34 @@ class Store(Base):
         except EnvironmentError as e:
             self.logger.error(e)
             return False
+
+    def export_packages(self, filename=None):
+        """
+        Exports all *MapPackage* objects from the *Library* *Store*
+
+        :param filename:
+            Name for the exported json file, default ``xmm-export.json``
+        :type filename: ``str``
+
+        :returns: False if fails
+
+        >>> from xmm.server import LocalServer
+        >>> # Setup the store automatically with an instance of *LocalServer*
+        >>> server = LocalServer()
+        >>> server.library.store.export_packages(filename='test.json')
+        """
+        if not filename:
+            filename = 'xmm-export.maps.json'
+
+        data_out = []
+        for m in self.data:
+            data_out.append(json.loads(m.to_json()))
+
+        self.logger.info('exporting maps as: {}'.format(filename))
+
+        try:
+            with open(filename, 'w') as f:
+                f.write(json.dumps(data_out))
+        except EnvironmentError as e:
+            self.logger.error(e)
+            return False
