@@ -6,11 +6,15 @@ from xmm import __author__, __email__, __url__, __license__, __version__, __summ
 with open('requirements.in') as f:
     install_requires = f.read().splitlines()
 
-with open('README.md') as f:
-    readme_contents = f.read()
-
-with open('CHANGELOG.md') as f:
-    changelog_contents = f.read()
+try:
+    import pypandoc
+    readme_contents = pypandoc.convert('README.md', 'rst')
+    changelog_contents = pypandoc.convert('CHANGELOG.md', 'rst')
+except(IOError, ImportError):
+    with open('README.md') as f:
+        readme_contents = f.read()
+    with open('CHANGELOG.md') as f:
+        changelog_contents = f.read()
 
 long_description = '{}\n{}'.format(readme_contents, changelog_contents)
 
