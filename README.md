@@ -1,6 +1,6 @@
 # xonotic-map-manager
 
-[![Build Status](https://travis-ci.org/z/xonotic-map-manager.svg?branch=develop)](https://travis-ci.org/z/xonotic-map-manager) [![Documentation Status](https://readthedocs.org/projects/xonotic-map-manager/badge/?version=latest)](http://xonotic-map-manager.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://travis-ci.org/z/xonotic-map-manager.svg?branch=master)](https://travis-ci.org/z/xonotic-map-manager) [![Documentation Status](https://readthedocs.org/projects/xonotic-map-manager/badge/?version=latest)](http://xonotic-map-manager.readthedocs.io/en/latest/?badge=latest)
 
 A command-line package manager for the [xonotic-map-repository](https://github.com/z/xonotic-map-repository) project.
 
@@ -77,7 +77,7 @@ Documentation is hosted on [readthedocs.io](http://xonotic-map-manager.readthedo
 
 ## Contributing
 
-Contributions to this project are welcome, please read [CONTRIBUTING.md](https://github.com/z/xonotic-map-manager/blob/develop/CONTRIBUTING.md).
+Contributions to this project are welcome, please read [CONTRIBUTING.md](https://github.com/z/xonotic-map-manager/blob/master/CONTRIBUTING.md).
 
 ## License
 
