@@ -19,7 +19,7 @@ Install
 
 Install using pip::
 
-    pip3 install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm --user
+    pip3 install xmm --user
 
 If you get an error trying to run ``xmm``, you probably need ``$HOME/.local/bin`` in your path, put the following in your ``~/.bashrc`` or ``~/.zshrc`` etc::
 

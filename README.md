@@ -25,7 +25,7 @@ sudo apt install python3-pip python3-setuptools
 ## Installation
 
 ```
-pip3 install https://github.com/z/xonotic-map-manager/archive/develop.zip#egg=xmm --user
+pip3 install xmm --user
 ```
 
 or for development:
