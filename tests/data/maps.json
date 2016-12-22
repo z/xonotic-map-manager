@@ -1,0 +1,397 @@
+{
+  "data": [
+    {
+      "date": 1205711912,
+      "filesize": 7468410,
+      "bsp": {
+        "dance": {
+          "radar": "",
+          "waypoints": "",
+          "title": "<TITLE>",
+          "description": "<DESCRIPTION>",
+          "map": "maps/dance.map",
+          "entities": {
+            "info_player_team1": 10,
+            "info_player_team2": 11,
+            "item_armor_small": 19,
+            "item_bullets": 14,
+            "item_cells": 14,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_health_medium": 14,
+            "item_health_small": 20,
+            "item_invincible": 1,
+            "item_rockets": 16,
+            "item_strength": 1,
+            "weapon_devastator": 2,
+            "weapon_electro": 2,
+            "weapon_grenadelauncher": 2,
+            "weapon_hagar": 2,
+            "weapon_machinegun": 2,
+            "weapon_vortex": 3
+          },
+          "mapinfo": "maps/dance.mapinfo",
+          "author": "<AUTHOR>",
+          "gametypes": [
+            "ctf",
+            "dm",
+            "lms",
+            "arena"
+          ],
+          "license": false,
+          "mapshot": "maps/dance.jpg"
+        }
+      },
+      "shasum": "ef00d43838430b2d1673f03bbe1440eef100ece6",
+      "pk3": "dance.pk3"
+    },
+    {
+      "date": 1445104586,
+      "filesize": 14843211,
+      "bsp": {
+        "gasoline_3teams_02": {
+          "radar": "gfx/gasoline_3teams_02_mini.jpg",
+          "waypoints": "maps/gasoline_3teams_02.waypoints",
+          "title": "Gasoline Powered",
+          "description": "Retextured and glowy with 3 teams",
+          "map": "maps/gasoline_3teams_02.map",
+          "entities": {
+            "info_player_team1": 11,
+            "info_player_team2": 10,
+            "info_player_team3": 11,
+            "item_armor_small": 102,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_flag_team3": 1,
+            "item_health_large": 3,
+            "item_health_medium": 15,
+            "item_health_small": 45,
+            "item_rockets": 12,
+            "item_shells": 6,
+            "weapon_crylink": 6,
+            "weapon_electro": 3,
+            "weapon_grenadelauncher": 3,
+            "weapon_hagar": 3,
+            "weapon_machinegun": 3,
+            "weapon_vortex": 1
+          },
+          "mapinfo": "maps/gasoline_3teams_02.mapinfo",
+          "author": "FruitieX, Kid, Mario, Freddy",
+          "gametypes": [
+            "ctf",
+            "vip",
+            "dom",
+            "kh",
+            "tdm"
+          ],
+          "license": false,
+          "mapshot": "maps/gasoline_3teams_02.jpg"
+        },
+        "gasoline_4teams_02": {
+          "radar": "gfx/gasoline_4teams_02_mini.jpg",
+          "waypoints": "",
+          "title": "Gasoline Powered",
+          "description": "Retextured and glowy with 4 teams",
+          "map": "maps/gasoline_4teams_02.map",
+          "entities": {
+            "info_player_team1": 9,
+            "info_player_team2": 10,
+            "info_player_team3": 9,
+            "info_player_team4": 8,
+            "item_armor_medium": 4,
+            "item_armor_small": 136,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_flag_team3": 1,
+            "item_flag_team4": 1,
+            "item_health_large": 4,
+            "item_health_medium": 20,
+            "item_health_mega": 8,
+            "item_health_small": 60,
+            "item_rockets": 16,
+            "item_shells": 8,
+            "item_strength": 2,
+            "weapon_arc": 4,
+            "weapon_crylink": 8,
+            "weapon_electro": 4,
+            "weapon_grenadelauncher": 4,
+            "weapon_hagar": 4,
+            "weapon_machinegun": 4,
+            "weapon_vortex": 2
+          },
+          "mapinfo": "maps/gasoline_4teams_02.mapinfo",
+          "author": "FruitieX, Kid, Mario",
+          "gametypes": [
+            "ctf",
+            "vip",
+            "kh",
+            "tdm"
+          ],
+          "license": false,
+          "mapshot": "maps/gasoline_4teams_02.jpg"
+        },
+        "gasoline_02": {
+          "radar": "gfx/gasoline_02_mini.jpg",
+          "waypoints": "maps/gasoline_02.waypoints",
+          "title": "Gasoline Powered",
+          "description": "Retextured and glowy",
+          "map": "maps/gasoline_02.map",
+          "entities": {
+            "info_player_team1": 9,
+            "info_player_team2": 9,
+            "item_armor_medium": 2,
+            "item_armor_small": 68,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_health_large": 2,
+            "item_health_medium": 10,
+            "item_health_mega": 4,
+            "item_health_small": 30,
+            "item_rockets": 8,
+            "item_shells": 4,
+            "item_strength": 1,
+            "weapon_arc": 2,
+            "weapon_crylink": 4,
+            "weapon_electro": 2,
+            "weapon_grenadelauncher": 2,
+            "weapon_hagar": 2,
+            "weapon_machinegun": 2,
+            "weapon_vortex": 1
+          },
+          "mapinfo": "maps/gasoline_02.mapinfo",
+          "author": "FruitieX, Kid, Mario",
+          "gametypes": [
+            "ctf",
+            "vip"
+          ],
+          "license": false,
+          "mapshot": "maps/gasoline_02.jpg"
+        },
+        "gasoline_noteams_02": {
+          "radar": "gfx/gasoline_noteams_02_mini.jpg",
+          "waypoints": "",
+          "title": "Gasoline Powered - Teamless",
+          "description": "Retextured and glowy",
+          "map": "maps/gasoline_noteams_02.map",
+          "entities": {
+            "info_player_deathmatch": 6,
+            "info_player_team1": 1,
+            "item_armor_large": 1,
+            "item_armor_medium": 1,
+            "item_armor_small": 46,
+            "item_health_large": 1,
+            "item_health_medium": 6,
+            "item_health_mega": 1,
+            "item_health_small": 25,
+            "item_invincible": 2,
+            "item_rockets": 4,
+            "item_shells": 2,
+            "weapon_crylink": 2,
+            "weapon_electro": 1,
+            "weapon_grenadelauncher": 1,
+            "weapon_hagar": 1,
+            "weapon_machinegun": 2,
+            "weapon_vortex": 1
+          },
+          "mapinfo": "maps/gasoline_noteams_02.mapinfo",
+          "author": "FruitieX, Kid, Mario",
+          "gametypes": [
+            "dm",
+            "ka",
+            "lms",
+            "inf"
+          ],
+          "license": false,
+          "mapshot": "maps/gasoline_noteams_02.jpg"
+        }
+      },
+      "shasum": "099b0cc16fe998e5e29893dbecd5673683a5b69d",
+      "pk3": "gasoline_02.pk3"
+    },
+    {
+      "date": 1228976688,
+      "filesize": 7023043,
+      "bsp": {
+        "mIKEctf3_nex_r3": {
+          "radar": "gfx/mIKEctf3_nex_r3_radar.tga",
+          "waypoints": "",
+          "title": "my iron lung",
+          "description": "<DESCRIPTION>",
+          "map": "",
+          "entities": {
+            "info_player_deathmatch": 10,
+            "info_player_start": 1,
+            "info_player_team1": 32,
+            "info_player_team2": 32,
+            "item_armor_big": 4,
+            "item_armor_large": 1,
+            "item_armor_small": 12,
+            "item_bullets": 2,
+            "item_cells": 2,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_health_large": 2,
+            "item_health_small": 22,
+            "item_rockets": 12,
+            "item_shells": 2,
+            "item_strength": 1,
+            "weapon_devastator": 2,
+            "weapon_electro": 4,
+            "weapon_grenadelauncher": 2,
+            "weapon_hagar": 2,
+            "weapon_shotgun": 2,
+            "weapon_vortex": 1
+          },
+          "mapinfo": "maps/mIKEctf3_nex_r3.mapinfo",
+          "author": "<AUTHOR>",
+          "gametypes": [
+            "ctf"
+          ],
+          "license": false,
+          "mapshot": "maps/mIKEctf3_nex_r3.jpg"
+        }
+      },
+      "shasum": "efc827b4534c3cc15a66426a4a4da3add5246e41",
+      "pk3": "map-ctf-mikectf3_nex_r3_fix.pk3"
+    },
+    {
+      "date": 1136407652,
+      "filesize": 22032945,
+      "bsp": {
+        "moonstone_nex_r3": {
+          "radar": "gfx/moonstone_nex_r3_radar.tga",
+          "waypoints": "",
+          "title": "moonstone",
+          "description": "<DESCRIPTION>",
+          "map": "",
+          "entities": {
+            "info_player_deathmatch": 24,
+            "info_player_team1": 24,
+            "info_player_team2": 24,
+            "item_armor_big": 4,
+            "item_armor_large": 2,
+            "item_armor_small": 52,
+            "item_cells": 6,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_health_large": 4,
+            "item_health_mega": 2,
+            "item_health_small": 18,
+            "item_rockets": 14,
+            "item_shells": 2,
+            "item_strength": 1,
+            "weapon_devastator": 4,
+            "weapon_electro": 4,
+            "weapon_grenadelauncher": 2,
+            "weapon_hagar": 2,
+            "weapon_shotgun": 2,
+            "weapon_vortex": 2
+          },
+          "mapinfo": "maps/moonstone_nex_r3.mapinfo",
+          "author": "orfi",
+          "gametypes": [
+            "ctf"
+          ],
+          "license": false,
+          "mapshot": "maps/moonstone_nex_r3.jpg"
+        }
+      },
+      "shasum": "fd19fed91d894248016b71702039cddf0f993c59",
+      "pk3": "map-ctf-moonstone_nex_r3.pk3"
+    },
+    {
+      "date": 1229092574,
+      "filesize": 3347270,
+      "bsp": {
+        "polo3ctf1_nex_r3": {
+          "radar": "gfx/polo3ctf1_nex_r3_radar.tga",
+          "waypoints": "",
+          "title": "revolution 909",
+          "description": "<DESCRIPTION>",
+          "map": "",
+          "entities": {
+            "info_player_deathmatch": 10,
+            "info_player_team1": 15,
+            "info_player_team2": 15,
+            "item_armor_big": 6,
+            "item_armor_large": 2,
+            "item_armor_small": 10,
+            "item_cells": 10,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_health_large": 2,
+            "item_health_mega": 2,
+            "item_health_small": 12,
+            "item_rockets": 16,
+            "item_strength": 2,
+            "weapon_devastator": 4,
+            "weapon_electro": 2,
+            "weapon_grenadelauncher": 2,
+            "weapon_hagar": 2,
+            "weapon_shotgun": 4,
+            "weapon_vortex": 2
+          },
+          "mapinfo": "maps/polo3ctf1_nex_r3.mapinfo",
+          "author": "<AUTHOR>",
+          "gametypes": [
+            "ctf"
+          ],
+          "license": false,
+          "mapshot": "maps/polo3ctf1_nex_r3.jpg"
+        }
+      },
+      "shasum": "02422d9b0ec6983eb6ddd12cbb5fad5d9f3b6020",
+      "pk3": "map-ctf-polo3ctf1_nex_r3_fix.pk3"
+    },
+    {
+      "date": 1453749340,
+      "filesize": 7856907,
+      "bsp": {
+        "vapor_alpha_2": {
+          "radar": "gfx/vapor_alpha_2_mini.tga",
+          "waypoints": "",
+          "title": "Vapor",
+          "description": "Such CTF. Many Vehicles. Wow.",
+          "map": "maps/vapor_alpha_2.map",
+          "entities": {
+            "info_player_deathmatch": 4,
+            "info_player_team1": 11,
+            "info_player_team2": 11,
+            "item_armor_big": 10,
+            "item_armor_large": 4,
+            "item_armor_medium": 16,
+            "item_armor_small": 124,
+            "item_bullets": 10,
+            "item_cells": 14,
+            "item_flag_team1": 1,
+            "item_flag_team2": 1,
+            "item_health_large": 6,
+            "item_health_medium": 30,
+            "item_health_mega": 2,
+            "item_health_small": 100,
+            "item_invincible": 1,
+            "item_rockets": 20,
+            "item_strength": 1,
+            "weapon_crylink": 4,
+            "weapon_devastator": 6,
+            "weapon_electro": 2,
+            "weapon_grenadelauncher": 6,
+            "weapon_hagar": 4,
+            "weapon_machinegun": 6,
+            "weapon_vortex": 4
+          },
+          "mapinfo": "maps/vapor_alpha_2.mapinfo",
+          "author": "-z-",
+          "gametypes": [
+            "ctf",
+            "DM"
+          ],
+          "license": true,
+          "mapshot": "maps/vapor_alpha_2.jpg"
+        }
+      },
+      "shasum": "3df0143516f72269f465070373f165c8787964d5",
+      "pk3": "map-vapor_alpha_2.pk3"
+    }
+  ]
+}

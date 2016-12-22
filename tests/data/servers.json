@@ -1,0 +1,12 @@
+{
+  "testserver-1": {
+    "target_dir": "~/.xonotic/testserver-1/data/",
+    "library": "~/.xmm/testserver-1/library.json",
+    "sources": "~/.xmm/sources.json"
+  },
+  "testserver-2": {
+    "target_dir": "~/.xonotic/testserver-2/data/",
+    "library": "~/.xmm/testserver-2/library.json",
+    "sources": "~/.xmm/myserver2/sources.json"
+  }
+}
