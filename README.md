@@ -12,6 +12,7 @@ The JSON provides rich metadata about map packages which makes it easier
 to discern differences between them.
 
 For information about what data is available check [JSON Structure](#JSON-structure).
+
 ## Requirements
 
 ### Debian/Ubuntu
