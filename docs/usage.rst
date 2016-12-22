@@ -86,7 +86,7 @@ Inline help is available on all sub-commands::
     xmm search -h
     usage: xmm search [-h] [--gametype [GAMETYPE]] [--pk3 [PK3]] [--title [TITLE]]
                       [--author [AUTHOR]] [--shasum [SHASUM]] [--long] [--short]
-                      [--highlight]
+                      [--color]
                       [string]
 
     positional arguments:
@@ -103,7 +103,7 @@ Inline help is available on all sub-commands::
       --shasum [SHASUM]     filter by shasum
       --long, -l            show long format
       --short, -s           show short format
-      --highlight, -H       highlight search term in results
+      --color, -c           highlight search term in results
 
 
 Installing from the repository

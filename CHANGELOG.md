@@ -11,6 +11,7 @@
 * `export` command supports two more formats, shasums, maplist (bsps), or repo JSON (#7)
 * `servers` command added with subcommand `list`
 * `repos` command added with subcommand `list`
+* `--highlight, -H` flags become `--color`
 * User-configurable Logging
 
 ### Changed
