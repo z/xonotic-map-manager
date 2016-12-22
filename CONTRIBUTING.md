@@ -2,7 +2,7 @@
 
 ## Learning Xonotic Map Manager
 
-The fastest way to learn is to read the [documentation](http://xonotic-map-manager.readthedocs.io/en/develop/api.html).
+The fastest way to learn is to read the [documentation](http://xonotic-map-manager.readthedocs.io/en/lastet/api.html).
 
 ## Before filing an issue
 

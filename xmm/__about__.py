@@ -14,7 +14,7 @@ __all__ = [
 
 __title__ = 'Xonotic Map Manager'
 __package_name__ = 'xmm'
-__version__ = '0.8.0.dev0'
+__version__ = '0.8.0'
 __summary__ = 'A package manager for xonotic.'
 __keywords__ = ['xonotic', 'xonotic-servers', 'xonotic-maps', 'cli']
 __author__ = 'Tyler Mulligan'
