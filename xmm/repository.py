@@ -437,9 +437,13 @@ class Repository(Base):
             repo_data = []
 
             if not os.path.exists(self.api_data_file):
-                cprint("Could not find a repo file. Downloading one.".format(self.name), style='WARNING')
-                self.logger.info("Could not find a repo file. Downloading one.".format(self.name))
-                self.update_repo_data()
+                cprint("Could not find a repo file. Using maplist shipped with release. For the latest maps, run xmm update.".format(self.name), style='WARNING')
+                self.logger.info("Could not find a repo file. Using maplist shipped with release. For the latest maps, run xmm update.".format(self.name))
+
+                import zipfile
+                zip_ref = zipfile.ZipFile(self.conf['default']['api_data_file_seed'], 'r')
+                zip_ref.extract('maps.json', os.path.dirname(self.api_data_file))
+                zip_ref.close()
 
             with open(self.api_data_file) as f:
                 data = f.read()
