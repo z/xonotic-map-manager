@@ -5,9 +5,11 @@ from xmm.util import parse_config
 from xmm.util import check_if_not_create
 from xmm.util import replace_last
 
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def test_file_is_empty():
-    assert file_is_empty('README.md') is False
+    assert file_is_empty('{}/README.md'.format(root_dir)) is False
 
 
 def test_convert_size():

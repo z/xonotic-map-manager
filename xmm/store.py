@@ -1,9 +1,13 @@
 import json
+import operator
 
 from xmm.map import MapPackage
 
 from xmm.base import Base
 from xmm import util
+from xmm.exceptions import PackageLookupError
+
+from tinydb import TinyDB, Query
 
 
 class Store(Base):
@@ -28,7 +32,12 @@ class Store(Base):
         if package_store_file:
             util.create_if_not_exists(package_store_file, json.dumps([]))
 
+        db_file = package_store_file.replace('library', 'db')
+        db = TinyDB(db_file)
+
         self.data_file = package_store_file
+        self.data_db_file = db_file
+        self.db = db
         self.data = self.get_package_db()
 
     def __repr__(self):
@@ -61,23 +70,14 @@ class Store(Base):
 
         self.logger.debug('Getting package db')
 
-        package_data = []
         repo_data = []
+        map_table = self.db.table('map_table')
 
-        util.create_if_not_exists(self.data_file, json.dumps(package_data))
+        for m in map_table.all():
+            new_map = MapPackage(map_package_json=m)
+            repo_data.append(new_map)
 
-        if not util.file_is_empty(self.data_file):
-            repo_data = []
-
-            with open(self.data_file) as f:
-                data = f.read()
-                package_data = json.loads(data)
-
-            for m in package_data:
-                new_map = MapPackage(map_package_json=m)
-                repo_data.append(new_map)
-
-        return repo_data
+        return sorted(repo_data, key=operator.attrgetter('pk3_file'))
 
     def add_package(self, package):
         """
@@ -97,7 +97,6 @@ class Store(Base):
         >>> store = Store(package_store_file=package_store_file)
         >>> store.add_package(my_map)
 
-
         :returns: False if fails
         """
 
@@ -109,17 +108,11 @@ class Store(Base):
                                  )
                          )
 
-        package_data = self.data
-        package_data.append(package)
-
-        # fix this
-        data_out = []
-        for m in package_data:
-            data_out.append(json.loads(m.to_json()))
+        self.data.append(package)
 
         try:
-            with open(self.data_file, 'w+') as f:
-                json.dump(data_out, f)
+            map_table = self.db.table('map_table')
+            map_table.insert(json.loads(package.to_json()))
         except EnvironmentError as e:
             self.logger.error(e)
             return False
@@ -153,19 +146,15 @@ class Store(Base):
                                  )
                          )
 
-        package_store = []
-
-        if not util.file_is_empty(self.data_file):
-            with open(self.data_file, 'r+') as f:
-                package_store = json.load(f)
-                package_store[:] = [m for m in package_store if (m.get('shasum') != package.shasum and m.get('pk3') != package.pk3_file)]
+        map_table = self.db.table('map_table')
+        Map = Query()
 
         try:
-            with open(self.data_file, 'w+') as f:
-                json.dump(package_store, f)
-        except EnvironmentError as e:
+            selected_map = map_table.search((Map.shasum == package.shasum) & (Map.pk3 == package.pk3_file))
+            map_table.remove(eids=[selected_map[0].eid])
+        except PackageLookupError as e:
             self.logger.error(e)
-            return False
+            raise PackageLookupError
 
     def export_packages(self, filename=None):
         """
@@ -185,15 +174,13 @@ class Store(Base):
         if not filename:
             filename = 'xmm-export.maps.json'
 
-        data_out = []
-        for m in self.data:
-            data_out.append(json.loads(m.to_json()))
+        map_table = self.db.table('map_table')
 
         self.logger.info('exporting maps as: {}'.format(filename))
 
         try:
             with open(filename, 'w') as f:
-                f.write(json.dumps(data_out))
+                f.write(json.dumps(map_table.all()))
         except EnvironmentError as e:
             self.logger.error(e)
             return False

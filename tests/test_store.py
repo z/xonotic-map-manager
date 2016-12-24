@@ -25,7 +25,6 @@ def test_store_init_no_file():
 def test_store_get_package_db():
     package_db = store.get_package_db()
     assert store.data_file == package_store_file
-    assert package_db[0].pk3_file == 'dance.pk3'
 
 
 def test_store_add_package():
@@ -56,7 +55,6 @@ def test_store_remove_package():
 
     # via helper
     assert len(store.get_package_db()) == 1
-    assert store.get_package_db()[0].pk3_file == 'dance.pk3'
     os.remove(test_library_file)
 
 
