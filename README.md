@@ -29,6 +29,10 @@ sudo apt install python3-pip python3-setuptools
 pip3 install xmm --user
 ```
 
+If you get an error trying to run ``xmm``, you probably need ``$HOME/.local/bin`` in your path, put the following in your ``~/.bashrc`` or ``~/.zshrc`` etc:
+
+    export PATH=$PATH:$HOME/.local/bin
+
 or for development:
 
 ```

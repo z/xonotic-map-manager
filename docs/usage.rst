@@ -371,6 +371,12 @@ To use these servers, use the ``-S`` flag to target the server::
     xmm -S myserver1 remove dance.pk3
 
 
+.. note::
+
+    Some maps start with hyphens(``-``), these must be installed using the syntax as follows, so these are not misunderstood as a flag::
+
+        xmm install -- -rust7-klesky.pk3
+
 Multi-repository support
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
